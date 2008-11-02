@@ -1,0 +1,7 @@
+<module>
+	<inherits name="com.google.gwt.user.User"/>
+	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
+	<stylesheet src="LoginManager.css"/>
+	<entry-point class="com.sgta07.bizalokud.client.LoginManager"/>
+	<servlet path="/LoginService" class="com.sgta07.bizalokud.server.LoginServiceImpl"/>
+</module>
