@@ -4,4 +4,9 @@
 	<stylesheet src="LoginManager.css"/>
 	<entry-point class="com.sgta07.bizalokud.client.LoginManager"/>
 	<servlet path="/LoginService" class="com.sgta07.bizalokud.server.LoginServiceImpl"/>
+	<!-- Inherit the GWTExt Toolkit library configuration.     -->
+	<inherits name="com.gwtext.GwtExt"/>
+	<stylesheet src="js/ext/resources/css/ext-all.css" />
+	<script src="js/ext/adapter/ext/ext-base.js" />
+	<script src="js/ext/ext-all.js" />
 </module>
