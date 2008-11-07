@@ -2,29 +2,36 @@ package com.sgta07.bizalokud.login.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Position;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.MessageBox;
 import com.gwtext.client.widgets.MessageBoxConfig;
-import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.WaitConfig;
+import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.form.FieldSet;
 import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.widgets.form.TextField;
 import com.gwtext.client.widgets.form.VType;
+import com.gwtext.client.widgets.layout.FitLayout;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Login implements EntryPoint {
 
-	public void onModuleLoad() {
-		Panel panel = new Panel();
-		panel.setBorder(false);
-		panel.setPaddings(15);
+	public void onModuleLoad() {		
+		final Window window = new Window();
+		window.setMaximizable(false);  
+		window.setResizable(false);  
+		window.setLayout(new FitLayout());  
+		window.setModal(true);
+		window.setWidth(300);
+		window.setTopToolbar(new Button[0]);
+		window.setBorder(false);
+		window.setClosable(false);
+		//window.setPosition((RootPanel.get().getOffsetWidth()-window.getWidth())/2, (RootPanel.get().getOffsetHeight()-window.getHeight())/2);
 
 		final FormPanel formPanel = new FormPanel(Position.RIGHT);
 		formPanel.setFrame(true);
@@ -135,8 +142,9 @@ public class Login implements EntryPoint {
 					}
 				});
 		formPanel.addButton(sartuBtn);
-		panel.add(formPanel);
+		
+		window.add(formPanel);
 
-		RootPanel.get().add(panel);
+		window.show();
 	}
 }
