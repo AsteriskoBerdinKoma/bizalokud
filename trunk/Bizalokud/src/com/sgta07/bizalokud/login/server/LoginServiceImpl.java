@@ -7,8 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.sgta07.bizalokud.login.client.LoginService;
+import javax.servlet.http.HttpSession;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.sgta07.bizalokud.login.client.LoginService;
 
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
 
@@ -19,6 +21,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
 	@Override
 	public boolean login(String user, String pass) {
+		HttpSession session = this.getThreadLocalRequest().getSession();
 		try {			
 			String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 			Class.forName(JDBC_DRIVER);
@@ -35,11 +38,13 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 				String password = rs.getString("pass");
 				statement.close();
 				connection.close();
-
-				if (password.equals(pass))
+				if (password.equals(pass)){
+					session.setAttribute("valid", true);
 					return true;
-				else
+				}else{
+					session.setAttribute("valid", false);
 					return false;
+				}
 			}
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
@@ -48,6 +53,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		session.setAttribute("valid", false);
 		return false;
 	}
 }
