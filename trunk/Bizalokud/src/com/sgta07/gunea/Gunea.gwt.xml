@@ -1,0 +1,6 @@
+<module>
+	<inherits name="com.google.gwt.user.User"/>
+	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
+	<entry-point class="com.sgta07.gunea.client.Gunea"/>
+	<servlet path="/GuneaService" class="com.sgta07.gunea.server.GuneaServiceImpl"/>
+</module>
