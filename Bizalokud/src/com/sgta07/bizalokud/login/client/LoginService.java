@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("LoginService")
 public interface LoginService extends RemoteService {
 	
-	public boolean login(String user, String pass);
+	public LoginInfo login(String user, String pass);
 	
 	/**
 	 * Utility class for simplifying access to the instance of async service.

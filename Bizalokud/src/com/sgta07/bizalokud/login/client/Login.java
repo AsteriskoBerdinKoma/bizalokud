@@ -21,17 +21,19 @@ import com.gwtext.client.widgets.layout.FitLayout;
  */
 public class Login implements EntryPoint {
 
-	public void onModuleLoad() {		
+	public void onModuleLoad() {
 		final Window window = new Window();
-		window.setMaximizable(false);  
-		window.setResizable(false);  
-		window.setLayout(new FitLayout());  
+		window.setMaximizable(false);
+		window.setResizable(false);
+		window.setLayout(new FitLayout());
 		window.setModal(true);
 		window.setWidth(300);
+		window.setHeight(200);
 		window.setTopToolbar(new Button[0]);
 		window.setBorder(false);
 		window.setClosable(false);
-		//window.setPosition((RootPanel.get().getOffsetWidth()-window.getWidth())/2, (RootPanel.get().getOffsetHeight()-window.getHeight())/2);
+		// window.setPosition((RootPanel.get().getOffsetWidth()-window.getWidth())/2,
+		// (RootPanel.get().getOffsetHeight()-window.getHeight())/2);
 
 		final FormPanel formPanel = new FormPanel(Position.RIGHT);
 		formPanel.setFrame(true);
@@ -92,8 +94,8 @@ public class Login implements EntryPoint {
 
 								LoginService.Util.getInstance().login(
 										erabiltzaileaTextField.getText(),
-										pasahitzaTextField.getText(),
-										new AsyncCallback<Boolean>() {
+										getSha1(pasahitzaTextField.getText()),
+										new AsyncCallback<LoginInfo>() {
 
 											public void onFailure(
 													Throwable caught) {
@@ -111,9 +113,10 @@ public class Login implements EntryPoint {
 														.getMessage());
 											}
 
-											public void onSuccess(Boolean result) {
+											public void onSuccess(
+													final LoginInfo result) {
 												MessageBox.hide();
-												if (result.booleanValue())
+												if (result.isBaimena())
 													System.out
 															.println("Sartu zaitezke");
 												else
@@ -121,7 +124,8 @@ public class Login implements EntryPoint {
 															.show(new MessageBoxConfig() {
 																{
 																	setTitle("Login okerra");
-																	setMsg("Erabiltzaile izena edo pasahitza okerra da.");
+																	setMsg(result
+																			.getErroreMezua());
 																	setButtons(MessageBox.OK);
 																	setIconCls(MessageBox.ERROR);
 																}
@@ -142,9 +146,15 @@ public class Login implements EntryPoint {
 					}
 				});
 		formPanel.addButton(sartuBtn);
-		
+
 		window.add(formPanel);
 
 		window.show();
 	}
+
+	// SHA1 hasha sortuko duen javascript funtzioari (js/crypto/sha1.js)
+	// deintzen dio.
+	public native String getSha1(String str)/*-{
+				return $wnd.SHA1(str);
+			}-*/;
 }
