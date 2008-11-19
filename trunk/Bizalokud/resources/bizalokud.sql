@@ -1,4 +1,4 @@
--- MySQL dump 10.11
+﻿-- MySQL dump 10.11
 --
 -- Host: localhost    Database: bizalokud
 -- ------------------------------------------------------
@@ -15,6 +15,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+DROP DATABASE IF EXISTS `bizalokud`;
+CREATE DATABASE `bizalokud`;
+
+USE `bizalokud`;
 --
 -- Table structure for table `abisuak`
 --
@@ -85,6 +89,8 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `erabiltzailea` (
   `nan` varchar(9) NOT NULL,
+  `izena` varchar (30) NOT NULL,
+  `abizenak` varchar (100) NOT NULL,
   `pasahitza` varchar(100) NOT NULL,
   `alta` tinyint(1) NOT NULL COMMENT 'true = gaituta, false = desgaituta',
   `mota` enum('erab','admin') NOT NULL COMMENT 'erabiltzailea, administratzailea',
