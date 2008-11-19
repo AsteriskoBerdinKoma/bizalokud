@@ -2,4 +2,9 @@
 	<inherits name="com.google.gwt.user.User"/>
 	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
 	<entry-point class="com.sgta07.bizalokud.gunea.client.Gunea"/>
+	<!-- Inherit the GWTExt Toolkit library configuration.     -->
+	<inherits name="com.gwtext.GwtExt"/>
+	<stylesheet src="js/ext-2.0.2/resources/css/ext-all.css" />
+	<script src="js/ext-2.0.2/adapter/ext/ext-base.js" ></script>
+	<script src="js/ext-2.0.2/ext-all.js" ></script>
 </module>
