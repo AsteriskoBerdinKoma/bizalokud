@@ -1,6 +1,5 @@
 package com.sgta07.bizalokud.gunea.client;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.RegionPosition;
@@ -66,31 +65,30 @@ public class Frogak {
 		centerPanel.setActiveItem(0);
 		centerPanel.setPaddings(15);
 		centerPanel.setTitle("Ekintzen leihoa");
-		
-		 ButtonListenerAdapter listener = new ButtonListenerAdapter() {  
-			             public void onClick(Button button, EventObject e) {  
-			                 String btnID = button.getId();  
-			                 CardLayout cardLayout = (CardLayout) centerPanel.getLayout();  
-			                 String panelID = cardLayout.getActiveItem().getId();  
-			   
-			                 if (btnID.equals("move-prev")) {  
-			                     if (panelID.equals("card-3")) {  
-			                         cardLayout.setActiveItem(1);  
-			                     } else {  
-		                         cardLayout.setActiveItem(0);  
-		                     }  
-		                 } else {  
-			   
-		                   if (panelID.equals("card-1")) {  
-			                        cardLayout.setActiveItem(1);  
-			                     } else {  
-			                        cardLayout.setActiveItem(2);  
-			                    }  
-			                 }  
-			             }  
-			         };  
-	
-		
+
+		ButtonListenerAdapter listener = new ButtonListenerAdapter() {
+			public void onClick(Button button, EventObject e) {
+				String btnID = button.getId();
+				CardLayout cardLayout = (CardLayout) centerPanel.getLayout();
+				String panelID = cardLayout.getActiveItem().getId();
+
+				if (btnID.equals("move-prev")) {
+					if (panelID.equals("card-3")) {
+						cardLayout.setActiveItem(1);
+					} else {
+						cardLayout.setActiveItem(0);
+					}
+				} else {
+
+					if (panelID.equals("card-1")) {
+						cardLayout.setActiveItem(1);
+					} else {
+						cardLayout.setActiveItem(2);
+					}
+				}
+			}
+		};
+
 		centerPanel.setBodyStyle("background-color:C3D9FF");
 
 		borderPanel.add(centerPanel,
