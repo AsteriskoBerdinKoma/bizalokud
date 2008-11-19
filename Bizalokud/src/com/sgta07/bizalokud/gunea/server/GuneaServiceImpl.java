@@ -1,4 +1,4 @@
-package com.sgta07.gunea.server;
+package com.sgta07.bizalokud.gunea.server;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.sgta07.gunea.client.GuneaService;
+import com.sgta07.bizalokud.gunea.client.GuneaService;
 
 public class GuneaServiceImpl extends RemoteServiceServlet implements
 		GuneaService {

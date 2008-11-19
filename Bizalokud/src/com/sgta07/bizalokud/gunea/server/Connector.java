@@ -1,4 +1,4 @@
-package com.sgta07.gunea.server;
+package com.sgta07.bizalokud.gunea.server;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
