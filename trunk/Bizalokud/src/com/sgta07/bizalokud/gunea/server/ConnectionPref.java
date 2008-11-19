@@ -1,4 +1,4 @@
-package com.sgta07.gunea.server;
+package com.sgta07.bizalokud.gunea.server;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;

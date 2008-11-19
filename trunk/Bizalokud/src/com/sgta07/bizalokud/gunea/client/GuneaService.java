@@ -1,4 +1,4 @@
-package com.sgta07.gunea.client;
+package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
 
