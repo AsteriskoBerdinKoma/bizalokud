@@ -14,6 +14,8 @@ import com.gwtext.client.widgets.form.FieldSet;
 import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.widgets.form.TextField;
 import com.gwtext.client.widgets.form.VType;
+import com.gwtext.client.widgets.form.ValidationException;
+import com.gwtext.client.widgets.form.Validator;
 import com.gwtext.client.widgets.layout.FitLayout;
 
 /**
@@ -21,35 +23,71 @@ import com.gwtext.client.widgets.layout.FitLayout;
  */
 public class Login implements EntryPoint {
 
+	private boolean logeatuta;
+
 	public void onModuleLoad() {
+		logeatuta = false;
+	}
+
+	public boolean isLogeatuta() {
+		return logeatuta;
+	}
+
+	public void erakutsi() {
 		final Window window = new Window();
-		window.setMaximizable(false);
-		window.setResizable(false);
+		window.setTitle("Login");
 		window.setLayout(new FitLayout());
+		window.setMaximizable(false);
 		window.setModal(true);
+
 		window.setWidth(300);
 		window.setHeight(200);
-		window.setTopToolbar(new Button[0]);
-		window.setBorder(false);
-		window.setClosable(false);
-		// window.setPosition((RootPanel.get().getOffsetWidth()-window.getWidth())/2,
-		// (RootPanel.get().getOffsetHeight()-window.getHeight())/2);
+		// TODO: Konpilatzerakoan bi lerro hauek deskomentatu eta goiko biak
+		// komentatu
+		// window.setAutoWidth(true);
+		// window.setAutoHeight(true);
 
-		final FormPanel formPanel = new FormPanel(Position.RIGHT);
+		window.setBorder(false);
+		window.setResizable(false);
+		window.setClosable(false);
+		window.setPaddings(5);
+		window.setButtonAlign(Position.CENTER);
+
+		window.setCloseAction(Window.HIDE);
+		window.setPlain(true);
+
+		final FormPanel formPanel = new FormPanel();
 		formPanel.setFrame(true);
-		formPanel.setTitle("Login");
-		formPanel.setWidth(300);
 		formPanel.setLabelWidth(75);
-		formPanel.setBorder(false);
+
+		formPanel.setAutoWidth(true);
+		formPanel.setAutoHeight(true);
 
 		// add some fields
-		FieldSet fieldSet = new FieldSet(
-				"Sartu zure erabiltzailea eta pasahitza");
-		final TextField erabiltzaileaTextField = new TextField("Erabiltzailea",
-				"user", 150);
-		erabiltzaileaTextField.setVtype(VType.ALPHANUM);
-		erabiltzaileaTextField
-				.setVtypeText("Erabiltzaile izenak bakarrik hizkiak, zenbakiak eta _ eduki ditzake");
+		FieldSet fieldSet = new FieldSet("Sartu zure NAN eta pasahitza");
+		fieldSet.setAutoHeight(true);
+		fieldSet.setAutoWidth(true);
+
+		final TextField erabiltzaileaTextField = new TextField("NAN", "user",
+				150);
+		erabiltzaileaTextField.setValidator(new Validator() {
+			public boolean validate(String value) throws ValidationException {
+				if (value.length() != 9)
+					throw new ValidationException(
+							"NANak 8 digitu eta hizki bat eduki behar du.");
+				// El último carácter debe ser una letra
+				if (!Character.isLetter(value.charAt(8)))
+					throw new ValidationException(
+							"NANak 8 digitu eta hizki bat eduki behar du.");
+				try {
+					Integer.parseInt(value.substring(0, 8));
+				} catch (NumberFormatException e) {
+					throw new ValidationException(
+							"NANak 8 digitu eta hizki bat eduki behar du.");
+				}
+				return true;
+			}
+		});
 		erabiltzaileaTextField.setValidationEvent(false);
 
 		final TextField pasahitzaTextField = new TextField("Pasahitza", "pass",
@@ -109,17 +147,16 @@ public class Login implements EntryPoint {
 																setIconCls(MessageBox.ERROR);
 															}
 														});
-												System.out.println(caught
-														.getMessage());
+												logeatuta = false;
 											}
 
 											public void onSuccess(
 													final LoginInfo result) {
 												MessageBox.hide();
-												if (result.isBaimena())
-													System.out
-															.println("Sartu zaitezke");
-												else
+												if (result.isBaimena()) {
+													window.hide();
+													logeatuta = true;
+												} else {
 													MessageBox
 															.show(new MessageBoxConfig() {
 																{
@@ -130,11 +167,13 @@ public class Login implements EntryPoint {
 																	setIconCls(MessageBox.ERROR);
 																}
 															});
+													logeatuta = false;
+												}
 											}
 										});
 							}
 
-						} else
+						} else {
 							MessageBox.show(new MessageBoxConfig() {
 								{
 									setTitle("Login okerra");
@@ -143,8 +182,11 @@ public class Login implements EntryPoint {
 									setIconCls(MessageBox.ERROR);
 								}
 							});
+							logeatuta = false;
+						}
 					}
 				});
+
 		formPanel.addButton(sartuBtn);
 
 		window.add(formPanel);
@@ -155,6 +197,6 @@ public class Login implements EntryPoint {
 	// SHA1 hasha sortuko duen javascript funtzioari (js/crypto/sha1.js)
 	// deintzen dio.
 	public native String getSha1(String str)/*-{
-				return $wnd.SHA1(str);
-			}-*/;
+								return $wnd.SHA1(str);
+							}-*/;
 }
