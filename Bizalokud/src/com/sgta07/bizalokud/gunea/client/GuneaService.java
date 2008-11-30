@@ -8,18 +8,17 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("GuneaService")
 public interface GuneaService extends RemoteService {
-
-	public boolean alokaDaiteke(int guneId, String userNan)
-			throws Exception;
+	public boolean alokaDaiteke(int guneId, String userNan) throws Exception;
 
 	public boolean helburuaAukeraDaiteke(int unekoGuneId, int helburuGuneId)
 			throws Exception;
 
-	public HashMap<Integer, String> guneenZerrenda(int guneId)
-			throws Exception;
+	public HashMap<Integer, String> guneenZerrenda() throws Exception;
 
 	public int alokatu(int unekoGuneId, int helburuGuneId, String erabNan)
 			throws Exception;
+
+	public GuneInfo getMyInfo() throws Exception;
 
 	/**
 	 * Utility class for simplifying access to the instance of async service.
