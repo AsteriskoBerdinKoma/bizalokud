@@ -4,12 +4,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.sgta07.bizalokud.gunea.client.GuneInfo;
 import com.sgta07.bizalokud.gunea.client.GuneaService;
 import com.sgta07.bizalokud.zerbitzaria.db.Connector;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class GuneaServiceImpl extends RemoteServiceServlet implements
-		GuneaService {
+public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaService {
 
 	/**
 	 * 
@@ -103,22 +103,20 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 	}
 
-	public HashMap<Integer, String> guneenZerrenda(int guneId)
-			throws Exception {
+	public HashMap<Integer, String> guneenZerrenda() throws Exception {
 
 		HashMap<Integer, String> guneak = new HashMap<Integer, String>();
 		
 		if (!connector.isConnectedToDatabase())
 			connector.connect();
 
-		String query = "SELECT id,helb FROM gunea WHERE id <> ?";
+		String query = "SELECT id,helb FROM gunea";
 
 		PreparedStatement ps = connector.prepareStatement(query);
-		ps.setInt(1, guneId);
 		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
+		
+		while (rs.next())
 			guneak.put(rs.getInt("id"), rs.getString("helb"));
-		}
 
 		rs.close();
 		ps.close();
@@ -167,6 +165,25 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			return esleitutakoBizikleta;
 		else
 			return -1;
+	}
+	
+	public GuneInfo getMyInfo() throws Exception{
+		if(!connector.isConnectedToDatabase())
+			connector.connect();
+		
+		String query = "SELECT * FROM gunea WHERE ip=?";
+		PreparedStatement ps = connector.prepareStatement(query);
+		ps.setString(1, getThreadLocalRequest().getLocalAddr());
+		
+		ResultSet rs = ps.executeQuery();
+		
+		GuneInfo emaitza = null;
+		
+		if(rs.next()){
+			emaitza = new GuneInfo(rs.getInt("id"), rs.getString("helb"));
+		}
+		
+		return emaitza;
 	}
 
 //	private void konexioaEzarri() throws SQLException, ClassNotFoundException {
