@@ -7,7 +7,6 @@ import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.FieldDef;
 import com.gwtext.client.data.IntegerFieldDef;
 import com.gwtext.client.data.MemoryProxy;
-import com.gwtext.client.data.Reader;
 import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
@@ -18,8 +17,6 @@ import com.gwtext.client.widgets.grid.GridPanel;
 public class GuneenLista extends GridPanel {
 
 	protected Store store;
-	
-	
 
 	public GuneenLista() {
 		super();
@@ -42,7 +39,6 @@ public class GuneenLista extends GridPanel {
 					i++;
 				}
 				setGuneak(obj);
-				System.out.println("orain");
 			}
 		
 		});

@@ -220,4 +220,8 @@ public class Gunea implements EntryPoint {
 
 		new Viewport(panelNagusia);
 	}
+
+	public String getHelbidea() {
+		return this.guneHelbide;
+	}
 }
