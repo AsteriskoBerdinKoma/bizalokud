@@ -1,4 +1,4 @@
--- BizAloKud aplikaziorako adibide-datuak
+﻿-- BizAloKud aplikaziorako adibide-datuak
 --
 -- Host: localhost    Database: bizalokud
 -- ------------------------------------------------------
@@ -9,7 +9,7 @@ USE `bizalokud`;
 --
 -- 'gunea' taulako datuak
 --
-﻿INSERT INTO `gunea` SET alta=1, toki_kop=40, izena='Unibertsitateak', helb='Paseo de Manuel Lardizábal, 1 20018';
+INSERT INTO `gunea` SET alta=1, toki_kop=40, izena='Unibertsitateak', helb='Paseo de Manuel Lardizábal, 1 20018';
 INSERT INTO `gunea` SET alta=1, toki_kop=20, izena='Benta-berri', helb='Plaza de José María Sert, 20018';
 INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Hondarreta', helb='Paseo de Eduardo Chillida, 20008';
 INSERT INTO `gunea` SET alta=1, toki_kop=25, izena='La Perla', helb='Paseo de Miraconcha, 1 20007';
@@ -79,37 +79,37 @@ INSERT INTO erabiltzailea SET nan='16798052W',pasahitza=sha1('erab'),izena='Ange
 -- 'bizikleta' taulako datuak
 --
 
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=1;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=0, fk_jatorri_gune_id=1;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=1;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=1;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Urdina', fk_uneko_gune_id=0, fk_jatorri_gune_id=1;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Urdina', fk_uneko_gune_id=0, fk_jatorri_gune_id=1;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Urdina', fk_uneko_gune_id=0, fk_jatorri_gune_id=2;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Urdina', fk_uneko_gune_id=0, fk_jatorri_gune_id=2;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=1;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=null, fk_jatorri_gune_id=1;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=1;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=1;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Urdina', fk_uneko_gune_id=null, fk_jatorri_gune_id=1;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Urdina', fk_uneko_gune_id=null, fk_jatorri_gune_id=1;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Urdina', fk_uneko_gune_id=null, fk_jatorri_gune_id=2;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Urdina', fk_uneko_gune_id=null, fk_jatorri_gune_id=2;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='matxuratuta', modeloa='Orbea CTX200', kolorea='Berdea', fk_uneko_gune_id=3, fk_jatorri_gune_id=2;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=2;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=2;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=1, fk_jatorri_gune_id=2;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Berdea', fk_uneko_gune_id=0, fk_jatorri_gune_id=3;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Berdea', fk_uneko_gune_id=null, fk_jatorri_gune_id=3;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='konpontzen', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=2, fk_jatorri_gune_id=3;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=3;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=3;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='matxuratuta', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=3, fk_jatorri_gune_id=3;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Berdea', fk_uneko_gune_id=0, fk_jatorri_gune_id=3;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=0, fk_jatorri_gune_id=3;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Berdea', fk_uneko_gune_id=null, fk_jatorri_gune_id=3;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=null, fk_jatorri_gune_id=3;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=4, fk_jatorri_gune_id=4;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Berdea', fk_uneko_gune_id=0, fk_jatorri_gune_id=4;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Berdea', fk_uneko_gune_id=null, fk_jatorri_gune_id=4;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=5, fk_jatorri_gune_id=4;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=6, fk_jatorri_gune_id=4;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='galduta', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=0, fk_jatorri_gune_id=4;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=4;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=4;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='galduta', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=null, fk_jatorri_gune_id=4;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=4;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=4;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=7, fk_jatorri_gune_id=5;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=7, fk_jatorri_gune_id=5;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=1, fk_jatorri_gune_id=5;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=1, fk_jatorri_gune_id=5;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=0, fk_jatorri_gune_id=5;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='galduta', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=5;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=0, fk_jatorri_gune_id=5;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=null, fk_jatorri_gune_id=5;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='galduta', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=5;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=null, fk_jatorri_gune_id=5;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=4, fk_jatorri_gune_id=5;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=5, fk_jatorri_gune_id=6;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=6, fk_jatorri_gune_id=6;
@@ -120,21 +120,21 @@ INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CT
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='konpontzen', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=1, fk_jatorri_gune_id=7;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=1, fk_jatorri_gune_id=7;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=1, fk_jatorri_gune_id=7;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=7;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=7;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=0, fk_jatorri_gune_id=8;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='galduta', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=8;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=0, fk_jatorri_gune_id=9;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=7;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=7;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=null, fk_jatorri_gune_id=8;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='galduta', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=8;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=null, fk_jatorri_gune_id=9;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='matxuratuta', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=3, fk_jatorri_gune_id=9;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=3, fk_jatorri_gune_id=9;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=8, fk_jatorri_gune_id=10;
 INSERT INTO `bizikleta`SET alokatuta=0, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=5, fk_jatorri_gune_id=10;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=10;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=10;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='galduta', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=0, fk_jatorri_gune_id=6;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=6;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=0, fk_jatorri_gune_id=6;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=6;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=0, fk_jatorri_gune_id=6;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=0, fk_jatorri_gune_id=7;
-INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=0, fk_jatorri_gune_id=7;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=10;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=10;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='galduta', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=null, fk_jatorri_gune_id=6;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=6;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=null, fk_jatorri_gune_id=6;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=6;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Gorria', fk_uneko_gune_id=null, fk_jatorri_gune_id=6;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Txuria', fk_uneko_gune_id=null, fk_jatorri_gune_id=7;
+INSERT INTO `bizikleta`SET alokatuta=1, alta=1, egoera='ondo', modeloa='Orbea CTX200', kolorea='Beltza', fk_uneko_gune_id=null, fk_jatorri_gune_id=7;
