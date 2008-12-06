@@ -118,9 +118,10 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `gunea` (
   `id` int(10) unsigned NOT NULL auto_increment,
+  `izena` varchar(30) NOT NULL,
   `alta` tinyint(1) NOT NULL default '1',
   `toki_kop` int(11) NOT NULL,
-  `helb` varchar(50) NOT NULL,
+  `helb` varchar(100) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -170,6 +171,32 @@ LOCK TABLES `ibilbidea` WRITE;
 /*!40000 ALTER TABLE `ibilbidea` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ibilbidea` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `informazioa`
+--
+
+DROP TABLE IF EXISTS `informazioa`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `informazioa` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `data` datetime NOT NULL,
+  `mezua` text NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `informazioa`
+--
+
+LOCK TABLES `informazioa` WRITE;
+/*!40000 ALTER TABLE `informazioa` DISABLE KEYS */;
+/*!40000 ALTER TABLE `informazioa` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
