@@ -1,8 +1,5 @@
 package com.sgta07.bizalokud.gunea.client;
 
-import java.util.HashMap;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.FieldDef;
 import com.gwtext.client.data.IntegerFieldDef;
@@ -18,35 +15,18 @@ public class GuneenLista extends GridPanel {
 
 	protected Store store;
 
-	public GuneenLista() {
+	public GuneenLista(Object[][] obj) {
 		super();
 		setFrame(true);
 		setStripeRows(true);
-		
-		setGuneak(new Object[0][0]);
-		
-		GuneaService.Util.getInstance().guneenZerrenda(new AsyncCallback<HashMap<Integer,String>>(){
-			public void onFailure(Throwable caught) {
-				System.out.println(caught.getMessage());
-			}
 
-			public void onSuccess(HashMap<Integer,String> result) {
-				Object[][] obj = new Object[result.size()][2];
-				int i = 0;
-				for(int key: result.keySet()){
-					obj[i][0] = key;
-					obj[i][1] = result.get(key);
-					i++;
-				}
-				setGuneak(obj);
-			}
-		
-		});
+		setGuneak(obj);
 	}
-	
-	public void setGuneak(Object[][] guneak){
+
+	public void setGuneak(Object[][] guneak) {
 		RecordDef recordDef = new RecordDef(new FieldDef[] {
-				new IntegerFieldDef("id"), new StringFieldDef("gunea") });
+				new IntegerFieldDef("id"), new StringFieldDef("izena"),
+				new StringFieldDef("helbidea") });
 
 		MemoryProxy proxy = new MemoryProxy(guneak);
 
@@ -57,13 +37,16 @@ public class GuneenLista extends GridPanel {
 		setStore(store);
 
 		ColumnConfig[] columns = new ColumnConfig[] {
-		// column ID is company which is later used in setAutoExpandColumn
-		new ColumnConfig("Gunea", "gunea", 200, true, null, "gunea") };
+				// column ID is company which is later used in
+				// setAutoExpandColumn
+				new ColumnConfig("Gunea", "izena", 200, true, null, "izena"),
+				new ColumnConfig("Helbidea", "helbidea", 200, true, null,
+						"helbidea") };
 
 		ColumnModel columnModel = new ColumnModel(columns);
 		setColumnModel(columnModel);
-		
-		setAutoExpandColumn("gunea");
+
+		setAutoExpandColumn("izena");
 	}
 
 }

@@ -13,7 +13,7 @@ public interface GuneaService extends RemoteService {
 	public boolean helburuaAukeraDaiteke(int unekoGuneId, int helburuGuneId)
 			throws Exception;
 
-	public HashMap<Integer, String> guneenZerrenda() throws Exception;
+	public HashMap<Integer, GuneInfo> guneenZerrenda() throws Exception;
 
 	public int alokatu(int unekoGuneId, int helburuGuneId, String erabNan)
 			throws Exception;

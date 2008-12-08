@@ -103,20 +103,22 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 
 	}
 
-	public HashMap<Integer, String> guneenZerrenda() throws Exception {
+	public HashMap<Integer, GuneInfo> guneenZerrenda() throws Exception {
 
-		HashMap<Integer, String> guneak = new HashMap<Integer, String>();
+		HashMap<Integer, GuneInfo> guneak = new HashMap<Integer, GuneInfo>();
 		
 		if (!connector.isConnectedToDatabase())
 			connector.connect();
 
-		String query = "SELECT id,helb FROM gunea";
+		String query = "SELECT id, izena, helb FROM gunea";
 
 		PreparedStatement ps = connector.prepareStatement(query);
 		ResultSet rs = ps.executeQuery();
 		
-		while (rs.next())
-			guneak.put(rs.getInt("id"), rs.getString("helb"));
+		while (rs.next()){
+			int id = rs.getInt("id");
+			guneak.put(id, new GuneInfo(id, rs.getString("izena"), rs.getString("helb")));
+		}
 
 		rs.close();
 		ps.close();
@@ -179,9 +181,8 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 		
 		GuneInfo emaitza = null;
 		
-		if(rs.next()){
-			emaitza = new GuneInfo(rs.getInt("id"), rs.getString("helb"));
-		}
+		if(rs.next())
+			emaitza = new GuneInfo(rs.getInt("id"), rs.getString("izena"), rs.getString("helb"));
 		
 		return emaitza;
 	}
