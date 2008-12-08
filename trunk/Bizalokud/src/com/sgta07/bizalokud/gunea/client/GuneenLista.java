@@ -4,6 +4,7 @@ import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.FieldDef;
 import com.gwtext.client.data.IntegerFieldDef;
 import com.gwtext.client.data.MemoryProxy;
+import com.gwtext.client.data.ObjectFieldDef;
 import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
@@ -26,7 +27,7 @@ public class GuneenLista extends GridPanel {
 	public void setGuneak(Object[][] guneak) {
 		RecordDef recordDef = new RecordDef(new FieldDef[] {
 				new IntegerFieldDef("id"), new StringFieldDef("izena"),
-				new StringFieldDef("helbidea") });
+				new StringFieldDef("helbidea"), new ObjectFieldDef("lat"), new ObjectFieldDef("lon")});
 
 		MemoryProxy proxy = new MemoryProxy(guneak);
 
@@ -37,8 +38,6 @@ public class GuneenLista extends GridPanel {
 		setStore(store);
 
 		ColumnConfig[] columns = new ColumnConfig[] {
-				// column ID is company which is later used in
-				// setAutoExpandColumn
 				new ColumnConfig("Gunea", "izena", 200, true, null, "izena"),
 				new ColumnConfig("Helbidea", "helbidea", 200, true, null,
 						"helbidea") };

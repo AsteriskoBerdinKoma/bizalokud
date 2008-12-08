@@ -109,15 +109,18 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		if (!connector.isConnectedToDatabase())
 			connector.connect();
 
-		String query = "SELECT id, izena, helb FROM gunea";
+		String query = "SELECT id, izena, helb, lat, lon FROM gunea";
 
 		PreparedStatement ps = connector.prepareStatement(query);
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
 			int id = rs.getInt("id");
-			guneak.put(id, new GuneInfo(id, rs.getString("izena"), rs
-					.getString("helb")));
+			GuneInfo gunea = new GuneInfo(id, rs.getString("izena"), rs
+					.getString("helb"));
+			gunea.setLatLon(rs.getDouble("lat"), rs.getDouble("lon"));
+			
+			guneak.put(id, gunea);			
 		}
 
 		rs.close();

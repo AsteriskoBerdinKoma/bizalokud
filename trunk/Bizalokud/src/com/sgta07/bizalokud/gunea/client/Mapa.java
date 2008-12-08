@@ -15,9 +15,6 @@ public class Mapa extends MapPanel {
 
 	private MapPanel mapPanel;
 	private boolean mapRendered;
-	
-	private LatLonPoint lastPos;
-	private int lastZoom;
 
 	public Mapa(int width, int height) {
 		super();
@@ -45,9 +42,6 @@ public class Mapa extends MapPanel {
 							.getInnerHeight());
 			}
 		});
-		
-		lastPos = new LatLonPoint(0.0, 0.0);
-		lastZoom = 17;
 	}
 
 	public void setNeurria(int width, int height) {
@@ -55,7 +49,7 @@ public class Mapa extends MapPanel {
 			mapPanel.resizeTo(width, height);
 	}
 
-	public native void updateMap(String locationAddress, JavaScriptObject llp,
+	public native void updateMap(String izena, String locationAddress, JavaScriptObject llp,
 			Mapa thisModule) /*-{
 	var geo = new $wnd.GClientGeocoder();
 	
@@ -71,65 +65,92 @@ public class Mapa extends MapPanel {
 		    		var place = response.Placemark[0];
 		    		llp.lat = place.Point.coordinates[1];
 		    		llp.lon = place.Point.coordinates[0];
+		    		llp.izena = izena;
+		    		llp.helbidea = locationAddress;
 	
 		    		thisModule.@com.sgta07.bizalokud.gunea.client.Mapa::renderMap(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
 	      		}
 	     		}
 	     	);
 	}-*/;
+	
+	public void finkatu(GuneInfo gunea) {
+		finkatu(gunea.getLat(), gunea.getLon());
+	}
+	
+	public void finkatu(double lat, double lon) {
+		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
+		mapPanel.setCenterAndZoom(latLonPoint, 17);
+	}
+	
+	public void markaGehitu(GuneInfo gunea){
+		markaGehitu(gunea.getIzena(), gunea.getHelbidea(), gunea.getLat(), gunea.getLon());
+	}
+	
+	public void markaGehitu(String izena, String helbidea, double lat,
+			double lon) {
+		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
+		Marker m = new Marker(latLonPoint);
+		mapPanel.setCenterAndZoom(latLonPoint, 17);
+		m.setInfoBubble("<h1>" + izena + "<h1><br><b>Helbidea:</b> " + helbidea);
+		mapPanel.addMarker(m);
+	}
 
 	public void renderMap(JavaScriptObject jsObj) {
 		double lat = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
 				jsObj, "lat"));
 		double lon = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
 				jsObj, "lon"));
-
-		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
-		mapPanel.setCenterAndZoom(latLonPoint, 17);
-		lastPos = latLonPoint;
-		lastZoom = 17;
-		final Marker m = new Marker(latLonPoint);
-		// m.setInfoBubble("Latitude: " + lat + "<br/>Longitude: " + lon);
-		mapPanel.addMarker(m);
+		String izena = JavaScriptObjectHelper.getAttribute(jsObj, "izena");
+		String helbidea = JavaScriptObjectHelper.getAttribute(jsObj, "helbidea");
+		
+		markaGehitu(izena, helbidea, lat, lon);
+		finkatu(lat, lon);
 		// addListenerToMarker(m.toGoogle());
 	}
 
-	public native void addMarker(String locationAddress, JavaScriptObject llp, Mapa thisModule)/*-{
-					var geo = new $wnd.GClientGeocoder();
-										
-					geo.getLocations(locationAddress, 
-						function(response) 		// callback method to be executed when result arrives from server
-						{
-							if (!response || response.Status.code != 200) 
-							{
-				  				alert("Unable to geocode that address");
-							} 
-							else 
-				      		{
-					    		var place = response.Placemark[0];
-					    		
-					    		llp.lat = place.Point.coordinates[1];
-					    		llp.lon = place.Point.coordinates[0];
-					    		
-					    		thisModule.@com.sgta07.bizalokud.gunea.client.Mapa::addMarker(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
-			      			}
-			   			}
-			   		);
-				}-*/;
-
-	private void addMarker(JavaScriptObject jsObj) {
-
-		double lat = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
-				jsObj, "lat"));
-		double lon = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
-				jsObj, "lon"));
-
-		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
-		Marker m = new Marker(latLonPoint);
-		mapPanel.addMarker(m);
-		
-		mapPanel.setCenterAndZoom(lastPos, 0);
-	}
+//	public native void addMarker(String locationAddress, JavaScriptObject llp, Mapa thisModule)/*-{
+//					var geo = new $wnd.GClientGeocoder();
+//										
+//					geo.getLocations(locationAddress, 
+//						function(response) 		// callback method to be executed when result arrives from server
+//						{
+//							if (!response || response.Status.code != 200) 
+//							{
+//				  				alert("Unable to geocode that address");
+//							} 
+//							else 
+//				      		{
+//					    		var place = response.Placemark[0];
+//					    		
+//					    		llp.lat = place.Point.coordinates[1];
+//					    		llp.lon = place.Point.coordinates[0];
+//					    		llp.hel = locationAddress;
+//					    		
+//					    		thisModule.@com.sgta07.bizalokud.gunea.client.Mapa::addMarker(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
+//			      			}
+//			   			}
+//			   		);
+//				}-*/;
+//
+//	private void addMarker(JavaScriptObject jsObj) {
+//
+//		double lat = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
+//				jsObj, "lat"));
+//		double lon = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
+//				jsObj, "lon"));
+//		
+//		String hel = JavaScriptObjectHelper.getAttribute(jsObj, "hel");
+//
+//		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
+//		
+//		System.out.println(hel + ": " + lat + " " + lon);
+//		
+//		Marker m = new Marker(latLonPoint);
+//		mapPanel.addMarker(m);
+//		
+//		mapPanel.setCenterAndZoom(lastPos, 0);
+//	}
 
 	// private native void addListenerToMarker(JavaScriptObject markerJS)/*-{
 	// var self = this;
@@ -142,9 +163,31 @@ public class Mapa extends MapPanel {
 		return mapPanel;
 	}
 
-	@Override
 	protected JavaScriptObject doRenderMap(Element element) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public static native void getGeoLocations(GuneInfo gunea, String helbidea) /*-{
+	var geo = new $wnd.GClientGeocoder();
+	
+	geo.getLocations(helbidea, 
+		function(response) 		// callback method to be executed when result arrives from server
+		{
+			if (!response || response.Status.code != 200) 
+			{
+  				alert("Unable to geocode that address");
+			} 
+			else 
+      		{
+	    		var place = response.Placemark[0];
+	    		
+	    		var lat = place.Point.coordinates[1];
+	    		var lon = place.Point.coordinates[0];
+	    		
+	    		gunea.@com.sgta07.bizalokud.gunea.client.GuneInfo::setLatLon(DD)(lat, lon);
+  			}
+			}
+		);
+	}-*/;
 }
