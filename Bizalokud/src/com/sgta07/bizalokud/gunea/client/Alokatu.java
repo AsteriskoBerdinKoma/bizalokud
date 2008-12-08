@@ -28,11 +28,10 @@ public class Alokatu extends Composite {
 	private Mapa mapa;
 
 	public Alokatu() {
+		super();
 		panel = new Panel();
 		panel.setBorder(false);
 		panel.setPaddings(15);
-
-		initWidget(panel);
 
 		mapa = new Mapa(500, 400);
 
@@ -91,7 +90,7 @@ public class Alokatu extends Composite {
 		first.setBorder(false);
 		first.setAutoHeight(true);
 		first.setId("guneaAukeratu");
-		first.add(new Label("Aukeratu zein guneetara joan nahi duzun"));
+		first.add(new Label("Aukeratu zein gunetara joan nahi duzun"));
 
 		Panel inner = new Panel();
 		inner.setHeight(450);
@@ -162,9 +161,12 @@ public class Alokatu extends Composite {
 		wizardPanel.add(third);
 
 		panel.add(wizardPanel);
+		
+		initWidget(panel);
+		this.setVisible(true);
 	}
 
-	public Panel getPanel() {
-		return panel;
-	}
+//	public Panel getPanel() {
+//		return panel;
+//	}
 }

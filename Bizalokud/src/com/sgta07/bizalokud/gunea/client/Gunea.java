@@ -202,8 +202,8 @@ public class Gunea implements EntryPoint {
 		centerPanelTwo.add(new Button("Alokatu", new ButtonListenerAdapter(){
 			public void onClick(Button button, EventObject e) {
 				Alokatu alokatu = new Alokatu();
-				alokatu.getPanel().setTitle("Alokatu");
-				centerPanel.add(alokatu.getPanel());
+				alokatu.setTitle("Alokatu");
+				centerPanel.add(alokatu);
 				centerPanel.activate(2);
 			}
 		}));
@@ -222,7 +222,7 @@ public class Gunea implements EntryPoint {
 		borderPanel.add(centerPanel, centerData);
 
 		panelNagusia.add(borderPanel, new AnchorLayoutData("100%"));
-
+		
 		new Viewport(panelNagusia);
 	}
 
