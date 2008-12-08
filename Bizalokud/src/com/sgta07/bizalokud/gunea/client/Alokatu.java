@@ -1,6 +1,10 @@
 package com.sgta07.bizalokud.gunea.client;
 
+import java.util.HashMap;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Function;
 import com.gwtext.client.data.Record;
@@ -85,35 +89,60 @@ public class Alokatu extends Composite {
 
 		Panel first = new Panel();
 		first.setBorder(false);
+		first.setAutoHeight(true);
 		first.setId("guneaAukeratu");
 		first.add(new Label("Aukeratu zein guneetara joan nahi duzun"));
 
 		Panel inner = new Panel();
+		inner.setHeight(450);
 		inner.setLayout(new ColumnLayout());
 
-		final GuneenLista guneak = new GuneenLista();
-		guneak.setWidth(300);
-		guneak.setAutoHeight(true);
-		final RowSelectionModel sm = new RowSelectionModel(true);
-		sm.addListener(new RowSelectionListenerAdapter() {
-			public void onRowSelect(RowSelectionModel sm, int rowIndex,
-					Record record) {
-				mapa.updateMap(record.getAsString("gunea"),
-						JavaScriptObjectHelper.createObject(), mapa);
-			}
-		});
-		guneak.setSelectionModel(sm);
+		final Panel gunePanel = new Panel();
+		gunePanel.setAutoScroll(true);
+		gunePanel.setHeight(450);
+		
+		GuneaService.Util.getInstance().guneenZerrenda(
+				new AsyncCallback<HashMap<Integer, GuneInfo>>() {
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
 
-		// select the first row after a little delay so that the rows are
-		// rendered
-		guneak.doOnRender(new Function() {
-			public void execute() {
-				sm.selectFirstRow();
-			}
-		}, 10);
+					public void onSuccess(HashMap<Integer, GuneInfo> result) {
+						Object[][] obj = new Object[result.size()][3];
+						int i = 0;
+						for (int key : result.keySet()) {
+							mapa.addMarker(result.get(key).getHelbidea(), JavaScriptObjectHelper.createObject(), mapa);
+							obj[i][0] = key;
+							obj[i][1] = result.get(key).getIzena();
+							obj[i][2] = result.get(key).getHelbidea();
+							i++;
+						}
+						
+						GuneenLista guneak = new GuneenLista(obj);
+						guneak.setWidth("100%");
+						guneak.setHeight("100%");
+						final RowSelectionModel sm = new RowSelectionModel(true);
+						sm.addListener(new RowSelectionListenerAdapter() {
+							public void onRowSelect(RowSelectionModel sm, int rowIndex,
+									Record record) {
+								mapa.updateMap(record.getAsString("helbidea"),
+										JavaScriptObjectHelper.createObject(), mapa);
+							}
+						});
+						guneak.setSelectionModel(sm);
+						// select the first row after a little delay so that the rows are
+						// rendered
+						guneak.doOnRender(new Function() {
+							public void execute() {
+								sm.selectFirstRow();
+							}
+						}, 10);
+						gunePanel.add(guneak);
+					}
 
-		inner.add(guneak, new ColumnLayoutData(0.4));
-
+				});
+		
+		inner.add(gunePanel, new ColumnLayoutData(0.4));
 		inner.add(mapa.getMapPanel(), new ColumnLayoutData(0.6));
 
 		first.add(inner);

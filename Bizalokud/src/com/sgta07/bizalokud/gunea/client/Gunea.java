@@ -27,7 +27,8 @@ import com.sgta07.bizalokud.login.client.Login;
 public class Gunea implements EntryPoint {
 
 	private int guneId;
-	private String guneHelbide;	
+	private String guneHelbide;
+	private String guneIzena;	
 
 	private Mapa mapa;
 	
@@ -43,18 +44,21 @@ public class Gunea implements EntryPoint {
 						System.out.println(caught.getMessage());
 						guneId = -1;
 						guneHelbide = "";
+						guneIzena = "";
 					}
 
 					public void onSuccess(GuneInfo result) {
 						try {
 							guneId = result.getId();
 							guneHelbide = result.getHelbidea();
+							guneIzena = result.getIzena();
 							mapa.updateMap(guneHelbide, JavaScriptObjectHelper
 										.createObject(), mapa);
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 							guneId = -1;
 							guneHelbide = "";
+							guneIzena = "";
 						}
 
 					}
@@ -200,6 +204,7 @@ public class Gunea implements EntryPoint {
 				Alokatu alokatu = new Alokatu();
 				alokatu.getPanel().setTitle("Alokatu");
 				centerPanel.add(alokatu.getPanel());
+				centerPanel.activate(2);
 			}
 		}));
 

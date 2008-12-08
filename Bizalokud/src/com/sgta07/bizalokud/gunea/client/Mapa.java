@@ -11,12 +11,15 @@ import com.gwtext.client.widgets.map.LatLonPoint;
 import com.gwtext.client.widgets.map.MapPanel;
 import com.gwtext.client.widgets.map.Marker;
 
-public class Mapa extends MapPanel{
+public class Mapa extends MapPanel {
 
-	MapPanel mapPanel;
+	private MapPanel mapPanel;
 	private boolean mapRendered;
+	
+	private LatLonPoint lastPos;
+	private int lastZoom;
 
-	public Mapa(int width, int height){
+	public Mapa(int width, int height) {
 		super();
 		mapPanel = new GoogleMap();
 		mapPanel.setBorder(false);
@@ -24,9 +27,9 @@ public class Mapa extends MapPanel{
 		mapPanel.addLargeControls();
 		mapPanel.setWidth(width);
 		mapPanel.setHeight(height);
-		
+
 		mapRendered = false;
-		
+
 		mapPanel.addListener(MapPanel.MAP_RENDERED_EVENT, new Function() {
 			public void execute() {
 				mapRendered = true;
@@ -42,13 +45,16 @@ public class Mapa extends MapPanel{
 							.getInnerHeight());
 			}
 		});
+		
+		lastPos = new LatLonPoint(0.0, 0.0);
+		lastZoom = 17;
 	}
 
-	public void setNeurria(int width, int height){
-		if(mapRendered)
+	public void setNeurria(int width, int height) {
+		if (mapRendered)
 			mapPanel.resizeTo(width, height);
 	}
-	
+
 	public native void updateMap(String locationAddress, JavaScriptObject llp,
 			Mapa thisModule) /*-{
 	var geo = new $wnd.GClientGeocoder();
@@ -71,7 +77,7 @@ public class Mapa extends MapPanel{
 	     		}
 	     	);
 	}-*/;
-	
+
 	public void renderMap(JavaScriptObject jsObj) {
 		double lat = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
 				jsObj, "lat"));
@@ -80,20 +86,58 @@ public class Mapa extends MapPanel{
 
 		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
 		mapPanel.setCenterAndZoom(latLonPoint, 17);
+		lastPos = latLonPoint;
+		lastZoom = 17;
 		final Marker m = new Marker(latLonPoint);
-		//m.setInfoBubble("Latitude: " + lat + "<br/>Longitude: " + lon);
+		// m.setInfoBubble("Latitude: " + lat + "<br/>Longitude: " + lon);
 		mapPanel.addMarker(m);
 		// addListenerToMarker(m.toGoogle());
-
 	}
-	
+
+	public native void addMarker(String locationAddress, JavaScriptObject llp, Mapa thisModule)/*-{
+					var geo = new $wnd.GClientGeocoder();
+										
+					geo.getLocations(locationAddress, 
+						function(response) 		// callback method to be executed when result arrives from server
+						{
+							if (!response || response.Status.code != 200) 
+							{
+				  				alert("Unable to geocode that address");
+							} 
+							else 
+				      		{
+					    		var place = response.Placemark[0];
+					    		
+					    		llp.lat = place.Point.coordinates[1];
+					    		llp.lon = place.Point.coordinates[0];
+					    		
+					    		thisModule.@com.sgta07.bizalokud.gunea.client.Mapa::addMarker(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
+			      			}
+			   			}
+			   		);
+				}-*/;
+
+	private void addMarker(JavaScriptObject jsObj) {
+
+		double lat = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
+				jsObj, "lat"));
+		double lon = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
+				jsObj, "lon"));
+
+		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
+		Marker m = new Marker(latLonPoint);
+		mapPanel.addMarker(m);
+		
+		mapPanel.setCenterAndZoom(lastPos, lastZoom);
+	}
+
 	// private native void addListenerToMarker(JavaScriptObject markerJS)/*-{
 	// var self = this;
 	// $wnd.GEvent.addListener(markerJS, 'click', function(coords) {
 	// alert('Marker at ' + coords + ' clicked');
 	// });
 	// }-*/;
-	
+
 	public MapPanel getMapPanel() {
 		return mapPanel;
 	}
