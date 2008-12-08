@@ -128,7 +128,7 @@ public class Mapa extends MapPanel {
 		Marker m = new Marker(latLonPoint);
 		mapPanel.addMarker(m);
 		
-		mapPanel.setCenterAndZoom(lastPos, lastZoom);
+		mapPanel.setCenterAndZoom(lastPos, 0);
 	}
 
 	// private native void addListenerToMarker(JavaScriptObject markerJS)/*-{
