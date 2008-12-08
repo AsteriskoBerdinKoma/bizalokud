@@ -26,39 +26,29 @@ import com.sgta07.bizalokud.login.client.Login;
  */
 public class Gunea implements EntryPoint {
 
-	private int guneId;
-	private String guneHelbide;
-	private String guneIzena;	
+	private GuneInfo gunea;
 
 	private Mapa mapa;
-	
+
 	public void onModuleLoad() {
 		RootPanel.get();
 
 		mapa = new Mapa(500, 400);
-		
+
 		GuneaService.Util.getInstance().getMyInfo(
 				new AsyncCallback<GuneInfo>() {
 
 					public void onFailure(Throwable caught) {
-						System.out.println(caught.getMessage());
-						guneId = -1;
-						guneHelbide = "";
-						guneIzena = "";
+						caught.printStackTrace();
+						setGunea(null);
 					}
 
 					public void onSuccess(GuneInfo result) {
 						try {
-							guneId = result.getId();
-							guneHelbide = result.getHelbidea();
-							guneIzena = result.getIzena();
-							mapa.updateMap(guneHelbide, JavaScriptObjectHelper
-										.createObject(), mapa);
+							setGunea(result);
 						} catch (Exception e) {
-							System.out.println(e.getMessage());
-							guneId = -1;
-							guneHelbide = "";
-							guneIzena = "";
+							e.printStackTrace();
+							setGunea(null);
 						}
 
 					}
@@ -96,7 +86,7 @@ public class Gunea implements EntryPoint {
 		bannerPanel.setBodyStyle("backgroundColor: #dfe8f6;");
 
 		Login login = new Login();
-		//login.erakutsi();
+		// login.erakutsi();
 
 		borderPanel
 				.add(bannerPanel, new BorderLayoutData(RegionPosition.NORTH));
@@ -199,7 +189,7 @@ public class Gunea implements EntryPoint {
 		centerPanelTwo.setTitle("Ekintzak");
 		centerPanelTwo.setAutoScroll(true);
 		centerPanelTwo.add(mapa.getMapPanel());
-		centerPanelTwo.add(new Button("Alokatu", new ButtonListenerAdapter(){
+		centerPanelTwo.add(new Button("Alokatu", new ButtonListenerAdapter() {
 			public void onClick(Button button, EventObject e) {
 				Alokatu alokatu = new Alokatu();
 				alokatu.setTitle("Alokatu");
@@ -222,11 +212,21 @@ public class Gunea implements EntryPoint {
 		borderPanel.add(centerPanel, centerData);
 
 		panelNagusia.add(borderPanel, new AnchorLayoutData("100%"));
-		
+
 		new Viewport(panelNagusia);
 	}
 
+	protected void setGunea(GuneInfo gunea) {
+		this.gunea = gunea;
+		if (!gunea.hasLatLon())
+			mapa.updateMap(gunea.getIzena(), gunea.getHelbidea(), JavaScriptObjectHelper.createObject(), mapa);
+		else {
+			mapa.markaGehitu(gunea);
+			mapa.finkatu(gunea);
+		}			
+	}
+
 	public String getHelbidea() {
-		return this.guneHelbide;
+		return this.gunea.getHelbidea();
 	}
 }

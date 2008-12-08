@@ -2,6 +2,7 @@ package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
 
+import com.google.gwt.i18n.client.LocalizableResource.Key;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -107,13 +108,16 @@ public class Alokatu extends Composite {
 					}
 
 					public void onSuccess(HashMap<Integer, GuneInfo> result) {
-						Object[][] obj = new Object[result.size()][3];
+						Object[][] obj = new Object[result.size()][5];
 						int i = 0;
 						for (int key : result.keySet()) {
-							mapa.addMarker(result.get(key).getHelbidea(), JavaScriptObjectHelper.createObject(), mapa);
+							//mapa.addMarker(result.get(key).getHelbidea(), JavaScriptObjectHelper.createObject(), mapa);
 							obj[i][0] = key;
 							obj[i][1] = result.get(key).getIzena();
 							obj[i][2] = result.get(key).getHelbidea();
+							obj[i][3] = result.get(key).getLat();
+							obj[i][4] = result.get(key).getLon();
+							mapa.markaGehitu(result.get(key));
 							i++;
 						}
 						
@@ -124,8 +128,9 @@ public class Alokatu extends Composite {
 						sm.addListener(new RowSelectionListenerAdapter() {
 							public void onRowSelect(RowSelectionModel sm, int rowIndex,
 									Record record) {
-								mapa.updateMap(record.getAsString("helbidea"),
-										JavaScriptObjectHelper.createObject(), mapa);
+//								mapa.updateMap(record.getAsString("helbidea"),
+//										JavaScriptObjectHelper.createObject(), mapa);
+								mapa.markaGehitu(record.getAsString("izena"), record.getAsString("helbidea"), record.getAsDouble("lat"), record.getAsDouble("lon"));
 							}
 						});
 						guneak.setSelectionModel(sm);

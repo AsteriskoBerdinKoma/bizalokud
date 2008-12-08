@@ -7,6 +7,11 @@ public class GuneInfo implements IsSerializable {
 	private int id;
 	private String izena;
 	private String helbidea;
+	
+	private double lat;
+	private double lon;
+	
+	private boolean hasLatLon;
 
 	public GuneInfo() {
 	}
@@ -28,4 +33,24 @@ public class GuneInfo implements IsSerializable {
 	public String getIzena() {
 		return izena;
 	}
+
+	public void setLatLon(double lat, double lon) {
+		this.lat = lat;
+		this.lon = lon;
+		
+		hasLatLon = true;
+	}
+	
+	public double getLat() {
+		return lat;
+	}
+
+	public double getLon() {
+		return lon;
+	}
+
+	public boolean hasLatLon() {
+		return hasLatLon;
+	}	
+	
 }
