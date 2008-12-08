@@ -9,7 +9,7 @@ USE `bizalokud`;
 --
 -- 'gunea' taulako datuak
 --
-INSERT INTO `gunea` SET alta=1, toki_kop=40, izena='Unibertsitateak', helb='Paseo de Manuel Lardizábal, 1 20018';
+INSERT INTO `gunea` SET alta=1, toki_kop=40, izena='Unibertsitateak', helb='Paseo de Manuel Lardizábal, 1 20018', ip='127.0.0.1';
 INSERT INTO `gunea` SET alta=1, toki_kop=20, izena='Benta-berri', helb='Plaza de José María Sert, 20018';
 INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Hondarreta', helb='Paseo de Eduardo Chillida, 20008';
 INSERT INTO `gunea` SET alta=1, toki_kop=25, izena='La Perla', helb='Paseo de Miraconcha, 1 20007';
