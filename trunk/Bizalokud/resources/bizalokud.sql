@@ -1,4 +1,4 @@
-﻿-- MySQL dump 10.11
+-- MySQL dump 10.11
 --
 -- Host: localhost    Database: bizalokud
 -- ------------------------------------------------------
@@ -122,7 +122,9 @@ CREATE TABLE `gunea` (
   `alta` tinyint(1) NOT NULL default '1',
   `toki_kop` int(11) NOT NULL,
   `helb` varchar(100) NOT NULL,
-  `ip` varchar(15),
+  `ip` varchar(15) NOT NULL,
+  `lat` FLOAT NOT NULL DEFAULT 0.0,
+  `lon` FLOAT NOT NULL DEFAULT 0.0,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
