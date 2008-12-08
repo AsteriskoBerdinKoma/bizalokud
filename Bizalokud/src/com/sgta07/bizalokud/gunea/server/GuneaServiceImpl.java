@@ -2,14 +2,17 @@ package com.sgta07.bizalokud.gunea.server;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import com.sgta07.bizalokud.gunea.client.GuneInfo;
 import com.sgta07.bizalokud.gunea.client.GuneaService;
+import com.sgta07.bizalokud.gunea.client.Salbuespena;
 import com.sgta07.bizalokud.zerbitzaria.db.Connector;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaService {
+public class GuneaServiceImpl extends RemoteServiceServlet implements
+		GuneaService {
 
 	/**
 	 * 
@@ -17,15 +20,11 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 	private static final long serialVersionUID = 1L;
 
 	private Connector connector = new Connector();
-	
-//	private Connection connection = null;
-//	private Statement statement = null;
 
-	public boolean alokaDaiteke(int guneId, String userNan)
-			throws Exception {
+	public boolean alokaDaiteke(int guneId, String userNan) throws Exception {
 
 		int bizikletakLibre = 0;
-		
+
 		if (!connector.isConnectedToDatabase())
 			connector.connect();
 
@@ -48,7 +47,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 		if (rs2.next()) {
 			bizikletakLibre += rs2.getInt("bizikletakBidean");
 		}
-		
+
 		rs1.close();
 		rs2.close();
 		ps1.close();
@@ -90,7 +89,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 					- rs1.getInt("bizikletakLibre")
 					+ rs2.getInt("bideanDirenak");
 		}
-		
+
 		rs1.close();
 		rs2.close();
 		rs3.close();
@@ -98,7 +97,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 		ps2.close();
 		ps3.close();
 		connector.close();
-		
+
 		return tokiLibreak > 0;
 
 	}
@@ -106,7 +105,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 	public HashMap<Integer, GuneInfo> guneenZerrenda() throws Exception {
 
 		HashMap<Integer, GuneInfo> guneak = new HashMap<Integer, GuneInfo>();
-		
+
 		if (!connector.isConnectedToDatabase())
 			connector.connect();
 
@@ -114,10 +113,11 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 
 		PreparedStatement ps = connector.prepareStatement(query);
 		ResultSet rs = ps.executeQuery();
-		
-		while (rs.next()){
+
+		while (rs.next()) {
 			int id = rs.getInt("id");
-			guneak.put(id, new GuneInfo(id, rs.getString("izena"), rs.getString("helb")));
+			guneak.put(id, new GuneInfo(id, rs.getString("izena"), rs
+					.getString("helb")));
 		}
 
 		rs.close();
@@ -132,10 +132,10 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 
 		int esleitutakoBizikleta = -1;
 		int result = -1;
-		
+
 		if (!connector.isConnectedToDatabase())
 			connector.connect();
-		
+
 		String queryLibre = "SELECT id "
 				+ "FROM bizileta "
 				+ "WHERE alta = 'true' AND alokatuta = 'false' AND fk_uneko_gune_id = ?";
@@ -168,32 +168,27 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements GuneaServi
 		else
 			return -1;
 	}
-	
-	public GuneInfo getMyInfo() throws Exception{
-		if(!connector.isConnectedToDatabase())
-			connector.connect();
-		
-		String query = "SELECT * FROM gunea WHERE ip=?";
-		PreparedStatement ps = connector.prepareStatement(query);
-		ps.setString(1, getThreadLocalRequest().getLocalAddr());
-		
-		ResultSet rs = ps.executeQuery();
-		
+
+	public GuneInfo getMyInfo() throws Salbuespena {
 		GuneInfo emaitza = null;
-		
-		if(rs.next())
-			emaitza = new GuneInfo(rs.getInt("id"), rs.getString("izena"), rs.getString("helb"));
-		
+		try {
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+			String query = "SELECT * FROM gunea WHERE ip=?";
+			PreparedStatement ps = connector.prepareStatement(query);
+			ps.setString(1, getThreadLocalRequest().getLocalAddr());
+
+			ResultSet rs = ps.executeQuery();
+			if (rs.next())
+				emaitza = new GuneInfo(rs.getInt("id"), rs.getString("izena"),
+						rs.getString("helb"));
+
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		}
+
 		return emaitza;
 	}
-
-//	private void konexioaEzarri() throws SQLException, ClassNotFoundException {
-//		Connector.connect();
-//		this.connection = Connector.getConnection();
-//		this.statement = Connector.getStatement();
-//	}
-//
-//	private void konexioaDeuseztu() throws SQLException {
-//		Connector.close();
-//	}
 }
