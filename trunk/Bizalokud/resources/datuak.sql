@@ -9,25 +9,25 @@ USE `bizalokud`;
 --
 -- 'gunea' taulako datuak
 --
-INSERT INTO `gunea` SET alta=1, toki_kop=40, izena='Unibertsitateak', helb='Paseo de Manuel Lardizábal, 1 20018', ip='127.0.0.1';
-INSERT INTO `gunea` SET alta=1, toki_kop=20, izena='Benta-berri', helb='Plaza de José María Sert, 20018';
-INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Hondarreta', helb='Paseo de Eduardo Chillida, 20008';
-INSERT INTO `gunea` SET alta=1, toki_kop=25, izena='La Perla', helb='Paseo de Miraconcha, 1 20007';
-INSERT INTO `gunea` SET alta=1, toki_kop=30, izena='Boulevard', helb='Calle de Hernani, 1 20003';
-INSERT INTO `gunea` SET alta=1, toki_kop=20, izena='Anoeta', helb='Paseo de Anoeta, 1 20010';
-INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Kursaal', helb='Calle de Usandizaga, 1 20002';
-INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Sagues', helb='Paseo de José Miguel Barandiarán, 10 20013';
-INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Garbera', helb='Travesía de Garbera, 20017';
-INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Intxaurrondo', helb='Paseo de Galicia, 20015';
-INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Altza', helb='Paseo de Larratxo, 20017';
-INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Easo', helb='Calle de la Autonomía, 4 20006';
-INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Añorga', helb='Av de Añorga, 8 20018';
-INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Martutene', helb='Paseo de Martutene, 1 20014';
-INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Loiola', helb='Camino de Kristobaldegi, 20014';
-INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Igara', helb='Calle de Portuetxe, 20018';
-INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Errotaburu', helb='Paseo de Orixe, 20018';
-INSERT INTO `gunea` SET alta=1, toki_kop=5, izena='Igeldo', helb='Paseo de Igeldo, 20008';
-INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Aiete', helb='Calle de Borroto, 20009';
+INSERT INTO `gunea` SET alta=1, toki_kop=40, izena='Unibertsitateak', helb='Paseo de Manuel Lardizábal, 1 20018', ip='127.0.0.1', lat=43.307274, lon=-2.0115459;
+INSERT INTO `gunea` SET alta=1, toki_kop=20, izena='Benta-berri', helb='Plaza de José María Sert, 20018', ip='192.160.1.97', lat=43.3106089, lon=-2.0065429;
+INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Hondarreta', helb='Paseo de Eduardo Chillida, 20008', ip='192.160.1.98', lat=43.3188779, lon=-2.0050853;
+INSERT INTO `gunea` SET alta=1, toki_kop=25, izena='La Perla', helb='Paseo de Miraconcha, 1 20007', ip='192.160.1.99', lat=43.3152454, lon=-1.9879533;
+INSERT INTO `gunea` SET alta=1, toki_kop=30, izena='Boulevard', helb='Calle de Hernani, 1 20003', ip='192.160.1.100', lat=43.3214625, lon=-1.9849477;
+INSERT INTO `gunea` SET alta=1, toki_kop=20, izena='Anoeta', helb='Paseo de Anoeta, 1 20010', ip='192.160.1.101', lat=43.3020628, lon=-1.9755453;
+INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Kursaal', helb='Calle de Usandizaga, 1 20002', ip='192.160.1.102', lat=43.3231369, lon=-1.9787117;
+INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Sagues', helb='Paseo de José Miguel Barandiarán, 10 20013', ip='192.160.1.103', lat=43.3270433, lon=-1.9711805;
+INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Garbera', helb='Travesía de Garbera, 20017', ip='192.160.1.104', lat=43.3098332, lon=-1.9467818;
+INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Intxaurrondo', helb='Paseo de Galicia, 20015', ip='192.160.1.105', lat=43.3121455, lon=-1.9547526;
+INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Altza', helb='Paseo de Larratxo, 20017', ip='192.160.1.106', lat=43.3157652, lon=-1.9372317;
+INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Easo', helb='Calle de la Autonomía, 4 20006', ip='192.160.1.107', lat=43.3135866, lon=-1.9823996;
+INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Añorga', helb='Av de Añorga, 8 20018', ip='192.160.1.108', lat=43.291948, lon=-1.995245;
+INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Martutene', helb='Paseo de Martutene, 1 20014', ip='192.160.1.109', lat=43.3020901, lon=-1.9574149;
+INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Loiola', helb='Camino de Kristobaldegi, 20014', ip='192.160.1.110', lat=43.3056027, lon=-1.9619864;
+INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Igara', helb='Calle de Portuetxe, 20018', ip='192.160.1.111', lat=43.3013323, lon=-2.0154761;
+INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Errotaburu', helb='Paseo de Orixe, 20018', ip='192.160.1.112', lat=43.300579, lon=-2.0050767;
+INSERT INTO `gunea` SET alta=1, toki_kop=5, izena='Igeldo', helb='Paseo de Igeldo, 20008', ip='192.160.1.113', lat=43.3182783, lon=-2.0120229;
+INSERT INTO `gunea` SET alta=1, toki_kop=10, izena='Aiete', helb='Calle de Borroto, 20009', ip='192.160.1.114', lat=43.3023687, lon=-1.9887946;
 
 --
 -- 'erabiltzailea' taulako datuak
