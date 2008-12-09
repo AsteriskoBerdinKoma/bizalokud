@@ -24,7 +24,7 @@ public class Mapa extends MapPanel {
 		mapPanel.addLargeControls();
 		mapPanel.setWidth(width);
 		mapPanel.setHeight(height);
-
+		
 		mapRendered = false;
 
 		mapPanel.addListener(MapPanel.MAP_RENDERED_EVENT, new Function() {

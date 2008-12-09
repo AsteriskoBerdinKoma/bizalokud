@@ -3,7 +3,6 @@ package com.sgta07.bizalokud.gunea.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
@@ -30,9 +29,7 @@ public class Gunea implements EntryPoint {
 
 	private Mapa mapa;
 
-	public void onModuleLoad() {
-		RootPanel.get();
-
+	public void onModuleLoad() {		
 		mapa = new Mapa(500, 400);
 
 		GuneaService.Util.getInstance().getMyInfo(
@@ -53,13 +50,18 @@ public class Gunea implements EntryPoint {
 
 					}
 				});
+		
+		Login login = new Login();
+		// login.erakutsi();
 
 		Panel panelNagusia = new Panel();
 		panelNagusia.setBorder(false);
 		// Inguruarekiko uzten duen margina
 		panelNagusia.setPaddings(0);
 		panelNagusia.setLayout(new FitLayout());
-
+		panelNagusia.setWidth("100%");
+		panelNagusia.setHeight("100%");
+		
 		Panel borderPanel = new Panel();
 		borderPanel.setLayout(new BorderLayout());
 
@@ -84,9 +86,6 @@ public class Gunea implements EntryPoint {
 		bannerPanel.setFrame(false);
 		bannerPanel.setStyle("backgroundColor: #dfe8f6;");
 		bannerPanel.setBodyStyle("backgroundColor: #dfe8f6;");
-
-		Login login = new Login();
-		// login.erakutsi();
 
 		borderPanel
 				.add(bannerPanel, new BorderLayoutData(RegionPosition.NORTH));

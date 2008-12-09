@@ -2,14 +2,13 @@ package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
 
-import com.google.gwt.i18n.client.LocalizableResource.Key;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.Function;
+import com.gwtext.client.core.Ext;
+import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.data.Record;
-import com.gwtext.client.util.JavaScriptObjectHelper;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
@@ -24,32 +23,24 @@ import com.gwtext.client.widgets.layout.ColumnLayoutData;
 
 public class Alokatu extends Composite {
 
-	Panel panel;
-
-	private Mapa mapa;
+	private Panel first;
 
 	public Alokatu() {
 		super();
-		panel = new Panel();
+		Panel panel = new Panel();
+		panel.setTitle("Alokatu");
+		panel.setWidth("100%");
+		panel.setHeight("100%");
 		panel.setBorder(false);
 		panel.setPaddings(15);
 
-		mapa = new Mapa(500, 400);
-
 		final Panel wizardPanel = new Panel();
-		wizardPanel.setHeight(500);
+		wizardPanel.setHeight("100%");
 		wizardPanel.setAutoWidth(true);
 		wizardPanel.setTitle("Bizikleta Alokatu");
 		wizardPanel.setLayout(new CardLayout());
 		wizardPanel.setActiveItem(0);
 		wizardPanel.setPaddings(15);
-
-		// GuneaService.Util.getInstance().guneenZerrenda(guneId, callback)(
-		// erabiltzaileaTextField.getText(),
-		// getSha1(pasahitzaTextField.getText()),
-		// new AsyncCallback<LoginInfo>()
-		//				
-		// GuneenLista guneZerrenda = new GuneenLista();
 
 		ButtonListenerAdapter listener = new ButtonListenerAdapter() {
 			public void onClick(Button button, EventObject e) {
@@ -57,7 +48,7 @@ public class Alokatu extends Composite {
 				CardLayout cardLayout = (CardLayout) wizardPanel.getLayout();
 				String panelID = cardLayout.getActiveItem().getId();
 
-				if (btnID.equals("move-prev")) {
+				if (btnID.equals("atzera")) {
 					if (panelID.equals("card-3")) {
 						cardLayout.setActiveItem(1);
 					} else {
@@ -65,7 +56,7 @@ public class Alokatu extends Composite {
 					}
 				} else {
 
-					if (panelID.equals("card-1")) {
+					if (panelID.equals("guneaAukeratu")) {
 						cardLayout.setActiveItem(1);
 					} else {
 						cardLayout.setActiveItem(2);
@@ -77,79 +68,21 @@ public class Alokatu extends Composite {
 		Toolbar toolbar = new Toolbar();
 
 		ToolbarButton backButton = new ToolbarButton("Atzera", listener);
-		backButton.setId("move-prev");
+		backButton.setId("atzera");
 		toolbar.addButton(backButton);
 		toolbar.addFill();
 
 		ToolbarButton nextButton = new ToolbarButton("Jarraitu", listener);
-		nextButton.setId("move-next");
+		nextButton.setId("jarraitu");
 		toolbar.addButton(nextButton);
 
 		wizardPanel.setBottomToolbar(toolbar);
-
-		Panel first = new Panel();
-		first.setBorder(false);
-		first.setAutoHeight(true);
-		first.setId("guneaAukeratu");
-		first.add(new Label("Aukeratu zein gunetara joan nahi duzun"));
-
-		Panel inner = new Panel();
-		inner.setHeight(450);
-		inner.setLayout(new ColumnLayout());
-
-		final Panel gunePanel = new Panel();
-		gunePanel.setAutoScroll(true);
-		gunePanel.setHeight(450);
 		
-		GuneaService.Util.getInstance().guneenZerrenda(
-				new AsyncCallback<HashMap<Integer, GuneInfo>>() {
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-
-					public void onSuccess(HashMap<Integer, GuneInfo> result) {
-						Object[][] obj = new Object[result.size()][5];
-						int i = 0;
-						for (int key : result.keySet()) {
-							//mapa.addMarker(result.get(key).getHelbidea(), JavaScriptObjectHelper.createObject(), mapa);
-							obj[i][0] = key;
-							obj[i][1] = result.get(key).getIzena();
-							obj[i][2] = result.get(key).getHelbidea();
-							obj[i][3] = result.get(key).getLat();
-							obj[i][4] = result.get(key).getLon();
-							mapa.markaGehitu(result.get(key));
-							i++;
-						}
-						
-						GuneenLista guneak = new GuneenLista(obj);
-						guneak.setWidth("100%");
-						guneak.setHeight("100%");
-						final RowSelectionModel sm = new RowSelectionModel(true);
-						sm.addListener(new RowSelectionListenerAdapter() {
-							public void onRowSelect(RowSelectionModel sm, int rowIndex,
-									Record record) {
-//								mapa.updateMap(record.getAsString("helbidea"),
-//										JavaScriptObjectHelper.createObject(), mapa);
-								mapa.markaGehitu(record.getAsString("izena"), record.getAsString("helbidea"), record.getAsDouble("lat"), record.getAsDouble("lon"));
-							}
-						});
-						guneak.setSelectionModel(sm);
-						// select the first row after a little delay so that the rows are
-						// rendered
-						guneak.doOnRender(new Function() {
-							public void execute() {
-								sm.selectFirstRow();
-							}
-						}, 10);
-						gunePanel.add(guneak);
-					}
-
-				});
-		
-		inner.add(gunePanel, new ColumnLayoutData(0.4));
-		inner.add(mapa.getMapPanel(), new ColumnLayoutData(0.6));
-
-		first.add(inner);
+		Panel maskPanel = new Panel();  
+		maskPanel.setId("mask-panel");  
+		maskPanel.setWidth("100%");  
+		maskPanel.setHeight("100%");  
+		panel.add(maskPanel);
 
 		Panel second = new Panel();
 		second.setBorder(false);
@@ -161,17 +94,81 @@ public class Alokatu extends Composite {
 		third.setId("card-3");
 		third.setHtml("<h1>Congratulations!</h1><p>Step 3 of 3 - Complete</p>");
 
+		sortuPanel1();
+
 		wizardPanel.add(first);
 		wizardPanel.add(second);
 		wizardPanel.add(third);
 
 		panel.add(wizardPanel);
-		
+
 		initWidget(panel);
 		this.setVisible(true);
 	}
 
-//	public Panel getPanel() {
-//		return panel;
-//	}
+	private void sortuPanel1() {
+		final ExtElement element = new ExtElement(RootPanel.get().getElement());
+		element.mask("Guneen informazioa jasotzen. Itxaron mesedez");
+		
+		first = new Panel();
+		first.setSize("auto", "auto");
+		first.setBorder(false);
+		first.setAutoHeight(true);
+		first.setId("guneaAukeratu");
+		first.add(new Label("Aukeratu zein gunetara joan nahi duzun"));
+
+		final Mapa mapa = new Mapa(500, 439);
+		
+		final Panel inner = new Panel();
+		inner.setLayout(new ColumnLayout());
+
+		final Panel gunePanel = new Panel();
+		gunePanel.setAutoScroll(true);
+
+		final GuneenLista guneak = new GuneenLista();
+		guneak.setAutoWidth(true);
+		guneak.setAutoHeight(true);
+		final RowSelectionModel sm = new RowSelectionModel(true);
+		sm.addListener(new RowSelectionListenerAdapter() {
+			public void onRowSelect(RowSelectionModel sm, int rowIndex,
+					Record record) {
+				mapa.markaGehitu(record.getAsString("izena"), record
+						.getAsString("helbidea"), record.getAsDouble("lat"),
+						record.getAsDouble("lon"));
+			}
+		});
+		guneak.setSelectionModel(sm);
+		gunePanel.add(guneak);
+
+		inner.add(gunePanel, new ColumnLayoutData(0.4));
+		inner.add(mapa.getMapPanel(), new ColumnLayoutData(0.6));
+
+		first.add(inner);
+		
+		GuneaService.Util.getInstance().guneenZerrenda(
+				new AsyncCallback<HashMap<Integer, GuneInfo>>() {
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+						element.unmask();
+					}
+
+					public void onSuccess(HashMap<Integer, GuneInfo> result) {
+						Object[][] obj = new Object[result.size()][5];
+						int i = 0;
+						for (int key : result.keySet()) {
+							obj[i][0] = key;
+							obj[i][1] = result.get(key).getIzena();
+							obj[i][2] = result.get(key).getHelbidea();
+							obj[i][3] = result.get(key).getLat();
+							obj[i][4] = result.get(key).getLon();
+							mapa.markaGehitu(result.get(key));
+							i++;
+						}
+						guneak.setGuneak(obj);
+						sm.selectFirstRow();
+						element.unmask();
+					}
+
+				});
+	}
 }
