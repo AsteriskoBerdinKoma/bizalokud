@@ -14,4 +14,6 @@ public interface GuneaServiceAsync {
 	public void alokatu(int unekoGuneId, int helburuGuneId, String erabNan, AsyncCallback<Integer> callback);
 
 	public void getMyInfo(AsyncCallback<GuneInfo> callback);
+	
+	public void getAbisuenZerrenda(String userNan, AsyncCallback<HashMap<Integer,AbisuInfo>> callback);
 }

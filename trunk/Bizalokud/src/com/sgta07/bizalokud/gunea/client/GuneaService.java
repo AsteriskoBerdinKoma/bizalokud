@@ -18,7 +18,9 @@ public interface GuneaService extends RemoteService {
 	public int alokatu(int unekoGuneId, int helburuGuneId, String erabNan)
 			throws Exception;
 
-	public GuneInfo getMyInfo() throws Exception;
+	public GuneInfo getMyInfo() throws Salbuespena;
+	
+	public HashMap<Integer,AbisuInfo> getAbisuenZerrenda(String userNan) throws Salbuespena;
 
 	/**
 	 * Utility class for simplifying access to the instance of async service.
