@@ -7,17 +7,19 @@ public class LoginInfo implements IsSerializable{
 	private String nan;
 	private String izena;
 	private String abizenak;
+	private boolean isAdmin;
 	
 	private boolean baimena;
 	private String erroreMezua;
 	
 	public LoginInfo(){}
 
-	public LoginInfo(String nan, String izena, String abizenak, boolean baimena) {
+	public LoginInfo(String nan, String izena, String abizenak, boolean isAdmin, boolean baimena) {
 		super();
 		this.nan = nan;
 		this.izena = izena;
 		this.abizenak = abizenak;
+		this.isAdmin = isAdmin;
 		this.baimena = baimena;
 	}
 
@@ -48,5 +50,9 @@ public class LoginInfo implements IsSerializable{
 
 	public String getAbizenak() {
 		return abizenak;
+	}
+	
+	public boolean isAdmin(){
+		return isAdmin;
 	}
 }
