@@ -1,4 +1,4 @@
--- MySQL dump 10.11
+﻿-- MySQL dump 10.11
 --
 -- Host: localhost    Database: bizalokud
 -- ------------------------------------------------------
@@ -29,6 +29,7 @@ SET character_set_client = utf8;
 CREATE TABLE `abisuak` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `fk_erab_nan` varchar(9) NOT NULL,
+  `irakurrita` tinyint(1) NOT NULL default '0',
   `mota` varchar(50) NOT NULL,
   `mezua` text NOT NULL,
   `data` datetime NOT NULL,
