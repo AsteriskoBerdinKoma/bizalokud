@@ -26,6 +26,7 @@ import com.sgta07.bizalokud.login.client.Login;
 public class Gunea implements EntryPoint {
 
 	private GuneInfo gunea;
+	private Login login;
 
 	private Mapa mapa;
 
@@ -51,8 +52,9 @@ public class Gunea implements EntryPoint {
 					}
 				});
 		
-		Login login = new Login();
-		// login.erakutsi();
+		login = new Login();
+		login.erakutsi();
+		
 
 		Panel panelNagusia = new Panel();
 		panelNagusia.setBorder(false);
@@ -195,6 +197,15 @@ public class Gunea implements EntryPoint {
 				alokatu.setTitle("Alokatu");
 				centerPanel.add(alokatu);
 				centerPanel.activate(2);
+			}
+		}));
+		centerPanelTwo.add(new Button("Abisuak", new ButtonListenerAdapter() {
+			public void onClick(Button button, EventObject e) {
+				Abisuak abisuak = new Abisuak("09760589X");
+				
+				abisuak.setTitle("Zure Abisuak");
+				centerPanel.add(abisuak);
+				centerPanel.setActiveTab(3);
 			}
 		}));
 

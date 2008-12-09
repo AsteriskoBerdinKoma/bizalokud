@@ -12,6 +12,9 @@ public class AbisuInfo implements IsSerializable{
 	private String mota;
 	private String mezua;
 	
+	public AbisuInfo(){
+	}
+	
 	public AbisuInfo(int id, Date data,
 			boolean irakurrita, String mota, String mezua) {
 		super();
