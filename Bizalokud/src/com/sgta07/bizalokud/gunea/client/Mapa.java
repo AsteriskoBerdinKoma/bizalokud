@@ -2,6 +2,7 @@ package com.sgta07.bizalokud.gunea.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Element;
+import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.core.Function;
 import com.gwtext.client.util.JavaScriptObjectHelper;
 import com.gwtext.client.widgets.BoxComponent;
@@ -16,14 +17,13 @@ public class Mapa extends MapPanel {
 	private MapPanel mapPanel;
 	private boolean mapRendered;
 
-	public Mapa(int width, int height) {
+	public Mapa() {
 		super();
 		mapPanel = new GoogleMap();
 		mapPanel.setBorder(false);
 		mapPanel.setFrame(true);
 		mapPanel.addLargeControls();
-		mapPanel.setWidth(width);
-		mapPanel.setHeight(height);
+		mapPanel.setId("mapPanel");
 		
 		mapRendered = false;
 
@@ -79,8 +79,13 @@ public class Mapa extends MapPanel {
 	}
 	
 	public void finkatu(double lat, double lon) {
+		ExtElement map = ExtElement.get("mapPanel");
+		map.mask("Mapa eguneratzen. Itxaron mesedez.", true);
+		
 		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
 		mapPanel.setCenterAndZoom(latLonPoint, 17);
+		
+		map.unmask();
 	}
 	
 	public void markaGehitu(GuneInfo gunea){
@@ -89,11 +94,16 @@ public class Mapa extends MapPanel {
 	
 	public void markaGehitu(String izena, String helbidea, double lat,
 			double lon) {
+		ExtElement map = ExtElement.get("mapPanel");
+		map.mask("Mapa eguneratzen. Itxaron mesedez.", true);
+		
 		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
 		Marker m = new Marker(latLonPoint);
 		mapPanel.setCenterAndZoom(latLonPoint, 17);
-		m.setInfoBubble("<h1>" + izena + "<h1><br><b>Helbidea:</b> " + helbidea);
+		m.setInfoBubble("<h1>" + izena + "</h1><br><b>Helbidea:</b> " + helbidea);
 		mapPanel.addMarker(m);
+		
+		map.unmask();
 	}
 
 	public void renderMap(JavaScriptObject jsObj) {

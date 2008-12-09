@@ -20,10 +20,11 @@ public class GuneenLista extends GridPanel {
 	
 	public GuneenLista() {
 		super();
-		setFrame(true);
+		setFrame(false);
+		setBorder(false);
 		setStripeRows(true);
-
-//		setGuneak(obj);
+		setWidth("100%");
+		setHeight("100%");
 		
 		RecordDef recordDef = new RecordDef(new FieldDef[] {
 				new IntegerFieldDef("id"), new StringFieldDef("izena"),
@@ -45,7 +46,7 @@ public class GuneenLista extends GridPanel {
 		ColumnModel columnModel = new ColumnModel(columns);
 		setColumnModel(columnModel);
 		
-		setAutoExpandColumn("helbidea");
+//		setAutoExpandColumn("helbidea");
 	}
 
 	public void setGuneak(Object[][] guneak) {

@@ -17,6 +17,7 @@ import com.gwtext.client.widgets.layout.AccordionLayout;
 import com.gwtext.client.widgets.layout.AnchorLayoutData;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
+import com.gwtext.client.widgets.layout.CardLayout;
 import com.gwtext.client.widgets.layout.FitLayout;
 import com.sgta07.bizalokud.login.client.Login;
 
@@ -30,8 +31,9 @@ public class Gunea implements EntryPoint {
 
 	private Mapa mapa;
 
-	public void onModuleLoad() {		
-		mapa = new Mapa(500, 400);
+	public void onModuleLoad() {
+		mapa = new Mapa();
+		mapa.setSize(500, 400);
 
 		GuneaService.Util.getInstance().getMyInfo(
 				new AsyncCallback<GuneInfo>() {
@@ -51,7 +53,7 @@ public class Gunea implements EntryPoint {
 
 					}
 				});
-		
+
 		login = new Login();
 		login.erakutsi();
 		
@@ -64,7 +66,7 @@ public class Gunea implements EntryPoint {
 		panelNagusia.setLayout(new FitLayout());
 		panelNagusia.setWidth("100%");
 		panelNagusia.setHeight("100%");
-		
+
 		Panel borderPanel = new Panel();
 		borderPanel.setLayout(new BorderLayout());
 
@@ -94,20 +96,23 @@ public class Gunea implements EntryPoint {
 				.add(bannerPanel, new BorderLayoutData(RegionPosition.NORTH));
 
 		// Egoaldeko panela: Azken minutuko informazioak jasotzeko
-		Panel southPanel = new HTMLPanel(
-				"<br>"
-						+ "<li>Amarako gunea bihartik aurrera itxita egongo da, konponketak egiteko!</li> "
-						+ "<li>Groseko obrak direla eta, Sagues-Bulevard ibilbidea ez hartzea gomendatzen da</li>");
-		southPanel.setHeight(100);
-		southPanel.setCollapsible(false);
-		southPanel.setTitle("Azken orduko informazioa");
-
-		BorderLayoutData southData = new BorderLayoutData(RegionPosition.SOUTH);
-		southData.setMinSize(100);
-		southData.setMaxSize(200);
-		southData.setMargins(new Margins(0, 0, 0, 0));
-		southData.setSplit(true);
-		borderPanel.add(southPanel, southData);
+		// Panel southPanel = new HTMLPanel(
+		// "<br>"
+		// +
+		// "<li>Amarako gunea bihartik aurrera itxita egongo da, konponketak egiteko!</li> "
+		// +
+		// "<li>Groseko obrak direla eta, Sagues-Bulevard ibilbidea ez hartzea gomendatzen da</li>");
+		// southPanel.setHeight(100);
+		// southPanel.setCollapsible(false);
+		// southPanel.setTitle("Azken orduko informazioa");
+		//
+		// BorderLayoutData southData = new
+		// BorderLayoutData(RegionPosition.SOUTH);
+		// southData.setMinSize(100);
+		// southData.setMaxSize(200);
+		// southData.setMargins(new Margins(0, 0, 0, 0));
+		// southData.setSplit(true);
+		// borderPanel.add(southPanel, southData);
 
 		/*
 		 * // add east panel Panel eastPanel = new Panel();
@@ -174,9 +179,12 @@ public class Gunea implements EntryPoint {
 
 		borderPanel.add(westPanel, westData);
 
-		final TabPanel centerPanel = new TabPanel();
-		centerPanel.setDeferredRender(false);
-		centerPanel.setActiveTab(0);
+		final Panel centerPanel = new Panel();
+		centerPanel.setLayout(new CardLayout());
+
+		// final TabPanel centerPanel = new TabPanel();
+		// centerPanel.setDeferredRender(false);
+		// centerPanel.setActiveTab(0);
 
 		Panel centerPanelOne = new HTMLPanel();
 		centerPanelOne
@@ -196,7 +204,8 @@ public class Gunea implements EntryPoint {
 				Alokatu alokatu = new Alokatu();
 				alokatu.setTitle("Alokatu");
 				centerPanel.add(alokatu);
-				centerPanel.activate(2);
+				// centerPanel.activate(2);
+				centerPanel.setActiveItem(0);
 			}
 		}));
 		centerPanelTwo.add(new Button("Abisuak", new ButtonListenerAdapter() {
@@ -209,8 +218,14 @@ public class Gunea implements EntryPoint {
 			}
 		}));
 
-		centerPanel.add(centerPanelTwo);
-		centerPanel.add(centerPanelOne);
+		Alokatu alokatu = new Alokatu();
+		alokatu.setTitle("Alokatu");
+		centerPanel.add(alokatu);
+		// centerPanel.activate(2);
+		centerPanel.setActiveItem(0);
+
+		// centerPanel.add(centerPanelTwo);
+		// centerPanel.add(centerPanelOne);
 
 		BorderLayoutData centerData = new BorderLayoutData(
 				RegionPosition.CENTER);
@@ -222,19 +237,22 @@ public class Gunea implements EntryPoint {
 
 		borderPanel.add(centerPanel, centerData);
 
-		panelNagusia.add(borderPanel, new AnchorLayoutData("100%"));
+		panelNagusia.add(borderPanel);
 
 		new Viewport(panelNagusia);
 	}
 
 	protected void setGunea(GuneInfo gunea) {
 		this.gunea = gunea;
-		if (!gunea.hasLatLon())
-			mapa.updateMap(gunea.getIzena(), gunea.getHelbidea(), JavaScriptObjectHelper.createObject(), mapa);
-		else {
-			mapa.markaGehitu(gunea);
-			mapa.finkatu(gunea);
-		}			
+		if (gunea != null) {
+			if (!gunea.hasLatLon())
+				mapa.updateMap(gunea.getIzena(), gunea.getHelbidea(),
+						JavaScriptObjectHelper.createObject(), mapa);
+			else {
+				mapa.markaGehitu(gunea);
+				mapa.finkatu(gunea);
+			}
+		}
 	}
 
 	public String getHelbidea() {

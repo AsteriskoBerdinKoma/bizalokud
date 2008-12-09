@@ -3,11 +3,12 @@ package com.sgta07.bizalokud.gunea.client;
 import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.Ext;
 import com.gwtext.client.core.ExtElement;
+import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.data.Record;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Panel;
@@ -17,26 +18,24 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.form.Label;
 import com.gwtext.client.widgets.grid.RowSelectionModel;
 import com.gwtext.client.widgets.grid.event.RowSelectionListenerAdapter;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.BorderLayout;
+import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.CardLayout;
 import com.gwtext.client.widgets.layout.ColumnLayout;
 import com.gwtext.client.widgets.layout.ColumnLayoutData;
 
-public class Alokatu extends Composite {
+public class Alokatu extends Panel {
 
 	private Panel first;
-
+    
 	public Alokatu() {
 		super();
-		Panel panel = new Panel();
-		panel.setTitle("Alokatu");
-		panel.setBorder(false);
-		panel.setPaddings(15);
-
-		final Panel wizardPanel = new Panel();
+		final Panel wizardPanel = this;
 		wizardPanel.setTitle("Bizikleta Alokatu");
 		wizardPanel.setLayout(new CardLayout());
 		wizardPanel.setActiveItem(0);
-		wizardPanel.setPaddings(15);
+//		wizardPanel.setPaddings(15);
 
 		ButtonListenerAdapter listener = new ButtonListenerAdapter() {
 			public void onClick(Button button, EventObject e) {
@@ -89,35 +88,31 @@ public class Alokatu extends Composite {
 		wizardPanel.add(first);
 		wizardPanel.add(second);
 		wizardPanel.add(third);
-
-		panel.add(wizardPanel);
-
-		initWidget(panel);
-		this.setVisible(true);
 	}
 
 	private void sortuPanel1() {
 		final ExtElement element = new ExtElement(RootPanel.get().getElement());
-		element.mask("Guneen informazioa jasotzen. Itxaron mesedez");
+		element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
 
 		first = new Panel();
-		first.setSize("auto", "auto");
+//		first.setSize("auto", "auto");
 		first.setBorder(false);
-		first.setAutoHeight(true);
+//		first.setAutoHeight(true);
 		first.setId("guneaAukeratu");
 		first.add(new Label("Aukeratu zein gunetara joan nahi duzun"));
 
-		final Mapa mapa = new Mapa(500, 439);
+		final Mapa mapa = new Mapa();
+		mapa.setAutoWidth(true);
+		mapa.setAutoHeight(true);
 		
-		final Panel inner = new Panel();
-		inner.setLayout(new ColumnLayout());
+		final HorizontalPanel hPanel = new HorizontalPanel();
 
 		final Panel gunePanel = new Panel();
+		gunePanel.setFrame(false);
+		gunePanel.setBorder(false);
 		gunePanel.setAutoScroll(true);
 
 		final GuneenLista guneak = new GuneenLista();
-		guneak.setAutoWidth(true);
-		guneak.setAutoHeight(true);
 		final RowSelectionModel sm = new RowSelectionModel(true);
 		sm.addListener(new RowSelectionListenerAdapter() {
 			public void onRowSelect(RowSelectionModel sm, int rowIndex,
@@ -129,11 +124,13 @@ public class Alokatu extends Composite {
 		});
 		guneak.setSelectionModel(sm);
 		gunePanel.add(guneak);
+		
+		hPanel.add(gunePanel);
+		hPanel.add(mapa.getMapPanel());
 
-		inner.add(gunePanel, new ColumnLayoutData(0.4));
-		inner.add(mapa.getMapPanel(), new ColumnLayoutData(0.6));
-
-		first.add(inner);
+		first.add(hPanel, new AnchorLayoutData("100%"));
+		
+//		first.add(gunePanel);
 		
 		GuneaService.Util.getInstance().guneenZerrenda(
 				new AsyncCallback<HashMap<Integer, GuneInfo>>() {
@@ -151,7 +148,7 @@ public class Alokatu extends Composite {
 							obj[i][2] = result.get(key).getHelbidea();
 							obj[i][3] = result.get(key).getLat();
 							obj[i][4] = result.get(key).getLon();
-							mapa.markaGehitu(result.get(key));
+//							mapa.markaGehitu(result.get(key));
 							i++;
 						}
 						guneak.setGuneak(obj);
@@ -160,5 +157,9 @@ public class Alokatu extends Composite {
 					}
 
 				});
+	}
+	
+	private void sortuPanel2(){
+		
 	}
 }
