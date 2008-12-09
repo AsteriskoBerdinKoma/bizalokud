@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+import com.sgta07.bizalokud.gunea.client.AbisuInfo;
 import com.sgta07.bizalokud.gunea.client.GuneInfo;
 import com.sgta07.bizalokud.gunea.client.GuneaService;
 import com.sgta07.bizalokud.gunea.client.Salbuespena;
@@ -193,5 +194,11 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		}
 
 		return emaitza;
+	}
+
+	public HashMap<Integer, AbisuInfo> getAbisuenZerrenda(String userNan)
+			throws Salbuespena {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
