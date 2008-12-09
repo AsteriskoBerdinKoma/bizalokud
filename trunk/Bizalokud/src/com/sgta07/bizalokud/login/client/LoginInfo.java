@@ -4,11 +4,23 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class LoginInfo implements IsSerializable{
 	
+	private String nan;
+	private String izena;
+	private String abizenak;
+	
 	private boolean baimena;
 	private String erroreMezua;
 	
 	public LoginInfo(){}
-	
+
+	public LoginInfo(String nan, String izena, String abizenak, boolean baimena) {
+		super();
+		this.nan = nan;
+		this.izena = izena;
+		this.abizenak = abizenak;
+		this.baimena = baimena;
+	}
+
 	public LoginInfo(boolean baimena) {
 		this.baimena = baimena;
 	}
@@ -24,5 +36,17 @@ public class LoginInfo implements IsSerializable{
 
 	public String getErroreMezua() {
 		return erroreMezua;
+	}
+	
+	public String getNan() {
+		return nan;
+	}
+
+	public String getIzena() {
+		return izena;
+	}
+
+	public String getAbizenak() {
+		return abizenak;
 	}
 }
