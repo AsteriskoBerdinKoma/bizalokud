@@ -29,14 +29,10 @@ public class Alokatu extends Composite {
 		super();
 		Panel panel = new Panel();
 		panel.setTitle("Alokatu");
-		panel.setWidth("100%");
-		panel.setHeight("100%");
 		panel.setBorder(false);
 		panel.setPaddings(15);
 
 		final Panel wizardPanel = new Panel();
-		wizardPanel.setHeight("100%");
-		wizardPanel.setAutoWidth(true);
 		wizardPanel.setTitle("Bizikleta Alokatu");
 		wizardPanel.setLayout(new CardLayout());
 		wizardPanel.setActiveItem(0);
@@ -77,12 +73,6 @@ public class Alokatu extends Composite {
 		toolbar.addButton(nextButton);
 
 		wizardPanel.setBottomToolbar(toolbar);
-		
-		Panel maskPanel = new Panel();  
-		maskPanel.setId("mask-panel");  
-		maskPanel.setWidth("100%");  
-		maskPanel.setHeight("100%");  
-		panel.add(maskPanel);
 
 		Panel second = new Panel();
 		second.setBorder(false);
@@ -109,7 +99,7 @@ public class Alokatu extends Composite {
 	private void sortuPanel1() {
 		final ExtElement element = new ExtElement(RootPanel.get().getElement());
 		element.mask("Guneen informazioa jasotzen. Itxaron mesedez");
-		
+
 		first = new Panel();
 		first.setSize("auto", "auto");
 		first.setBorder(false);
