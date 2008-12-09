@@ -214,7 +214,8 @@ public class Gunea implements EntryPoint {
 				
 				abisuak.setTitle("Zure Abisuak");
 				centerPanel.add(abisuak);
-				centerPanel.setActiveTab(3);
+				//centerPanel.setActiveTab(3);
+				centerPanel.setActiveItem(0);
 			}
 		}));
 
