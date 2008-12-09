@@ -24,9 +24,12 @@ import com.gwtext.client.widgets.layout.FitLayout;
 public class Login implements EntryPoint {
 
 	private boolean logeatuta;
+	
+	private LoginInfo loginInfo;
 
 	public void onModuleLoad() {
 		logeatuta = false;
+		loginInfo = null;
 	}
 
 	public boolean isLogeatuta() {
@@ -148,6 +151,7 @@ public class Login implements EntryPoint {
 															}
 														});
 												logeatuta = false;
+												loginInfo = null;
 											}
 
 											public void onSuccess(
@@ -156,6 +160,7 @@ public class Login implements EntryPoint {
 												if (result.isBaimena()) {
 													window.hide();
 													logeatuta = true;
+													loginInfo = result;
 												} else {
 													MessageBox
 															.show(new MessageBoxConfig() {
@@ -168,6 +173,7 @@ public class Login implements EntryPoint {
 																}
 															});
 													logeatuta = false;
+													loginInfo = null;
 												}
 											}
 										});
@@ -183,6 +189,7 @@ public class Login implements EntryPoint {
 								}
 							});
 							logeatuta = false;
+							loginInfo = null;
 						}
 					}
 				});
@@ -192,6 +199,27 @@ public class Login implements EntryPoint {
 		window.add(formPanel);
 
 		window.show();
+	}
+	
+	public String getNan(){
+		if (loginInfo != null)
+			return loginInfo.getNan();
+		else
+			return null;
+	}
+	
+	public String getIzena(){
+		if(loginInfo != null)
+			return loginInfo.getIzena();
+		else
+			return null;
+	}
+	
+	public String getAbizenak(){
+		if(loginInfo != null)
+			return loginInfo.getAbizenak();
+		else
+			return null;
 	}
 
 	// SHA1 hasha sortuko duen javascript funtzioari (js/crypto/sha1.js)
