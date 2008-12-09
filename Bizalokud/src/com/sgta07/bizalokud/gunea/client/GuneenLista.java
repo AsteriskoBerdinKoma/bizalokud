@@ -14,24 +14,24 @@ import com.gwtext.client.widgets.grid.GridPanel;
 
 public class GuneenLista extends GridPanel {
 
-	protected Store store;
+	private Store store;
 
-	public GuneenLista(Object[][] obj) {
+	private ArrayReader reader;
+	
+	public GuneenLista() {
 		super();
 		setFrame(true);
 		setStripeRows(true);
 
-		setGuneak(obj);
-	}
-
-	public void setGuneak(Object[][] guneak) {
+//		setGuneak(obj);
+		
 		RecordDef recordDef = new RecordDef(new FieldDef[] {
 				new IntegerFieldDef("id"), new StringFieldDef("izena"),
 				new StringFieldDef("helbidea"), new ObjectFieldDef("lat"), new ObjectFieldDef("lon")});
 
-		MemoryProxy proxy = new MemoryProxy(guneak);
-
-		ArrayReader reader = new ArrayReader(recordDef);
+		MemoryProxy proxy = new MemoryProxy(new Object[0][]);
+		
+		reader = new ArrayReader(recordDef);
 		store = new Store(proxy, reader);
 		store.load();
 
@@ -41,11 +41,21 @@ public class GuneenLista extends GridPanel {
 				new ColumnConfig("Gunea", "izena", 200, true, null, "izena"),
 				new ColumnConfig("Helbidea", "helbidea", 200, true, null,
 						"helbidea") };
-
+		
 		ColumnModel columnModel = new ColumnModel(columns);
 		setColumnModel(columnModel);
+		
+		setAutoExpandColumn("helbidea");
+	}
 
-		setAutoExpandColumn("izena");
+	public void setGuneak(Object[][] guneak) {
+		Object[][] data = guneak;
+		MemoryProxy proxy = new MemoryProxy(data);
+		
+		Store storeTemp = new Store(proxy, reader);
+		storeTemp.reload();
+		store.removeAll();
+		store.add(storeTemp.getRecords());
 	}
 
 }
