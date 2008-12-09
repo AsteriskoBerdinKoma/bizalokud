@@ -3,6 +3,7 @@ package com.sgta07.bizalokud.gunea.server;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 
 import com.sgta07.bizalokud.gunea.client.AbisuInfo;
@@ -120,8 +121,8 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			GuneInfo gunea = new GuneInfo(id, rs.getString("izena"), rs
 					.getString("helb"));
 			gunea.setLatLon(rs.getDouble("lat"), rs.getDouble("lon"));
-			
-			guneak.put(id, gunea);			
+
+			guneak.put(id, gunea);
 		}
 
 		rs.close();
@@ -196,9 +197,40 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		return emaitza;
 	}
 
+	@SuppressWarnings("deprecation")
 	public HashMap<Integer, AbisuInfo> getAbisuenZerrenda(String userNan)
 			throws Salbuespena {
-		// TODO Auto-generated method stub
-		return null;
+		HashMap<Integer, AbisuInfo> emaitza = new HashMap<Integer, AbisuInfo>();
+
+		try {
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+			String query = "SELECT * FROM abisuak WHERE fk_erab_nan=?";
+			PreparedStatement ps = connector.prepareStatement(query);
+			ps.setString(1, userNan);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				String temp = rs.getString("data");
+				String[] s = temp.substring(0, temp.indexOf('.')).split(" ");
+				String[] data = s[0].split("-");
+				String[] ordua = s[1].split(":");
+
+				Date d = new Date(Integer.parseInt(data[0]), Integer
+						.parseInt(data[1]) - 1, Integer.parseInt(data[2]),
+						Integer.parseInt(ordua[0]), Integer.parseInt(ordua[1]),
+						Integer.parseInt(ordua[2]));
+				AbisuInfo aiu = new AbisuInfo(id, d, rs
+						.getBoolean("irakurrita"), rs.getString("mota"), rs
+						.getString("mezua"));
+				emaitza.put(id, aiu);
+			}
+
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		}
+		return emaitza;
 	}
 }
