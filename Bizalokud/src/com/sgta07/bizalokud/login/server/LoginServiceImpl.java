@@ -66,7 +66,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
 					session.setAttribute("altan", isAltan);
 					if (isAltan) {
 						session.setAttribute("valid", true);
-						return new LoginInfo(true);
+						return new LoginInfo(nan, izena, abizenak, isAdmin, true);
 					} else {
 						session.setAttribute("valid", false);
 						return new LoginInfo("Kontu hau bajan emanda dago.");
