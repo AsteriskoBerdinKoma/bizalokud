@@ -56,6 +56,7 @@ public class Gunea implements EntryPoint {
 
 		Panel panelNagusia = new Panel();
 		panelNagusia.setBorder(false);
+		panelNagusia.setId("panelPagusia");
 		// Inguruarekiko uzten duen margina
 		panelNagusia.setPaddings(0);
 		panelNagusia.setLayout(new FitLayout());
