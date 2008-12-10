@@ -25,18 +25,19 @@ public class Login implements EntryPoint {
 
 	private boolean logeatuta;
 	
-	private LoginInfo loginInfo;
-
+	private Logeable jabea;
+	
 	public void onModuleLoad() {
 		logeatuta = false;
-		loginInfo = null;
 	}
 
 	public boolean isLogeatuta() {
 		return logeatuta;
 	}
 
-	public void erakutsi() {
+	public void erakutsi(Logeable owner) {
+		this.jabea = owner;
+		
 		final Window window = new Window();
 		window.setTitle("Login");
 		window.setLayout(new FitLayout());
@@ -151,7 +152,6 @@ public class Login implements EntryPoint {
 															}
 														});
 												logeatuta = false;
-												loginInfo = null;
 											}
 
 											public void onSuccess(
@@ -160,7 +160,7 @@ public class Login implements EntryPoint {
 												if (result.isBaimena()) {
 													window.hide();
 													logeatuta = true;
-													loginInfo = result;
+													jabea.setErabiltzaileDatuak(result.getNan(), result.getIzena(), result.getAbizenak(), result.isAdmin());
 												} else {
 													MessageBox
 															.show(new MessageBoxConfig() {
@@ -173,7 +173,6 @@ public class Login implements EntryPoint {
 																}
 															});
 													logeatuta = false;
-													loginInfo = null;
 												}
 											}
 										});
@@ -189,7 +188,6 @@ public class Login implements EntryPoint {
 								}
 							});
 							logeatuta = false;
-							loginInfo = null;
 						}
 					}
 				});
@@ -201,26 +199,26 @@ public class Login implements EntryPoint {
 		window.show();
 	}
 	
-	public String getNan(){
-		if (loginInfo != null)
-			return loginInfo.getNan();
-		else
-			return null;
-	}
-	
-	public String getIzena(){
-		if(loginInfo != null)
-			return loginInfo.getIzena();
-		else
-			return null;
-	}
-	
-	public String getAbizenak(){
-		if(loginInfo != null)
-			return loginInfo.getAbizenak();
-		else
-			return null;
-	}
+//	public String getNan(){
+//		if (loginInfo != null)
+//			return loginInfo.getNan();
+//		else
+//			return null;
+//	}
+//	
+//	public String getIzena(){
+//		if(loginInfo != null)
+//			return loginInfo.getIzena();
+//		else
+//			return null;
+//	}
+//	
+//	public String getAbizenak(){
+//		if(loginInfo != null)
+//			return loginInfo.getAbizenak();
+//		else
+//			return null;
+//	}
 
 	// SHA1 hasha sortuko duen javascript funtzioari (js/crypto/sha1.js)
 	// deintzen dio.

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.core.RegionPosition;
@@ -23,7 +22,6 @@ import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.CardLayout;
 import com.gwtext.client.widgets.layout.ColumnLayout;
-import com.gwtext.client.widgets.layout.ColumnLayoutData;
 
 public class Alokatu extends Panel {
 
@@ -35,7 +33,6 @@ public class Alokatu extends Panel {
 		wizardPanel.setTitle("Bizikleta Alokatu");
 		wizardPanel.setLayout(new CardLayout());
 		wizardPanel.setActiveItem(0);
-//		wizardPanel.setPaddings(15);
 
 		ButtonListenerAdapter listener = new ButtonListenerAdapter() {
 			public void onClick(Button button, EventObject e) {
@@ -95,6 +92,7 @@ public class Alokatu extends Panel {
 		element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
 
 		first = new Panel();
+		first.setLayout(new BorderLayout());
 //		first.setSize("auto", "auto");
 		first.setBorder(false);
 //		first.setAutoHeight(true);
@@ -102,15 +100,8 @@ public class Alokatu extends Panel {
 		first.add(new Label("Aukeratu zein gunetara joan nahi duzun"));
 
 		final Mapa mapa = new Mapa();
-		mapa.setAutoWidth(true);
-		mapa.setAutoHeight(true);
-		
-		final HorizontalPanel hPanel = new HorizontalPanel();
-
-		final Panel gunePanel = new Panel();
-		gunePanel.setFrame(false);
-		gunePanel.setBorder(false);
-		gunePanel.setAutoScroll(true);
+		mapa.setWidth(500);
+		mapa.setHeight(400);
 
 		final GuneenLista guneak = new GuneenLista();
 		final RowSelectionModel sm = new RowSelectionModel(true);
@@ -123,14 +114,9 @@ public class Alokatu extends Panel {
 			}
 		});
 		guneak.setSelectionModel(sm);
-		gunePanel.add(guneak);
-		
-		hPanel.add(gunePanel);
-		hPanel.add(mapa.getMapPanel());
 
-		first.add(hPanel, new AnchorLayoutData("100%"));
-		
-//		first.add(gunePanel);
+		first.add(guneak, new BorderLayoutData(RegionPosition.WEST));
+		first.add(mapa, new BorderLayoutData(RegionPosition.CENTER));
 		
 		GuneaService.Util.getInstance().guneenZerrenda(
 				new AsyncCallback<HashMap<Integer, GuneInfo>>() {
@@ -148,7 +134,7 @@ public class Alokatu extends Panel {
 							obj[i][2] = result.get(key).getHelbidea();
 							obj[i][3] = result.get(key).getLat();
 							obj[i][4] = result.get(key).getLon();
-//							mapa.markaGehitu(result.get(key));
+							mapa.markaGehitu(result.get(key));
 							i++;
 						}
 						guneak.setGuneak(obj);
