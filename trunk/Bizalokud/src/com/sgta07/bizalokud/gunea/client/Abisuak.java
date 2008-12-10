@@ -78,7 +78,6 @@ public class Abisuak extends Panel {
 
 						grid.setFrame(true);
 						grid.setStripeRows(true);
-						grid.setAutoExpandColumn("mota");
 						grid.setWidth(600);
 						grid.setHeight(250);
 						grid.setTitle("Zure abisuen zerrenda");

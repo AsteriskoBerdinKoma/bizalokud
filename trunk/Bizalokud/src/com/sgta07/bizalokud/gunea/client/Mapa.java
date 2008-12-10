@@ -95,7 +95,7 @@ public class Mapa extends MapPanel {
 	public void markaGehitu(String izena, String helbidea, double lat,
 			double lon) {
 		ExtElement map = ExtElement.get("mapPanel");
-		map.mask("Mapa eguneratzen. Itxaron mesedez.", true);
+		//map.mask("Mapa eguneratzen. Itxaron mesedez.", true);
 		
 		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
 		Marker m = new Marker(latLonPoint);
@@ -103,7 +103,7 @@ public class Mapa extends MapPanel {
 		m.setInfoBubble("<h1>" + izena + "</h1><br><b>Helbidea:</b> " + helbidea);
 		mapPanel.addMarker(m);
 		
-		map.unmask();
+		//map.unmask();
 	}
 
 	public void renderMap(JavaScriptObject jsObj) {

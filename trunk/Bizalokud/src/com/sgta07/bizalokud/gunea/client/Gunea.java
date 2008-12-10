@@ -1,6 +1,10 @@
 package com.sgta07.bizalokud.gunea.client;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import com.gwtext.client.core.EventObject;
@@ -10,26 +14,36 @@ import com.gwtext.client.util.JavaScriptObjectHelper;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.HTMLPanel;
 import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.Viewport;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.Label;
 import com.gwtext.client.widgets.layout.AccordionLayout;
-import com.gwtext.client.widgets.layout.AnchorLayoutData;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.CardLayout;
+import com.gwtext.client.widgets.layout.ColumnLayout;
 import com.gwtext.client.widgets.layout.FitLayout;
+import com.gwtext.client.widgets.layout.RowLayout;
+import com.sgta07.bizalokud.login.client.Logeable;
 import com.sgta07.bizalokud.login.client.Login;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Gunea implements EntryPoint {
+public class Gunea implements EntryPoint, Logeable {
 
 	private GuneInfo gunea;
-	private Login login;
+
+	private String erabNan;
+	private String erabIzena;
+	private String erabAbizen;
+	private boolean erabAdminDa;
 
 	private Mapa mapa;
+	private Label orduLabel;
+	private Label erabDatuak;
+	private Label guneIzenDatuak;
+	private Label guneHelbideDatuak;
 
 	public void onModuleLoad() {
 		mapa = new Mapa();
@@ -54,13 +68,12 @@ public class Gunea implements EntryPoint {
 					}
 				});
 
-		login = new Login();
-		login.erakutsi();
-		
+		Login login = new Login();
+		login.erakutsi(this);
 
 		Panel panelNagusia = new Panel();
 		panelNagusia.setBorder(false);
-		panelNagusia.setId("panelPagusia");
+		panelNagusia.setId("panelNagusia");
 		// Inguruarekiko uzten duen margina
 		panelNagusia.setPaddings(0);
 		panelNagusia.setLayout(new FitLayout());
@@ -70,84 +83,74 @@ public class Gunea implements EntryPoint {
 		Panel borderPanel = new Panel();
 		borderPanel.setLayout(new BorderLayout());
 
+		erabDatuak = new Label();
+//		erabDatuak.setStyle("text-align: right;");
+		guneIzenDatuak = new Label();
+//		guneIzenDatuak.setStyle("text-align: right;");
+		guneHelbideDatuak = new Label();
+//		guneHelbideDatuak.setStyle("text-align: right;");
+		
+		orduLabel = new Label();
+//		orduLabel.setStyle("text-align: right;");
+		Timer timer = new Timer() {
+			public void run() {
+				DateTimeFormat dtf = new DateTimeFormat("HH:mm") {
+				};
+				String ordua = dtf.format(new Date());
+				orduLabel.setText(ordua);
+			}
+		};
+
+		timer.scheduleRepeating(1000);
+
 		// Iparraldeko panela: Aplikazioaren titulua, gunea eta kautotutako
 		// erabiltzailearen informazioa
-		// raw html
-		// BoxComponent northPanel = new BoxComponent();
-		// northPanel.setEl(new HTML("<p>north - generally for menus, toolbars"
-		// + " and/or advertisements</p>").getElement());
-
-		// northPanel.setHeight(32);
-		// borderPanel.add(northPanel, new
-		// BorderLayoutData(RegionPosition.NORTH));
-
 		Image banner = new Image("images/banner.png");
 
+		Panel datuak = new Panel();
+		datuak.setTitle("Informazioa");
+		datuak.setBorder(true);
+		datuak.setFrame(true);
+		datuak.setPaddings(10);
+		datuak.setLayout(new RowLayout());
+		datuak.add(erabDatuak);
+		datuak.add(guneIzenDatuak);
+		datuak.add(guneHelbideDatuak);
+		datuak.add(orduLabel);
+		datuak.setStyle("backgroundColor: #dfe8f6;");
+		datuak.setBodyStyle("backgroundColor: #dfe8f6;");
+		datuak.setStyle("vertical-align: middle;");
+
 		Panel bannerPanel = new Panel();
+		bannerPanel.setLayout(new ColumnLayout());
 		bannerPanel.setBorder(false);
 		bannerPanel.setCollapsible(false);
 		bannerPanel.add(banner);
+		bannerPanel.add(datuak);
 		bannerPanel.setAutoHeight(true);
 		bannerPanel.setFrame(false);
 		bannerPanel.setStyle("backgroundColor: #dfe8f6;");
 		bannerPanel.setBodyStyle("backgroundColor: #dfe8f6;");
+		bannerPanel.setStyle("vertical-align: middle;");
 
 		borderPanel
 				.add(bannerPanel, new BorderLayoutData(RegionPosition.NORTH));
 
 		// Egoaldeko panela: Azken minutuko informazioak jasotzeko
-		// Panel southPanel = new HTMLPanel(
-		// "<br>"
-		// +
-		// "<li>Amarako gunea bihartik aurrera itxita egongo da, konponketak egiteko!</li> "
-		// +
-		// "<li>Groseko obrak direla eta, Sagues-Bulevard ibilbidea ez hartzea gomendatzen da</li>");
-		// southPanel.setHeight(100);
-		// southPanel.setCollapsible(false);
-		// southPanel.setTitle("Azken orduko informazioa");
-		//
-		// BorderLayoutData southData = new
-		// BorderLayoutData(RegionPosition.SOUTH);
-		// southData.setMinSize(100);
-		// southData.setMaxSize(200);
-		// southData.setMargins(new Margins(0, 0, 0, 0));
-		// southData.setSplit(true);
-		// borderPanel.add(southPanel, southData);
+		Panel southPanel = new HTMLPanel(
+				"<br>"
+						+ "<li>Amarako gunea bihartik aurrera itxita egongo da, konponketak egiteko!</li> "
+						+ "<li>Groseko obrak direla eta, Sagues-Bulevard ibilbidea ez hartzea gomendatzen da</li>");
+		southPanel.setHeight(100);
+		southPanel.setCollapsible(false);
+		southPanel.setTitle("Azken orduko informazioa");
 
-		/*
-		 * // add east panel Panel eastPanel = new Panel();
-		 * eastPanel.setTitle("East Side"); eastPanel.setCollapsible(true);
-		 * eastPanel.setWidth(225); eastPanel.setLayout(new FitLayout());
-		 * 
-		 * BorderLayoutData eastData = new
-		 * BorderLayoutData(RegionPosition.EAST); eastData.setSplit(true);
-		 * eastData.setMinSize(175); eastData.setMaxSize(400);
-		 * eastData.setMargins(new Margins(0, 0, 5, 0));
-		 * 
-		 * borderPanel.add(eastPanel, eastData);
-		 * 
-		 * TabPanel tabPanel = new TabPanel(); tabPanel.setBorder(false);
-		 * tabPanel.setActiveTab(1);
-		 * 
-		 * Panel tabOne = new Panel();
-		 * tabOne.setHtml("<p>A TabPanel component can be a region.</p>");
-		 * tabOne.setTitle("A Tab"); tabOne.setAutoScroll(true);
-		 * tabPanel.add(tabOne);
-		 * 
-		 * PropertyGridPanel propertyGrid = new PropertyGridPanel();
-		 * propertyGrid.setTitle("Property Grid");
-		 * 
-		 * Map source = new HashMap(); source.put("(name)", "Properties Grid");
-		 * source.put("grouping", Boolean.FALSE); source.put("autoFitColumns",
-		 * Boolean.TRUE); source.put("productionQuality", Boolean.FALSE);
-		 * source.put("created", new Date()); source.put("tested",
-		 * Boolean.FALSE); source.put("version", new Float(0.1f));
-		 * source.put("borderWidth", new Integer(1));
-		 * 
-		 * propertyGrid.setSource(source);
-		 * 
-		 * tabPanel.add(propertyGrid); eastPanel.add(tabPanel);
-		 */
+		BorderLayoutData southData = new BorderLayoutData(RegionPosition.SOUTH);
+		southData.setMinSize(100);
+		southData.setMaxSize(200);
+		southData.setMargins(new Margins(0, 0, 0, 0));
+		southData.setSplit(true);
+		borderPanel.add(southPanel, southData);
 
 		final AccordionLayout accordion = new AccordionLayout(true);
 
@@ -211,10 +214,10 @@ public class Gunea implements EntryPoint {
 		centerPanelTwo.add(new Button("Abisuak", new ButtonListenerAdapter() {
 			public void onClick(Button button, EventObject e) {
 				Abisuak abisuak = new Abisuak("09760589X");
-				
+
 				abisuak.setTitle("Zure Abisuak");
 				centerPanel.add(abisuak);
-				//centerPanel.setActiveTab(3);
+				// centerPanel.setActiveTab(3);
 				centerPanel.setActiveItem(0);
 			}
 		}));
@@ -246,6 +249,8 @@ public class Gunea implements EntryPoint {
 	protected void setGunea(GuneInfo gunea) {
 		this.gunea = gunea;
 		if (gunea != null) {
+			guneIzenDatuak.setText(gunea.getIzena() + " gunean zaude");
+			guneHelbideDatuak.setText("\n" + gunea.getHelbidea());
 			if (!gunea.hasLatLon())
 				mapa.updateMap(gunea.getIzena(), gunea.getHelbidea(),
 						JavaScriptObjectHelper.createObject(), mapa);
@@ -259,4 +264,34 @@ public class Gunea implements EntryPoint {
 	public String getHelbidea() {
 		return this.gunea.getHelbidea();
 	}
+
+	public void setErabiltzaileDatuak(String nan, String izena,
+			String abizenak, boolean adminDa) {
+		this.erabNan = nan;
+		this.erabIzena = izena;
+		this.erabAbizen = abizenak;
+		this.erabAdminDa = adminDa;
+		erabDatuak.setText("Kaixo " + izena + " " + abizenak);
+	}
+
+	public String getErabNan() {
+		return erabNan;
+	}
+
+	public String getErabIzena() {
+		return erabIzena;
+	}
+
+	public String getErabAbizen() {
+		return erabAbizen;
+	}
+
+	public boolean isAdmin() {
+		return erabAdminDa;
+	}
+
+	public Label getErabDatuak() {
+		return erabDatuak;
+	}
+
 }
