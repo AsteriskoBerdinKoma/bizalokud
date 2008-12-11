@@ -15,7 +15,6 @@ import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.FieldDef;
 import com.gwtext.client.data.MemoryProxy;
 import com.gwtext.client.data.Node;
-import com.gwtext.client.data.ObjectFieldDef;
 import com.gwtext.client.data.Record;
 import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
@@ -23,6 +22,7 @@ import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.HTMLPanel;
 import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.Viewport;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.form.Label;
@@ -71,6 +71,9 @@ public class Gunea implements EntryPoint, Logeable {
 	private static Store store;
 	private static MemoryProxy proxy;
 	private static ArrayReader reader;
+	
+	//Panel nagusien aldagaiak
+	private Panel centerPanel;
 
 	public void onModuleLoad() {
 		// mapa = new Mapa();
@@ -179,12 +182,12 @@ public class Gunea implements EntryPoint, Logeable {
 //		borderPanel.add(westPanel, westData);
 		borderPanel.add(getMenuPanel(),westData);
 
-		final Panel centerPanel = new Panel();
+		centerPanel = new Panel();
 		centerPanel.setLayout(new CardLayout());
 
-		// final TabPanel centerPanel = new TabPanel();
-		// centerPanel.setDeferredRender(false);
-		// centerPanel.setActiveTab(0);
+//		 final TabPanel centerPanel = new TabPanel();
+//		 centerPanel.setDeferredRender(false);
+//		 centerPanel.setActiveTab(0);
 
 		Panel centerPanelOne = new HTMLPanel();
 		centerPanelOne
@@ -198,32 +201,14 @@ public class Gunea implements EntryPoint, Logeable {
 				.setHtml("<br><br><h1>Ongietorria Bizalokud sistemara!</h1>\n<br><p>Aukera ezazu menuko ekintza bat aplikazioa erabiltzen hasteko.");
 		centerPanelTwo.setTitle("Ekintzak");
 		centerPanelTwo.setAutoScroll(true);
-		// centerPanelTwo.add(mapa);
-		centerPanelTwo.add(new Button("Alokatu", new ButtonListenerAdapter() {
-			public void onClick(Button button, EventObject e) {
-				Alokatu alokatu = new Alokatu(Gunea.this);
-				alokatu.setTitle("Alokatu");
-				centerPanel.add(alokatu);
-				// centerPanel.activate(2);
-				centerPanel.setActiveItem(0);
-			}
-		}));
-		centerPanelTwo.add(new Button("Abisuak", new ButtonListenerAdapter() {
-			public void onClick(Button button, EventObject e) {
-				Abisuak abisuak = new Abisuak("09760589X");
+		
 
-				abisuak.setTitle("Zure Abisuak");
-				centerPanel.add(abisuak);
-				// centerPanel.setActiveTab(3);
-				centerPanel.setActiveItem(0);
-			}
-		}));
-
-		Alokatu alokatu = new Alokatu(this);
+		Abisuak abisuak= new Abisuak(this);
+		abisuak.setId("abisuak-panel");
 		// alokatu.setTitle("Alokatu");
-		centerPanel.add(alokatu);
+		centerPanel.add(abisuak);
 		// centerPanel.activate(2);
-		centerPanel.setActiveItem(0);
+		//centerPanel.setActiveItemID("abisuak-panel");
 
 		// centerPanel.add(centerPanelTwo);
 		// centerPanel.add(centerPanelOne);
@@ -428,7 +413,22 @@ public class Gunea implements EntryPoint, Logeable {
 	private void addNodeClickListener(TreeNode node) {
 		node.addListener(new TreeNodeListenerAdapter() {
 			public void onClick(Node node, EventObject e) {
-					
+				
+				if(node.getId().equals("abisuak")){
+					centerPanel.setActiveItemID("abisuak-panel");
+				}
+				if(node.getId().equals("alokatu")){
+					centerPanel.setActiveItemID("alokatu-panel");
+				}
+				if(node.getId().equals("entregatu")){
+					centerPanel.setActiveItemID("entregatu-panel");
+				}
+				if(node.getId().equals("datuak")){
+					centerPanel.setActiveItemID("datuak-panel");
+				}
+				if(node.getId().equals("pasahitza")){
+					centerPanel.setActiveItemID("pasahitza-panel");
+				}
 			}
 		});
 	}
