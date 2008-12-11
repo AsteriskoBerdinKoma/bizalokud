@@ -8,11 +8,9 @@ import com.gwtext.client.data.ObjectFieldDef;
 import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
-import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.GridPanel;
-import com.gwtext.client.widgets.grid.RowSelectionModel;
 
 public class GuneenLista extends GridPanel {
 
@@ -24,12 +22,6 @@ public class GuneenLista extends GridPanel {
 	
 	public GuneenLista() {
 		super();
-//		Panel panel = this;
-//		panel.setWidth(300);
-//		panel.setHeight(300);
-//		panel.setBorder(false);
-//		panel.setPaddings(15);
-//		panel.setAutoScroll(true);
 		
 		RecordDef recordDef = new RecordDef(new FieldDef[] {
 				new IntegerFieldDef("id"), new StringFieldDef("izena"),
@@ -38,7 +30,7 @@ public class GuneenLista extends GridPanel {
 		MemoryProxy proxy = new MemoryProxy(new Object[0][]);
 		
 		reader = new ArrayReader(recordDef);
-		store = new Store(proxy, reader, true);
+		store = new Store(proxy, reader);
 
 		ColumnConfig[] columns = new ColumnConfig[] {
 				new ColumnConfig("Gunea", "izena", 200, true, null, "izena"),
@@ -53,10 +45,9 @@ public class GuneenLista extends GridPanel {
 		
 		grid.setFrame(true);
 		grid.setStripeRows(true);
-		grid.setAutoExpandColumn("helbidea");
+		grid.setAutoExpandColumn("izena");
 		grid.setWidth(300);
 		grid.setHeight(300);
-		grid.setTitle("Zure abisuen zerrenda");
 		
 		store.load();
 	}

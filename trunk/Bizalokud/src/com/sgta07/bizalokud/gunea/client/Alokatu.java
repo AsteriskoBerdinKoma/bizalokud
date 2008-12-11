@@ -2,13 +2,16 @@ package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.ExtElement;
+import com.gwtext.client.core.Function;
+import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.data.Record;
+import com.gwtext.client.util.JavaScriptObjectHelper;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
@@ -17,19 +20,35 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.form.Label;
 import com.gwtext.client.widgets.grid.RowSelectionModel;
 import com.gwtext.client.widgets.grid.event.RowSelectionListenerAdapter;
-import com.gwtext.client.widgets.layout.AnchorLayoutData;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.CardLayout;
-import com.gwtext.client.widgets.layout.ColumnLayout;
+import com.gwtext.client.widgets.map.GoogleMap;
+import com.gwtext.client.widgets.map.LatLonPoint;
+import com.gwtext.client.widgets.map.MapPanel;
+import com.gwtext.client.widgets.map.Marker;
 
 public class Alokatu extends Panel {
 
+	private Panel wizardPanel;
+	
 	private Panel first;
-    
-	public Alokatu() {
+	private Panel second;
+	
+	private MapPanel mapPanel;
+	
+	private GuneenLista guneak;
+	
+	private ToolbarButton alokatuButton;
+	
+	private Gunea jabea;
+
+	public Alokatu(Gunea owner) {
 		super();
-		final Panel wizardPanel = this;
+		
+		this.jabea = owner;
+		
+		wizardPanel = this;
 		wizardPanel.setTitle("Bizikleta Alokatu");
 		wizardPanel.setLayout(new CardLayout());
 		wizardPanel.setActiveItem(0);
@@ -40,18 +59,31 @@ public class Alokatu extends Panel {
 				CardLayout cardLayout = (CardLayout) wizardPanel.getLayout();
 				String panelID = cardLayout.getActiveItem().getId();
 
-				if (btnID.equals("atzera")) {
-					if (panelID.equals("card-3")) {
-						cardLayout.setActiveItem(1);
-					} else {
+				if (btnID.equals("Alokatu")) {
+					if (panelID.equals("secondPanel")){
 						cardLayout.setActiveItem(0);
 					}
-				} else {
+				} else if (btnID.equals("jarraitu")){
+					if (panelID.equals("firstPanel")) {
+						final ExtElement element = new ExtElement(RootPanel.get().getElement());
+						element.mask("Alokairua egiten. Itxaron mesedez.", true);
+						
+						GuneaService.Util.getInstance().alokatu(jabea.getGuneId(), guneak.getSelectionModel().getSelected().getAsInteger("id"), jabea.getErabNan(), new AsyncCallback<BizikletaInfo>(){
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+								
+								CardLayout cardLayout = (CardLayout) wizardPanel.getLayout();
+								cardLayout.setActiveItem(0);
+								element.unmask();
+								
+								//TODO: Errore mezua erakutsi
+							}
 
-					if (panelID.equals("guneaAukeratu")) {
-						cardLayout.setActiveItem(1);
-					} else {
-						cardLayout.setActiveItem(2);
+							public void onSuccess(BizikletaInfo result) {
+								CardLayout cardLayout = (CardLayout) wizardPanel.getLayout();
+								cardLayout.setActiveItem(1);
+								element.unmask();
+							}});
 					}
 				}
 			}
@@ -59,68 +91,59 @@ public class Alokatu extends Panel {
 
 		Toolbar toolbar = new Toolbar();
 
-		ToolbarButton backButton = new ToolbarButton("Atzera", listener);
-		backButton.setId("atzera");
-		toolbar.addButton(backButton);
-		toolbar.addFill();
-
-		ToolbarButton nextButton = new ToolbarButton("Jarraitu", listener);
-		nextButton.setId("jarraitu");
-		toolbar.addButton(nextButton);
+		alokatuButton = new ToolbarButton("Alokatu", listener);
+		alokatuButton.setId("alokatu");
+		toolbar.addButton(alokatuButton);
 
 		wizardPanel.setBottomToolbar(toolbar);
 
-		Panel second = new Panel();
-		second.setBorder(false);
-		second.setId("card-2");
-		second.setHtml("<p>Step 2 of 3</p>");
-
-		Panel third = new Panel();
-		third.setBorder(false);
-		third.setId("card-3");
-		third.setHtml("<h1>Congratulations!</h1><p>Step 3 of 3 - Complete</p>");
-
 		sortuPanel1();
+		sortuPanel2();
 
 		wizardPanel.add(first);
 		wizardPanel.add(second);
-		wizardPanel.add(third);
 	}
 
 	private void sortuPanel1() {
 		final ExtElement element = new ExtElement(RootPanel.get().getElement());
 		element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
+		
+		createMapPanel();
 
 		first = new Panel();
 		first.setLayout(new BorderLayout());
-//		first.setSize("auto", "auto");
 		first.setBorder(false);
-//		first.setAutoHeight(true);
-		first.setId("guneaAukeratu");
-		first.add(new Label("Aukeratu zein gunetara joan nahi duzun"));
+		first.setId("firstPanel");
 
-		final Mapa mapa = new Mapa();
-		mapa.setWidth(500);
-		mapa.setHeight(400);
-
-		final GuneenLista guneak = new GuneenLista();
+		guneak = new GuneenLista();
 		final RowSelectionModel sm = new RowSelectionModel(true);
 		sm.addListener(new RowSelectionListenerAdapter() {
 			public void onRowSelect(RowSelectionModel sm, int rowIndex,
 					Record record) {
-				mapa.markaGehitu(record.getAsString("izena"), record
+				markaGehitu(record.getAsString("izena"), record
 						.getAsString("helbidea"), record.getAsDouble("lat"),
 						record.getAsDouble("lon"));
 			}
 		});
+		guneak.doOnRender(new Function() {
+			public void execute() {
+				sm.selectFirstRow();
+			}
+		}, 10);
 		guneak.setSelectionModel(sm);
 
-		first.add(guneak, new BorderLayoutData(RegionPosition.WEST));
-		first.add(mapa, new BorderLayoutData(RegionPosition.CENTER));
+		BorderLayoutData westData = new BorderLayoutData(RegionPosition.WEST);
+		westData.setSplit(true);
+		westData.setMargins(new Margins(0, 5, 0, 0));
 		
+		first.add(guneak, westData);
+		first.add(mapPanel , new BorderLayoutData(RegionPosition.CENTER));
+		first.add(new Label("Aukeratu zein gunera joan nahi duzun"), new BorderLayoutData(RegionPosition.NORTH));
+
 		GuneaService.Util.getInstance().guneenZerrenda(
 				new AsyncCallback<HashMap<Integer, GuneInfo>>() {
 					public void onFailure(Throwable caught) {
+						caught.getMessage();
 						caught.printStackTrace();
 						element.unmask();
 					}
@@ -134,7 +157,7 @@ public class Alokatu extends Panel {
 							obj[i][2] = result.get(key).getHelbidea();
 							obj[i][3] = result.get(key).getLat();
 							obj[i][4] = result.get(key).getLon();
-							mapa.markaGehitu(result.get(key));
+							markaGehitu(result.get(key));
 							i++;
 						}
 						guneak.setGuneak(obj);
@@ -145,7 +168,96 @@ public class Alokatu extends Panel {
 				});
 	}
 	
-	private void sortuPanel2(){
+	private void sortuPanel2() {
+		second = new Panel();
+		second.setLayout(new BorderLayout());
+		second.setBorder(false);
+		second.setId("secondPanel");
 		
+		String html = "<h1 align=\"center\">Alokairua ondo bete da</h1>" +
+                    "<p style=\"font-size:large;\"><strong>Esleitu zaizun bizikleta zenbakia:</strong> 4<br /><br />" +
+                      "<strong>Bizikletaren modeloa:</strong> Orbea" +
+                      "<br />" +
+                      "<strong>Bizikletaren kolorea:</strong> Gorria</p>";
+		second.setHtml(html);
+	}
+	
+	private void createMapPanel() {
+		mapPanel = new GoogleMap() {
+
+			public void addEventListener(final String event,
+					final OneArgFunction listener) {
+				if (!this.isRendered()) {
+					addListener(MAP_RENDERED_EVENT, new Function() {
+						public void execute() {
+							doAddEventListener(event, listener);
+						}
+					});
+				} else {
+					doAddEventListener(event, listener);
+				}
+			}
+
+			private native void doAddEventListener(String event, OneArgFunction listener) /*-{
+				var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
+				map.addEventListener(event, function(llp) {
+					listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
+				});
+			}-*/;
+
+			{
+				addEventListener("click", new OneArgFunction() {
+					public void execute(JavaScriptObject arg) {
+						renderMap(arg);
+					}
+				});
+			}
+		};
+		mapPanel.addLargeControls();
+	}
+	
+	public void renderMap(JavaScriptObject jsObj) {
+		double lat = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
+				jsObj, "lat"));
+		double lon = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
+				jsObj, "lon"));
+		String izena = JavaScriptObjectHelper.getAttribute(jsObj, "izena");
+		String helbidea = JavaScriptObjectHelper.getAttribute(jsObj, "helbidea");
+		
+		markaGehitu(izena, helbidea, lat, lon);
+		finkatu(lat, lon);
+		// addListenerToMarker(m.toGoogle());
+	}
+	
+	public void finkatu(GuneInfo gunea) {
+		finkatu(gunea.getLat(), gunea.getLon());
+	}
+	
+	public void finkatu(double lat, double lon) {
+		ExtElement map = ExtElement.get("mapPanel");
+		map.mask("Mapa eguneratzen. Itxaron mesedez.", true);
+		
+		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
+		mapPanel.setCenterAndZoom(latLonPoint, 17);
+		
+		map.unmask();
+	}
+	
+	public void markaGehitu(GuneInfo gunea){
+		markaGehitu(gunea.getIzena(), gunea.getHelbidea(), gunea.getLat(), gunea.getLon());
+	}
+	
+	public void markaGehitu(String izena, String helbidea, double lat,
+			double lon) {
+//		ExtElement map = ExtElement.get("mapPanel");
+//		map.mask("Mapa eguneratzen. Itxaron mesedez.", true);
+		
+		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
+		Marker m = new Marker(latLonPoint);
+		mapPanel.setCenterAndZoom(latLonPoint, 17);
+		m.setInfoBubble("<h1>" + izena + "</h1><br><b>Helbidea:</b> " + helbidea);
+		mapPanel.addMarker(m);
+		
+//		map.unmask();
 	}
 }

@@ -5,16 +5,15 @@ import java.util.HashMap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface GuneaServiceAsync {
-	public void alokaDaiteke(int guneId, String userNan, AsyncCallback<Boolean> callback);
+	public void alokaDaiteke(int guneId, AsyncCallback<Boolean> callback);
 
 	public void helburuaAukeraDaiteke(int unekoGuneId, int helburuGuneId, AsyncCallback<Boolean> callback);
 
 	public void guneenZerrenda(AsyncCallback<HashMap<Integer, GuneInfo>> callback);
 
-	public void alokatu(int unekoGuneId, int helburuGuneId, String erabNan, AsyncCallback<Integer> callback);
+	public void alokatu(int unekoGuneId, int helburuGuneId, String erabNan, AsyncCallback<BizikletaInfo> callback);
 
 	public void getMyInfo(AsyncCallback<GuneInfo> callback);
-
-	public void getAbisuenZerrenda(String userNan,
-			AsyncCallback<HashMap<Integer, AbisuInfo>> asyncCallback);
+	
+	public void getAbisuenZerrenda(String userNan, AsyncCallback<HashMap<Integer,AbisuInfo>> callback);
 }

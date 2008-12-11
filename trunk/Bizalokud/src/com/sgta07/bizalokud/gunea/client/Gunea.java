@@ -7,10 +7,10 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
+import com.gwtext.client.core.EventCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
-import com.gwtext.client.util.JavaScriptObjectHelper;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.HTMLPanel;
 import com.gwtext.client.widgets.Panel;
@@ -32,6 +32,11 @@ import com.sgta07.bizalokud.login.client.Login;
  */
 public class Gunea implements EntryPoint, Logeable {
 
+	// Zenbat segundu egon behar da aktibitaterik gabe sistematik irtetzeko
+	private final static int IRTETEKO_DENBORA = 30;
+	// Datuak zenbat segunduro eguneratuko diren
+	private final static int DATU_EGUNERAKETA_DENBORA = 40;
+
 	private GuneInfo gunea;
 
 	private String erabNan;
@@ -39,15 +44,20 @@ public class Gunea implements EntryPoint, Logeable {
 	private String erabAbizen;
 	private boolean erabAdminDa;
 
-	private Mapa mapa;
+	// private Mapa mapa;
 	private Label orduLabel;
 	private Label erabDatuak;
 	private Label guneIzenDatuak;
 	private Label guneHelbideDatuak;
 
+	// Aktibitaterik gabe egondako denbora
+	private int ezAktKont = 0;
+	// Eguneratu gabe egondako denbora
+	private int eguneraketaKont = 0;
+
 	public void onModuleLoad() {
-		mapa = new Mapa();
-		mapa.setSize(500, 400);
+		// mapa = new Mapa();
+		// mapa.setSize(500, 400);
 
 		GuneaService.Util.getInstance().getMyInfo(
 				new AsyncCallback<GuneInfo>() {
@@ -84,31 +94,22 @@ public class Gunea implements EntryPoint, Logeable {
 		borderPanel.setLayout(new BorderLayout());
 
 		erabDatuak = new Label();
-//		erabDatuak.setStyle("text-align: right;");
+		// erabDatuak.setStyle("text-align: right;");
 		guneIzenDatuak = new Label();
-//		guneIzenDatuak.setStyle("text-align: right;");
+		// guneIzenDatuak.setStyle("text-align: right;");
 		guneHelbideDatuak = new Label();
-//		guneHelbideDatuak.setStyle("text-align: right;");
-		
-		orduLabel = new Label();
-//		orduLabel.setStyle("text-align: right;");
-		Timer timer = new Timer() {
-			public void run() {
-				DateTimeFormat dtf = new DateTimeFormat("HH:mm") {
-				};
-				String ordua = dtf.format(new Date());
-				orduLabel.setText(ordua);
-			}
-		};
+		// guneHelbideDatuak.setStyle("text-align: right;");
 
-		timer.scheduleRepeating(1000);
+		orduLabel = new Label();
+		// orduLabel.setStyle("text-align: right;");
+
+		denboraHasi();
 
 		// Iparraldeko panela: Aplikazioaren titulua, gunea eta kautotutako
 		// erabiltzailearen informazioa
 		Image banner = new Image("images/banner.png");
 
-		Panel datuak = new Panel();
-		datuak.setTitle("Informazioa");
+		Panel datuak = new Panel("Informazioa", 200, 100);
 		datuak.setBorder(true);
 		datuak.setFrame(true);
 		datuak.setPaddings(10);
@@ -201,10 +202,10 @@ public class Gunea implements EntryPoint, Logeable {
 				.setHtml("<br><br><h1>Ongietorria Bizalokud sistemara!</h1>\n<br><p>Aukera ezazu menuko ekintza bat aplikazioa erabiltzen hasteko.");
 		centerPanelTwo.setTitle("Ekintzak");
 		centerPanelTwo.setAutoScroll(true);
-		centerPanelTwo.add(mapa.getMapPanel());
+		// centerPanelTwo.add(mapa);
 		centerPanelTwo.add(new Button("Alokatu", new ButtonListenerAdapter() {
 			public void onClick(Button button, EventObject e) {
-				Alokatu alokatu = new Alokatu();
+				Alokatu alokatu = new Alokatu(Gunea.this);
 				alokatu.setTitle("Alokatu");
 				centerPanel.add(alokatu);
 				// centerPanel.activate(2);
@@ -222,8 +223,8 @@ public class Gunea implements EntryPoint, Logeable {
 			}
 		}));
 
-		Alokatu alokatu = new Alokatu();
-		alokatu.setTitle("Alokatu");
+		Alokatu alokatu = new Alokatu(this);
+		// alokatu.setTitle("Alokatu");
 		centerPanel.add(alokatu);
 		// centerPanel.activate(2);
 		centerPanel.setActiveItem(0);
@@ -244,20 +245,64 @@ public class Gunea implements EntryPoint, Logeable {
 		panelNagusia.add(borderPanel);
 
 		new Viewport(panelNagusia);
+
+		// Aktibitatea dagoen edo ez detektatzen du. Aktibitaterik ez badago
+		// loginetik irtengo da.
+		panelNagusia.getEl().addListener("keydown", new EventCallback() {
+			public void execute(EventObject e) {
+				resetIdleTimer();
+			}
+		});
+
+		panelNagusia.getEl().addListener("click", new EventCallback() {
+			public void execute(EventObject e) {
+				resetIdleTimer();
+			}
+		});
 	}
 
-	protected void setGunea(GuneInfo gunea) {
+	private void resetIdleTimer() {
+		ezAktKont = 0;
+	}
+
+	private void denboraHasi() {
+
+		Timer timer = new Timer() {
+			public void run() {
+				DateTimeFormat dtf = new DateTimeFormat("HH:mm") {
+				};
+				String ordua = dtf.format(new Date());
+				orduLabel.setText(ordua);
+				ezAktKont++;
+				eguneraketaKont++;
+				if (ezAktKont == (Gunea.IRTETEKO_DENBORA - 10)) {
+					// TODO: Mezu kutxa erakutsi abisatzeko
+				} else if (ezAktKont == Gunea.IRTETEKO_DENBORA) {
+					// TODO: Deslogeatu
+				}
+				if (eguneraketaKont == Gunea.DATU_EGUNERAKETA_DENBORA) {
+					// TODO: Datuak eguneratu
+				}
+			}
+		};
+		timer.scheduleRepeating(1000);
+	}
+
+	private void setGunea(GuneInfo gunea) {
 		this.gunea = gunea;
 		if (gunea != null) {
-			guneIzenDatuak.setText(gunea.getIzena() + " gunean zaude");
-			guneHelbideDatuak.setText("\n" + gunea.getHelbidea());
-			if (!gunea.hasLatLon())
-				mapa.updateMap(gunea.getIzena(), gunea.getHelbidea(),
-						JavaScriptObjectHelper.createObject(), mapa);
-			else {
-				mapa.markaGehitu(gunea);
-				mapa.finkatu(gunea);
-			}
+			// guneIzenDatuak.setText(gunea.getIzena() + " gunean zaude");
+			// guneHelbideDatuak.setText(gunea.getHelbidea());
+			guneIzenDatuak.setHtml("<b>" + gunea.getIzena()
+					+ "</b> gunean zaude<br>");
+			guneHelbideDatuak.setHtml("<b>" + gunea.getHelbidea() + "</b><br>");
+			// if (!gunea.hasLatLon())
+			// mapa.updateMap(gunea.getIzena(), gunea.getHelbidea(),
+			// JavaScriptObjectHelper.createObject(), mapa);
+			// else {
+			// mapa.markaGehitu(gunea);
+			// mapa.finkatu(gunea);
+			// }
 		}
 	}
 
@@ -271,7 +316,8 @@ public class Gunea implements EntryPoint, Logeable {
 		this.erabIzena = izena;
 		this.erabAbizen = abizenak;
 		this.erabAdminDa = adminDa;
-		erabDatuak.setText("Kaixo " + izena + " " + abizenak);
+		// erabDatuak.setText("Kaixo " + izena + " " + abizenak);
+		erabDatuak.setHtml("Kaixo <b>" + izena + " " + abizenak + "</b><br>");
 	}
 
 	public String getErabNan() {
@@ -290,8 +336,8 @@ public class Gunea implements EntryPoint, Logeable {
 		return erabAdminDa;
 	}
 
-	public Label getErabDatuak() {
-		return erabDatuak;
+	public int getGuneId() {
+		return gunea.getId();
 	}
 
 }

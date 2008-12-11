@@ -8,15 +8,15 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("GuneaService")
 public interface GuneaService extends RemoteService {
-	public boolean alokaDaiteke(int guneId, String userNan) throws Exception;
+	public boolean alokaDaiteke(int guneId) throws Salbuespena;
 
 	public boolean helburuaAukeraDaiteke(int unekoGuneId, int helburuGuneId)
-			throws Exception;
+			throws Salbuespena;
 
-	public HashMap<Integer, GuneInfo> guneenZerrenda() throws Exception;
+	public HashMap<Integer, GuneInfo> guneenZerrenda() throws Salbuespena;
 
-	public int alokatu(int unekoGuneId, int helburuGuneId, String erabNan)
-			throws Exception;
+	public BizikletaInfo alokatu(int unekoGuneId, int helburuGuneId, String erabNan)
+			throws Salbuespena;
 
 	public GuneInfo getMyInfo() throws Salbuespena;
 	
