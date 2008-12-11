@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.DateFieldDef;
 import com.gwtext.client.data.FieldDef;
@@ -20,24 +21,26 @@ import com.gwtext.client.widgets.form.event.FieldListenerAdapter;
 import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.GridPanel;
+import com.gwtext.client.widgets.layout.BorderLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtextux.client.data.PagingMemoryProxy;
 
-public class Abisuak extends Panel {
+public class Abisuak extends BarnePanela {
 
-	private String userNan;
+	private String userNan = "";
 	private Object[][] datuak;
+	private Panel panel;
 	
-	public Abisuak(){
-		
-	}
 
-	public Abisuak(String nan) {
-		super();
-		userNan = nan;
-		final Panel panel = this;
+	public Abisuak(Gunea owner) {
+		super(owner);
+		userNan = "09760589X";
+		panel = this;
+		panel.setTitle("Nire Abisuak");
+		panel.setLayout(new FitLayout());
 		panel.setBorder(false);
-		panel.setPaddings(15);
 		panel.setAutoScroll(true);
+		panel.setCollapsible(false);
 		
 		GuneaService.Util.getInstance().getAbisuenZerrenda(userNan,
 				new AsyncCallback<HashMap<Integer, AbisuInfo>>() {
@@ -80,13 +83,13 @@ public class Abisuak extends Panel {
 						grid.setStripeRows(true);
 						grid.setWidth(600);
 						grid.setHeight(250);
-						grid.setTitle("Zure abisuen zerrenda");
 						grid.setAutoExpandColumn("mota");
+//						grid.setCollapsible(false);
 
 						final PagingToolbar pagingToolbar = new PagingToolbar(store);
 						pagingToolbar.setPageSize(5);
 						pagingToolbar.setDisplayInfo(true);
-						pagingToolbar.setDisplayMsg("Displaying companies {0} - {1} of {2}");
+						pagingToolbar.setDisplayMsg("Erakusten diren abisuak: {0} - {1} {2}(e)tik");
 						pagingToolbar.setEmptyMsg("Ez daukazu abisurik");
 
 						NumberField pageSizeField = new NumberField();
@@ -108,11 +111,23 @@ public class Abisuak extends Panel {
 						grid.setBottomToolbar(pagingToolbar);
 						store.load(0, 5);
 						System.out.println("4");
-						panel.add(grid);
+						panel.add(grid, new BorderLayoutData(RegionPosition.CENTER));
 
 					}
 
 				});
+		
+	}
+
+	@Override
+	public void datuakEguneratu() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void datuakReseteatu() {
+		// TODO Auto-generated method stub
 		
 	}
 }
