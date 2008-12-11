@@ -15,6 +15,8 @@ public interface GuneaService extends RemoteService {
 
 	public HashMap<Integer, GuneInfo> guneenZerrenda() throws Salbuespena;
 
+	public HashMap<Integer, GuneInfo> getHelburuGunePosibleak(int unekoGuneId) throws Salbuespena;
+	
 	public BizikletaInfo alokatu(int unekoGuneId, int helburuGuneId, String erabNan)
 			throws Salbuespena;
 

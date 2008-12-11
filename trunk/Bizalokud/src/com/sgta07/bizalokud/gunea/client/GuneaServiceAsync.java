@@ -11,6 +11,8 @@ public interface GuneaServiceAsync {
 
 	public void guneenZerrenda(AsyncCallback<HashMap<Integer, GuneInfo>> callback);
 
+	public void getHelburuGunePosibleak(int unekoGuneId, AsyncCallback<HashMap<Integer, GuneInfo>> callback);
+	
 	public void alokatu(int unekoGuneId, int helburuGuneId, String erabNan, AsyncCallback<BizikletaInfo> callback);
 
 	public void getMyInfo(AsyncCallback<GuneInfo> callback);

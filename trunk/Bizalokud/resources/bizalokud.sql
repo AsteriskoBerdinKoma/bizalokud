@@ -148,7 +148,7 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `ibilbidea` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `haisera_data` datetime NOT NULL,
+  `hasiera_data` datetime NOT NULL,
   `bukaera_data` datetime default NULL,
   `fk_erab_nan` varchar(9) NOT NULL,
   `fk_bizi_id` int(10) unsigned NOT NULL,
