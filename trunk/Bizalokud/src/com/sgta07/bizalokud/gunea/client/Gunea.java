@@ -19,12 +19,10 @@ import com.gwtext.client.data.Record;
 import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
-import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.HTMLPanel;
 import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.Viewport;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.event.PanelListenerAdapter;
 import com.gwtext.client.widgets.form.Label;
 import com.gwtext.client.widgets.layout.AccordionLayout;
 import com.gwtext.client.widgets.layout.BorderLayout;
@@ -74,6 +72,7 @@ public class Gunea implements EntryPoint, Logeable {
 	
 	//Panel nagusien aldagaiak
 	private Panel centerPanel;
+	private CardLayout cardLayout;
 
 	public void onModuleLoad() {
 		// mapa = new Mapa();
@@ -183,7 +182,8 @@ public class Gunea implements EntryPoint, Logeable {
 		borderPanel.add(getMenuPanel(),westData);
 
 		centerPanel = new Panel();
-		centerPanel.setLayout(new CardLayout());
+		cardLayout = new CardLayout();
+		centerPanel.setLayout(cardLayout);
 
 //		 final TabPanel centerPanel = new TabPanel();
 //		 centerPanel.setDeferredRender(false);
@@ -203,10 +203,7 @@ public class Gunea implements EntryPoint, Logeable {
 		centerPanelTwo.setAutoScroll(true);
 		
 
-		Abisuak abisuak= new Abisuak(this);
-		abisuak.setId("abisuak-panel");
-		// alokatu.setTitle("Alokatu");
-		centerPanel.add(abisuak);
+		
 		// centerPanel.activate(2);
 		//centerPanel.setActiveItemID("abisuak-panel");
 
@@ -224,8 +221,20 @@ public class Gunea implements EntryPoint, Logeable {
 		borderPanel.add(centerPanel, centerData);
 
 		panelNagusia.add(borderPanel);
-
+		
 		new Viewport(panelNagusia);
+		
+		final Abisuak abisuak = new Abisuak(this);
+		abisuak.setId("abisuak-panel");
+		
+		
+//		final Alokatu alokatu = new Alokatu(this);
+//		alokatu.setId("alokatu-panel");
+		
+		centerPanel.add(abisuak);
+//		centerPanel.add(alokatu);
+
+		
 
 		// Aktibitatea dagoen edo ez detektatzen du. Aktibitaterik ez badago
 		// loginetik irtengo da.
@@ -415,10 +424,10 @@ public class Gunea implements EntryPoint, Logeable {
 			public void onClick(Node node, EventObject e) {
 				
 				if(node.getId().equals("abisuak")){
-					centerPanel.setActiveItemID("abisuak-panel");
+					cardLayout.setActiveItem("abisuak-panel");
 				}
 				if(node.getId().equals("alokatu")){
-					centerPanel.setActiveItemID("alokatu-panel");
+					cardLayout.setActiveItem("alokatu-panel");
 				}
 				if(node.getId().equals("entregatu")){
 					centerPanel.setActiveItemID("entregatu-panel");
