@@ -27,44 +27,66 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 	public boolean alokaDaiteke(int guneId) throws Salbuespena {
 
-		int bizikletakLibre = 0;
-
 		try {
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
 
 			String queryLibre = "SELECT COUNT(*) AS bizikletakLibre "
-					+ "FROM bizileta "
-					+ "WHERE alta = 'true' AND alokatuta = 'false' AND fk_uneko_gune_id = ?";
-			String queryBidean = "SELECT COUNT(*) AS bizikletakBidean "
-					+ "FROM ibilbidea "
-					+ "WHERE bukatuta = 'false' AND fk_gune_hel_id = ?";
-
+					+ "FROM bizikleta "
+					+ "WHERE alta = true AND alokatuta = false AND fk_uneko_gune_id = ?";
 			PreparedStatement ps1 = connector.prepareStatement(queryLibre);
 			ps1.setInt(1, guneId);
 			ResultSet rs1 = ps1.executeQuery();
-			PreparedStatement ps2 = connector.prepareStatement(queryBidean);
-			ps2.setInt(1, guneId);
-			ResultSet rs2 = ps2.executeQuery();
 			if (rs1.next()) {
-				bizikletakLibre += rs1.getInt("bizikletakLibre");
-			}
-			if (rs2.next()) {
-				bizikletakLibre += rs2.getInt("bizikletakBidean");
+				if (rs1.getInt("bizikletakLibre") == 0) {
+					rs1.close();
+					ps1.close();
+					return false;
+				} else if (rs1.getInt("bizikletakLibre") == 1) {
+					String queryBidean = "SELECT COUNT(*) AS bizikletakBidean "
+							+ "FROM ibilbidea "
+							+ "WHERE bukatuta = false AND fk_gunehel_id = ?";
+					PreparedStatement ps2 = connector
+							.prepareStatement(queryBidean);
+					ps2.setInt(1, guneId);
+					ResultSet rs2 = ps2.executeQuery();
+					if (rs2.next()) {
+						if (rs2.getInt("bizikletakBidean") >= 1) {
+							rs1.close();
+							ps1.close();
+							rs2.close();
+							ps2.close();
+							return true;
+						} else {
+							rs1.close();
+							ps1.close();
+							rs2.close();
+							ps2.close();
+							return false;
+						}
+					} else {
+						rs1.close();
+						ps1.close();
+						return false;
+					}
+				} else {
+					rs1.close();
+					ps1.close();
+					return true;
+				}
+			} else {
+				rs1.close();
+				ps1.close();
+				return false;
 			}
 
-			rs1.close();
-			rs2.close();
-			ps1.close();
-			ps2.close();
-//			connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
 			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
 		}
 
-		return bizikletakLibre > 1;
+		// return bizikletakLibre > 1;
 
 	}
 
@@ -77,7 +99,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				connector.connect();
 
 			String queryBizikletaLibre = "SELECT COUNT(*) AS bizikletakLibre "
-					+ "FROM bizileta "
+					+ "FROM bizikleta "
 					+ "WHERE alta = 'true' AND alokatuta = 'false' AND fk_uneko_gune_id = ?";
 			PreparedStatement ps1 = connector
 					.prepareStatement(queryBizikletaLibre);
@@ -108,7 +130,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			ps1.close();
 			ps2.close();
 			ps3.close();
-//			connector.close();
+			// connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
@@ -138,7 +160,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				String helbidea = rs.getString("helb");
 				double lat = rs.getDouble("lat");
 				double lon = rs.getDouble("lon");
-				
+
 				GuneInfo gunea = new GuneInfo(id, izena, helbidea);
 				gunea.setLatLon(lat, lon);
 
@@ -147,13 +169,23 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 			rs.close();
 			ps.close();
-//			connector.close();
+			// connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
 			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
 		}
-		
+
+		return guneak;
+	}
+
+	public HashMap<Integer, GuneInfo> getHelburuGunePosibleak(int unekoGuneId)
+			throws Salbuespena {
+		HashMap<Integer, GuneInfo> guneak = guneenZerrenda();
+		for (int id : guneak.keySet())
+			if (!helburuaAukeraDaiteke(unekoGuneId, id))
+				guneak.remove(id);
+
 		return guneak;
 	}
 
@@ -177,7 +209,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			// Jatorri gunea ibilbide honen helburu gunearen berdina duten
 			// bizikletei lehentasuna emango zaie.
 			String queryLibre = "SELECT * "
-					+ "FROM bizileta "
+					+ "FROM bizikleta "
 					+ "WHERE alta = true AND alokatuta = false AND egoera = 'ondo' AND fk_uneko_gune_id = ? AND fk_jatorri_gune_id = ?";
 			PreparedStatement ps1 = connector.prepareStatement(queryLibre);
 			ps1.setInt(1, unekoGuneId);
@@ -188,11 +220,10 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 						.getString("modeloa"), rs1.getString("kolorea"));
 			else {
 				String query = "SELECT * "
-						+ "FROM bizileta "
+						+ "FROM bizikleta "
 						+ "WHERE alta = true AND alokatuta = false AND egoera = 'ondo' AND fk_uneko_gune_id = ?";
 				PreparedStatement ps2 = connector.prepareStatement(query);
 				ps2.setInt(1, unekoGuneId);
-				ps2.setInt(2, helburuGuneId);
 				ResultSet rs2 = ps2.executeQuery();
 				if (rs2.next())
 					esleitutakoBizikleta = new BizikletaInfo(rs2.getInt("id"),
@@ -213,7 +244,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				ps3.setInt(1, unekoGuneId);
 				ps3.setInt(2, helburuGuneId);
 				ps3.setString(3, erabNan);
-				ps3.setInt(6, esleitutakoBizikleta.getId());
+				ps3.setInt(4, esleitutakoBizikleta.getId());
 				result = ps3.executeUpdate();
 				ps3.close();
 
@@ -229,7 +260,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 			rs1.close();
 			ps1.close();
-//			connector.close();
+			// connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
@@ -256,7 +287,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			if (rs.next())
 				emaitza = new GuneInfo(rs.getInt("id"), rs.getString("izena"),
 						rs.getString("helb"));
-//			connector.close();
+			// connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
@@ -285,27 +316,27 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				String[] ordua = s[1].split(":");
 
 				Calendar cal = new GregorianCalendar(Integer.parseInt(data[0]),
-                        Integer.parseInt(data[1]), Integer.parseInt(data[2]),
-                        Integer.parseInt(ordua[0]), Integer.parseInt(ordua[1]),
-                        Integer.parseInt(ordua[2]));
+						Integer.parseInt(data[1]), Integer.parseInt(data[2]),
+						Integer.parseInt(ordua[0]), Integer.parseInt(ordua[1]),
+						Integer.parseInt(ordua[2]));
 
 				AbisuInfo aiu = new AbisuInfo(id, cal.getTime(), rs
 						.getBoolean("irakurrita"), rs.getString("mota"), rs
 						.getString("mezua"));
-						
-//				Date d = new Date(Integer.parseInt(data[0]), Integer
-//						.parseInt(data[1]) - 1, Integer.parseInt(data[2]),
-//						Integer.parseInt(ordua[0]), Integer.parseInt(ordua[1]),
-//						Integer.parseInt(ordua[2]));
-//				
-//				AbisuInfo aiu = new AbisuInfo(id, d, rs
-//						.getBoolean("irakurrita"), rs.getString("mota"), rs
-//						.getString("mezua"));
-				
+
+				// Date d = new Date(Integer.parseInt(data[0]), Integer
+				// .parseInt(data[1]) - 1, Integer.parseInt(data[2]),
+				// Integer.parseInt(ordua[0]), Integer.parseInt(ordua[1]),
+				// Integer.parseInt(ordua[2]));
+				//				
+				// AbisuInfo aiu = new AbisuInfo(id, d, rs
+				// .getBoolean("irakurrita"), rs.getString("mota"), rs
+				// .getString("mezua"));
+
 				emaitza.put(id, aiu);
 			}
 
-//			connector.close();
+			// connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {

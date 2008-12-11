@@ -22,7 +22,6 @@ import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.widgets.HTMLPanel;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Viewport;
-import com.gwtext.client.widgets.event.PanelListenerAdapter;
 import com.gwtext.client.widgets.form.Label;
 import com.gwtext.client.widgets.layout.AccordionLayout;
 import com.gwtext.client.widgets.layout.BorderLayout;
@@ -49,6 +48,9 @@ public class Gunea implements EntryPoint, Logeable {
 
 	private GuneInfo gunea;
 
+	private boolean isGuneaIdentif;
+	private boolean isErabIdentif;
+	
 	private String erabNan;
 	private String erabIzena;
 	private String erabAbizen;
@@ -64,6 +66,8 @@ public class Gunea implements EntryPoint, Logeable {
 	private int ezAktKont = 0;
 	// Eguneratu gabe egondako denbora
 	private int eguneraketaKont = 0;
+	
+	Alokatu alokatu;
 
 	// Menua hasieratzeko datuak
 	private static Store store;
@@ -77,6 +81,8 @@ public class Gunea implements EntryPoint, Logeable {
 	public void onModuleLoad() {
 		// mapa = new Mapa();
 		// mapa.setSize(500, 400);
+		
+		alokatu = new Alokatu(this);
 
 		GuneaService.Util.getInstance().getMyInfo(
 				new AsyncCallback<GuneInfo>() {
@@ -201,9 +207,9 @@ public class Gunea implements EntryPoint, Logeable {
 				.setHtml("<br><br><h1>Ongietorria Bizalokud sistemara!</h1>\n<br><p>Aukera ezazu menuko ekintza bat aplikazioa erabiltzen hasteko.");
 		centerPanelTwo.setTitle("Ekintzak");
 		centerPanelTwo.setAutoScroll(true);
-		
 
-		
+		// centerPanelTwo.add(mapa);
+
 		// centerPanel.activate(2);
 		//centerPanel.setActiveItemID("abisuak-panel");
 
@@ -281,6 +287,7 @@ public class Gunea implements EntryPoint, Logeable {
 	private void setGunea(GuneInfo gunea) {
 		this.gunea = gunea;
 		if (gunea != null) {
+			this.isGuneaIdentif = true;
 			// guneIzenDatuak.setText(gunea.getIzena() + " gunean zaude");
 			// guneHelbideDatuak.setText(gunea.getHelbidea());
 			guneIzenDatuak.setHtml("<b>" + gunea.getIzena()
@@ -293,7 +300,13 @@ public class Gunea implements EntryPoint, Logeable {
 			// mapa.markaGehitu(gunea);
 			// mapa.finkatu(gunea);
 			// }
+			
+			eguneratuGuneDatuak();
 		}
+	}
+
+	private void eguneratuGuneDatuak() {
+		alokatu.datuakEguneratu();
 	}
 
 	public String getHelbidea() {
@@ -308,6 +321,7 @@ public class Gunea implements EntryPoint, Logeable {
 		this.erabAdminDa = adminDa;
 		// erabDatuak.setText("Kaixo " + izena + " " + abizenak);
 		erabDatuak.setHtml("Kaixo <b>" + izena + " " + abizenak + "</b><br>");
+		this.isErabIdentif = true;
 	}
 
 	public String getErabNan() {
@@ -330,6 +344,14 @@ public class Gunea implements EntryPoint, Logeable {
 		return gunea.getId();
 	}
 
+	public boolean isGuneaIdentif() {
+		return isGuneaIdentif;
+	}
+
+	public boolean isErabIdentif() {
+		return isErabIdentif;
+	}
+	
 	public Panel getMenuPanel() {
 
 		Panel westPanel = new Panel();
@@ -441,6 +463,4 @@ public class Gunea implements EntryPoint, Logeable {
 			}
 		});
 	}
-	
-
 }
