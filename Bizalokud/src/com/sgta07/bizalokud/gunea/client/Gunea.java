@@ -11,6 +11,15 @@ import com.gwtext.client.core.EventCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
+import com.gwtext.client.data.ArrayReader;
+import com.gwtext.client.data.FieldDef;
+import com.gwtext.client.data.MemoryProxy;
+import com.gwtext.client.data.Node;
+import com.gwtext.client.data.ObjectFieldDef;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.RecordDef;
+import com.gwtext.client.data.Store;
+import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.HTMLPanel;
 import com.gwtext.client.widgets.Panel;
@@ -24,6 +33,9 @@ import com.gwtext.client.widgets.layout.CardLayout;
 import com.gwtext.client.widgets.layout.ColumnLayout;
 import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtext.client.widgets.layout.RowLayout;
+import com.gwtext.client.widgets.tree.TreeNode;
+import com.gwtext.client.widgets.tree.TreePanel;
+import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
 import com.sgta07.bizalokud.login.client.Logeable;
 import com.sgta07.bizalokud.login.client.Login;
 
@@ -54,6 +66,11 @@ public class Gunea implements EntryPoint, Logeable {
 	private int ezAktKont = 0;
 	// Eguneratu gabe egondako denbora
 	private int eguneraketaKont = 0;
+
+	// Menua hasieratzeko datuak
+	private static Store store;
+	private static MemoryProxy proxy;
+	private static ArrayReader reader;
 
 	public void onModuleLoad() {
 		// mapa = new Mapa();
@@ -153,35 +170,14 @@ public class Gunea implements EntryPoint, Logeable {
 		southData.setSplit(true);
 		borderPanel.add(southPanel, southData);
 
-		final AccordionLayout accordion = new AccordionLayout(true);
-
-		Panel westPanel = new Panel();
-		westPanel.setTitle("Menu Nagusia");
-		westPanel.setCollapsible(true);
-		westPanel.setWidth(200);
-		westPanel.setLayout(accordion);
-
-		Panel navPanel = new Panel();
-		navPanel.setHtml("<p>Hi. I'm the west panel.</p>");
-		navPanel.setTitle("Ekintzak");
-		navPanel.setBorder(false);
-		navPanel.setIconCls("folder-icon");
-		westPanel.add(navPanel);
-
-		Panel settingsPanel = new Panel();
-		settingsPanel.setHtml("<p>Some settings in here.</p>");
-		settingsPanel.setTitle("Hobespenak");
-		settingsPanel.setBorder(false);
-		settingsPanel.setIconCls("settings-icon");
-		westPanel.add(settingsPanel);
-
 		BorderLayoutData westData = new BorderLayoutData(RegionPosition.WEST);
 		westData.setSplit(true);
 		westData.setMinSize(175);
 		westData.setMaxSize(400);
 		westData.setMargins(new Margins(0, 5, 0, 0));
 
-		borderPanel.add(westPanel, westData);
+//		borderPanel.add(westPanel, westData);
+		borderPanel.add(getMenuPanel(),westData);
 
 		final Panel centerPanel = new Panel();
 		centerPanel.setLayout(new CardLayout());
@@ -339,5 +335,103 @@ public class Gunea implements EntryPoint, Logeable {
 	public int getGuneId() {
 		return gunea.getId();
 	}
+
+	public Panel getMenuPanel() {
+
+		Panel westPanel = new Panel();
+		westPanel.setLayout(new AccordionLayout(true));
+		westPanel.setTitle("Menu Nagusia");
+		westPanel.setCollapsible(true);
+		westPanel.setWidth(200);
+
+		Store store = getStore();
+
+		Record[] records = store.getRecords();
+		for (int i = 0; i < records.length; i++) {
+			Record record = records[i];
+
+			String id = record.getAsString("id");
+			final String category = record.getAsString("kategoria");
+			String title = record.getAsString("izenburua");
+			final String iconCls = record.getAsString("iconCls");
+
+			if (category == null) {
+				Panel categoryPanel = new Panel();
+				categoryPanel.setAutoScroll(true);
+				categoryPanel.setLayout(new FitLayout());
+				categoryPanel.setId(id + "-acc");
+				categoryPanel.setTitle(title);
+				categoryPanel.setIconCls(iconCls);
+				westPanel.add(categoryPanel);
+			} else {
+				Panel categoryPanel = (Panel) westPanel.findByID(category
+						+ "-acc");
+				TreePanel treePanel = (TreePanel) categoryPanel
+						.findByID(category + "-acc-tree");
+				TreeNode root = null;
+				if (treePanel == null) {
+					treePanel = new TreePanel();
+					treePanel.setAutoScroll(true);
+					treePanel.setId(category + "-acc-tree");
+					treePanel.setRootVisible(false);
+					root = new TreeNode();
+					treePanel.setRootNode(root);
+					categoryPanel.add(treePanel);
+				} else {
+					root = treePanel.getRootNode();
+				}
+
+				TreeNode node = new TreeNode();
+				node.setText(title);
+				node.setId(id);
+				if (iconCls != null)
+					node.setIconCls(iconCls);
+				root.appendChild(node);
+				addNodeClickListener(node);
+			}
+		}
+		return westPanel;
+	}
+
+	public static Store getStore() {
+		if (store == null) {
+			proxy = new MemoryProxy(getData());
+
+			RecordDef recordDef = new RecordDef(
+					new FieldDef[] { new StringFieldDef("id"),
+							new StringFieldDef("kategoria"),
+							new StringFieldDef("izenburua"),
+							new StringFieldDef("iconCls"),
+							new StringFieldDef("irudia") });
+
+			reader = new ArrayReader(0, recordDef);
+			store = new Store(proxy, reader);
+			store.load();
+		}
+		return store;
+	}
+
+	private static Object[][] getData() {
+		return new Object[][] {
+
+				new Object[] { "ekintzak-kategoria", null, "Ekintzak","ekintza-kategoria-icon", null },
+				new Object[] { "alokatu", "ekintzak-kategoria","Bizikleta Alokatu", null, null },
+				new Object[] { "entregatu", "ekintzak-kategoria","Bizikleta Entregatu", null, null },
+
+				new Object[] { "kontua-kategoria", null, "Nire Kontua","kontua-kategoria-icon", null },
+				new Object[] { "estatistikak", "kontua-kategoria","Nire Ibilbideak", null, null },
+				new Object[] { "pasahitza", "kontua-kategoria","Pasahitza Aldatu", null, null },
+				new Object[] { "abisuak", "kontua-kategoria", "Nire Abisuak",null, null },
+				new Object[] { "datuak", "kontua-kategoria", "Nire Datuak",null, null } };
+	}
+	
+	private void addNodeClickListener(TreeNode node) {
+		node.addListener(new TreeNodeListenerAdapter() {
+			public void onClick(Node node, EventObject e) {
+					
+			}
+		});
+	}
+	
 
 }
