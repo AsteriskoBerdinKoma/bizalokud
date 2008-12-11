@@ -30,8 +30,9 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		int bizikletakLibre = 0;
 
 		try {
-			if (!connector.isConnectedToDatabase())
+			if (!connector.isConnectedToDatabase()){
 				connector.connect();
+			}
 
 			String queryLibre = "SELECT COUNT(*) AS bizikletakLibre "
 					+ "FROM bizileta "
@@ -57,7 +58,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			rs2.close();
 			ps1.close();
 			ps2.close();
-			connector.close();
+//			connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
@@ -108,7 +109,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			ps1.close();
 			ps2.close();
 			ps3.close();
-			connector.close();
+//			connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
@@ -147,7 +148,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 			rs.close();
 			ps.close();
-			connector.close();
+//			connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
@@ -229,7 +230,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 			rs1.close();
 			ps1.close();
-			connector.close();
+//			connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
@@ -256,7 +257,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			if (rs.next())
 				emaitza = new GuneInfo(rs.getInt("id"), rs.getString("izena"),
 						rs.getString("helb"));
-			connector.close();
+//			connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
@@ -305,7 +306,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				emaitza.put(id, aiu);
 			}
 
-			connector.close();
+//			connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
