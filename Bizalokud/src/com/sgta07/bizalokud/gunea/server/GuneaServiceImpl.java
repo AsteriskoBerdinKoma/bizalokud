@@ -30,9 +30,8 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		int bizikletakLibre = 0;
 
 		try {
-			if (!connector.isConnectedToDatabase()){
+			if (!connector.isConnectedToDatabase())
 				connector.connect();
-			}
 
 			String queryLibre = "SELECT COUNT(*) AS bizikletakLibre "
 					+ "FROM bizileta "
