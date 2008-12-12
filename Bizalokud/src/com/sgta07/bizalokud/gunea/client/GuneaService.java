@@ -24,6 +24,8 @@ public interface GuneaService extends RemoteService {
 	
 	public HashMap<Integer,AbisuInfo> getAbisuenZerrenda(String userNan) throws Salbuespena;
 
+	public boolean erabiltzaileaAlokatuDu(String erabNan) throws Salbuespena;
+	
 	/**
 	 * Utility class for simplifying access to the instance of async service.
 	 */

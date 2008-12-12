@@ -344,4 +344,24 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		}
 		return emaitza;
 	}
+
+	public boolean erabiltzaileaAlokatuDu(String erabNan) throws Salbuespena {
+		try {
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+			String query = "SELECT COUNT(id) AS alokairuKop FROM ibilbidea WHERE fk_erab_nan = ? AND bukatuta = 0";
+			PreparedStatement ps = connector.prepareStatement(query);
+			ps.setString(1, erabNan);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+				return (rs.getInt("alokairuKop") == 0);
+			else
+				return false;
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		} 
+
+	}
 }

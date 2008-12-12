@@ -18,4 +18,6 @@ public interface GuneaServiceAsync {
 	public void getMyInfo(AsyncCallback<GuneInfo> callback);
 	
 	public void getAbisuenZerrenda(String userNan, AsyncCallback<HashMap<Integer,AbisuInfo>> callback);
+
+	public void erabiltzaileaAlokatuDu(String erabNan, AsyncCallback<Boolean> callback);
 }
