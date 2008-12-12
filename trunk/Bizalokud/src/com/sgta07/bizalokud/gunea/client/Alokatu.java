@@ -42,22 +42,29 @@ public class Alokatu extends BarnePanela {
 
 	private GuneenLista guneak;
 
+	private Toolbar toolbar;
 	private ToolbarButton alokatuButton;
 
 	private ExtElement element;
 
 	private boolean sortua = false;
+	
+	private Label erroreLabel;
+	
+	HashMap<Integer, Marker> markak;
 
 	public Alokatu(Gunea owner) {
 		super(owner);
 
+		markak = new HashMap<Integer, Marker>();
+		
 		setTitle("Bizikleta Alokatu");
 		setLayout(new CardLayout());
 		setBorder(false);
 		setCollapsible(false);
 
-		Toolbar toolbar = new Toolbar();
-
+		toolbar = new Toolbar();
+		toolbar.addFill();
 		setBottomToolbar(toolbar);
 
 		sortuPanel1();
@@ -88,7 +95,7 @@ public class Alokatu extends BarnePanela {
 
 										CardLayout cardLayout = (CardLayout) getLayout();
 										cardLayout.setActiveItem(0);
-										alokatuButton.setVisible(true);
+										toolbar.setVisible(true);
 										element.unmask();
 
 										MessageBox.show(new MessageBoxConfig() {
@@ -163,7 +170,7 @@ public class Alokatu extends BarnePanela {
 		sm.addListener(new RowSelectionListenerAdapter() {
 			public void onRowSelect(RowSelectionModel sm, int rowIndex,
 					Record record) {
-				markaGehitu(record.getAsString("izena"), record
+				markaGehitu(record.getAsInteger("id"), record.getAsString("izena"), record
 						.getAsString("helbidea"), record.getAsDouble("lat"),
 						record.getAsDouble("lon"));
 			}
@@ -199,12 +206,9 @@ public class Alokatu extends BarnePanela {
 		errorePanel.setLayout(new BorderLayout());
 		errorePanel.setBorder(false);
 		errorePanel.setId("errorePanel");
-		Label label = new Label();
-		errorePanel.setStyle("text-align: center;");
-		errorePanel.setStyle("vertical-align: middle;");
-		label
-				.setHtml("<b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b>");
-		errorePanel.add(label, new BorderLayoutData(RegionPosition.CENTER));
+		erroreLabel = new Label();
+		erroreLabel.setStyle("background: white;");
+		errorePanel.add(erroreLabel, new BorderLayoutData(RegionPosition.CENTER));
 	}
 
 	private void createMapPanel() {
@@ -224,11 +228,11 @@ public class Alokatu extends BarnePanela {
 
 			private native void doAddEventListener(String event,
 					OneArgFunction listener) /*-{
-												var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
-												map.addEventListener(event, function(llp) {
-												listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
-												});
-											}-*/;
+					var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
+					map.addEventListener(event, function(llp) {
+						listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
+					});
+				}-*/;
 
 			{
 				addEventListener("click", new OneArgFunction() {
@@ -247,11 +251,11 @@ public class Alokatu extends BarnePanela {
 				jsObj, "lat"));
 		double lon = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
 				jsObj, "lon"));
-		String izena = JavaScriptObjectHelper.getAttribute(jsObj, "izena");
-		String helbidea = JavaScriptObjectHelper
-				.getAttribute(jsObj, "helbidea");
+//		String izena = JavaScriptObjectHelper.getAttribute(jsObj, "izena");
+//		String helbidea = JavaScriptObjectHelper
+//				.getAttribute(jsObj, "helbidea");
 
-		markaGehitu(izena, helbidea, lat, lon);
+		//markaGehitu(izena, helbidea, lat, lon);
 		finkatu(lat, lon);
 		// addListenerToMarker(m.toGoogle());
 	}
@@ -271,11 +275,11 @@ public class Alokatu extends BarnePanela {
 	}
 
 	public void markaGehitu(GuneInfo gunea) {
-		markaGehitu(gunea.getIzena(), gunea.getHelbidea(), gunea.getLat(),
+		markaGehitu(gunea.getId(), gunea.getIzena(), gunea.getHelbidea(), gunea.getLat(),
 				gunea.getLon());
 	}
 
-	public void markaGehitu(String izena, String helbidea, double lat,
+	public void markaGehitu(int id, String izena, String helbidea, double lat,
 			double lon) {
 		ExtElement map = ExtElement.get("mapPanel");
 		if (map != null)
@@ -288,19 +292,51 @@ public class Alokatu extends BarnePanela {
 				+ helbidea);
 		mapPanel.addMarker(m);
 
+		markak.put(id, m);
+		
 		if (map != null)
 			map.unmask();
+	}
+	
+	public void markakKendu(){
+		for(int id: markak.keySet()){
+			mapPanel.removeMarker(markak.get(id));
+			markak.remove(id);
+		}
 	}
 
 	public void datuakEguneratu() {
 		element = new ExtElement(getElement());
 		element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
-		
 		if (sortua && jabea.isGuneaIdentif()) {
+//			markakKendu();
 			CardLayout cardLayout = (CardLayout) getLayout();
 			if (cardLayout.getActiveItem() != first) {
 				setActiveItem(0);
-				alokatuButton.setVisible(true);
+				toolbar.setVisible(true);
+			}
+			if(jabea.isErabIdentif()){
+				GuneaService.Util.getInstance().erabiltzaileaAlokatuDu(jabea.getErabNan(), new AsyncCallback<Boolean>(){
+
+					public void onFailure(Throwable caught) {
+						System.out.println(caught.getMessage());
+						caught.printStackTrace();
+						datuakReseteatu();
+						erroreLabel.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
+						setActiveItem(2);
+						toolbar.setVisible(false);
+						element.unmask();
+					}
+
+					public void onSuccess(Boolean result) {
+						if (!result) {
+							datuakReseteatu();
+							erroreLabel.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan bizikleta bat alokatuta daukazu. Bizikleta hori itzuli behar duzu beste alokairu bat egin baino lehen.</b></p>");
+							setActiveItem(2);
+							toolbar.setVisible(false);
+						}
+						element.unmask();
+					}});
 			}
 			GuneaService.Util.getInstance().alokaDaiteke(jabea.getGuneId(),
 					new AsyncCallback<Boolean>() {
@@ -308,16 +344,18 @@ public class Alokatu extends BarnePanela {
 							System.out.println(caught.getMessage());
 							caught.printStackTrace();
 							datuakReseteatu();
+							erroreLabel.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
 							setActiveItem(2);
-							alokatuButton.setVisible(false);
+							toolbar.setVisible(false);
 							element.unmask();
 						}
 
 						public void onSuccess(Boolean result) {
 							if (!result) {
 								datuakReseteatu();
+								erroreLabel.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
 								setActiveItem(2);
-								alokatuButton.setVisible(false);
+								toolbar.setVisible(false);
 							}
 							element.unmask();
 						}
@@ -358,9 +396,12 @@ public class Alokatu extends BarnePanela {
 
 	public void datuakReseteatu() {
 		if (sortua) {
+			element = new ExtElement(getElement());
+			element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
 			guneak.setGuneak(new Object[0][]);
+//			markakKendu();
 			setActiveItem(0);
-			alokatuButton.setVisible(true);
+			toolbar.setVisible(true);
 		}
 	}
 }
