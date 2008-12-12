@@ -67,7 +67,8 @@ public class Gunea implements EntryPoint, Logeable {
 	// Eguneratu gabe egondako denbora
 	private int eguneraketaKont = 0;
 	
-	Alokatu alokatu;
+	private Alokatu alokatu;
+	private Abisuak abisuak;
 
 	// Menua hasieratzeko datuak
 	private static Store store;
@@ -82,7 +83,7 @@ public class Gunea implements EntryPoint, Logeable {
 		// mapa = new Mapa();
 		// mapa.setSize(500, 400);
 		
-		alokatu = new Alokatu(this);
+		sortuPanelak();
 
 		GuneaService.Util.getInstance().getMyInfo(
 				new AsyncCallback<GuneInfo>() {
@@ -162,7 +163,7 @@ public class Gunea implements EntryPoint, Logeable {
 		borderPanel
 				.add(bannerPanel, new BorderLayoutData(RegionPosition.NORTH));
 
-		// Egoaldeko panela: Azken minutuko informazioak jasotzeko
+		// Hegoaldeko panela: Azken minutuko informazioak jasotzeko
 		Panel southPanel = new HTMLPanel(
 				"<br>"
 						+ "<li>Amarako gunea bihartik aurrera itxita egongo da, konponketak egiteko!</li> "
@@ -208,37 +209,18 @@ public class Gunea implements EntryPoint, Logeable {
 		centerPanelTwo.setTitle("Ekintzak");
 		centerPanelTwo.setAutoScroll(true);
 
-		// centerPanelTwo.add(mapa);
-
-		// centerPanel.activate(2);
-		//centerPanel.setActiveItemID("abisuak-panel");
-
-		// centerPanel.add(centerPanelTwo);
-		// centerPanel.add(centerPanelOne);
-
 		BorderLayoutData centerData = new BorderLayoutData(
 				RegionPosition.CENTER);
 		// centerData.setSplit(true);
 		centerData.setMargins(new Margins(0, 0, 5, 0));
-
-		// borderPanel.add(centerPanel,
-		// new BorderLayoutData(RegionPosition.CENTER));
-
 		borderPanel.add(centerPanel, centerData);
 
 		panelNagusia.add(borderPanel);
 		
 		new Viewport(panelNagusia);
 		
-		final Abisuak abisuak = new Abisuak(this);
-		abisuak.setId("abisuak-panel");
-		
-		
-//		final Alokatu alokatu = new Alokatu(this);
-//		alokatu.setId("alokatu-panel");
-		
 		centerPanel.add(abisuak);
-//		centerPanel.add(alokatu);
+		centerPanel.add(alokatu);
 
 		
 
@@ -255,6 +237,13 @@ public class Gunea implements EntryPoint, Logeable {
 				resetIdleTimer();
 			}
 		});
+	}
+
+	private void sortuPanelak() {
+		abisuak = new Abisuak(this);
+		abisuak.setId("abisuak-panel");
+		alokatu = new Alokatu(this);
+		alokatu.setId("alokatu-panel");
 	}
 
 	private void resetIdleTimer() {

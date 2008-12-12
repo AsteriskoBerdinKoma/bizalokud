@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.core.Function;
@@ -33,9 +32,6 @@ import com.gwtext.client.widgets.map.MapPanel;
 import com.gwtext.client.widgets.map.Marker;
 
 public class Alokatu extends BarnePanela {
-
-	private Panel wizardPanel;
-
 	private Panel first;
 	private Panel second;
 	private Panel errorePanel;
@@ -54,41 +50,29 @@ public class Alokatu extends BarnePanela {
 
 	public Alokatu(Gunea owner) {
 		super(owner);
-	
+
+		setTitle("Bizikleta Alokatu");
+		setLayout(new CardLayout());
+		setBorder(false);
+		setCollapsible(false);
+
+		Toolbar toolbar = new Toolbar();
+
+		setBottomToolbar(toolbar);
+
 		sortuPanel1();
 		sortuPanel2();
 		createErrorePanel();
-		
-		wizardPanel = this;
-		wizardPanel.setTitle("Bizikleta Alokatu");
-		wizardPanel.setLayout(new CardLayout());
-		wizardPanel.setActiveItem(0);
 
-		this.addListener(new ComponentListenerAdapter() {
-
-			public void onHide(Component component) {
-				if (sortua)
-					datuakReseteatu();
-			}
-
-			public void onShow(Component component) {
-				element = new ExtElement(RootPanel.get().getElement());
-				element.mask("Itxaron mesedez", true);
-				datuakEguneratu();
-			}
-
-		});
-		
 		ButtonListenerAdapter listener = new ButtonListenerAdapter() {
 			public void onClick(Button button, EventObject e) {
 				String btnID = button.getId();
-				CardLayout cardLayout = (CardLayout) wizardPanel.getLayout();
+				CardLayout cardLayout = (CardLayout) getLayout();
 				String panelID = cardLayout.getActiveItem().getId();
 
 				if (btnID.equals("alokatu")) {
 					if (panelID.equals("firstPanel")) {
-						final ExtElement element = new ExtElement(RootPanel
-								.get().getElement());
+						final ExtElement element = new ExtElement(getElement());
 						element
 								.mask("Alokairua egiten. Itxaron mesedez.",
 										true);
@@ -102,8 +86,7 @@ public class Alokatu extends BarnePanela {
 									public void onFailure(final Throwable caught) {
 										caught.printStackTrace();
 
-										CardLayout cardLayout = (CardLayout) wizardPanel
-												.getLayout();
+										CardLayout cardLayout = (CardLayout) getLayout();
 										cardLayout.setActiveItem(0);
 										alokatuButton.setVisible(true);
 										element.unmask();
@@ -119,8 +102,7 @@ public class Alokatu extends BarnePanela {
 									}
 
 									public void onSuccess(BizikletaInfo result) {
-										CardLayout cardLayout = (CardLayout) wizardPanel
-												.getLayout();
+										CardLayout cardLayout = (CardLayout) getLayout();
 										String html = "<p style=\"font-size:x-large;\" align=\"center\">Alokairua ondo bete da</p><br><br>"
 												+ "<p style=\"font-size:medium;\"><b>Esleitu zaizun bizikleta zenbakia:</b>"
 												+ result.getId()
@@ -140,25 +122,35 @@ public class Alokatu extends BarnePanela {
 			}
 		};
 
-		Toolbar toolbar = new Toolbar();
-
 		alokatuButton = new ToolbarButton("Alokatu", listener);
 		alokatuButton.setId("alokatu");
 		toolbar.addButton(alokatuButton);
 
-		wizardPanel.setBottomToolbar(toolbar);
+		add(first);
+		add(second);
+		add(errorePanel);
 
-		wizardPanel.add(first);
-		wizardPanel.add(second);
-		wizardPanel.add(errorePanel);
+		setActiveItem(0);
 
 		sortua = true;
+
+		this.addListener(new ComponentListenerAdapter() {
+
+			public void onHide(Component component) {
+				if (sortua)
+					datuakReseteatu();
+			}
+
+			public void onShow(Component component) {
+				element = new ExtElement(getElement());
+				element.mask("Itxaron mesedez", true);
+				datuakEguneratu();
+			}
+
+		});
 	}
 
 	private void sortuPanel1() {
-		element = new ExtElement(RootPanel.get().getElement());
-		element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
-
 		createMapPanel();
 
 		first = new Panel();
@@ -217,7 +209,6 @@ public class Alokatu extends BarnePanela {
 
 	private void createMapPanel() {
 		mapPanel = new GoogleMap() {
-
 			public void addEventListener(final String event,
 					final OneArgFunction listener) {
 				if (!this.isRendered()) {
@@ -233,11 +224,11 @@ public class Alokatu extends BarnePanela {
 
 			private native void doAddEventListener(String event,
 					OneArgFunction listener) /*-{
-										var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
-										map.addEventListener(event, function(llp) {
-										listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
-										});
-									}-*/;
+												var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
+												map.addEventListener(event, function(llp) {
+												listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
+												});
+											}-*/;
 
 			{
 				addEventListener("click", new OneArgFunction() {
@@ -248,6 +239,7 @@ public class Alokatu extends BarnePanela {
 			}
 		};
 		mapPanel.addLargeControls();
+		mapPanel.setId("mapPanel");
 	}
 
 	public void renderMap(JavaScriptObject jsObj) {
@@ -301,66 +293,65 @@ public class Alokatu extends BarnePanela {
 	}
 
 	public void datuakEguneratu() {
-		if (sortua) {
-			if (jabea.isGuneaIdentif()) {
-				CardLayout cardLayout = (CardLayout) wizardPanel.getLayout();
-				if (cardLayout.getActiveItem() != first) {
-					setActiveItem(0);
-					alokatuButton.setVisible(true);
-				}
-				GuneaService.Util.getInstance().alokaDaiteke(jabea.getGuneId(),
-						new AsyncCallback<Boolean>() {
-							public void onFailure(final Throwable caught) {
-								System.out.println(caught.getMessage());
-								caught.printStackTrace();
+		element = new ExtElement(getElement());
+		element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
+		
+		if (sortua && jabea.isGuneaIdentif()) {
+			CardLayout cardLayout = (CardLayout) getLayout();
+			if (cardLayout.getActiveItem() != first) {
+				setActiveItem(0);
+				alokatuButton.setVisible(true);
+			}
+			GuneaService.Util.getInstance().alokaDaiteke(jabea.getGuneId(),
+					new AsyncCallback<Boolean>() {
+						public void onFailure(final Throwable caught) {
+							System.out.println(caught.getMessage());
+							caught.printStackTrace();
+							datuakReseteatu();
+							setActiveItem(2);
+							alokatuButton.setVisible(false);
+							element.unmask();
+						}
+
+						public void onSuccess(Boolean result) {
+							if (!result) {
 								datuakReseteatu();
 								setActiveItem(2);
 								alokatuButton.setVisible(false);
-								element.unmask();
 							}
+							element.unmask();
+						}
+					});
 
-							public void onSuccess(Boolean result) {
-								if (!result) {
-									datuakReseteatu();
-									setActiveItem(2);
-									alokatuButton.setVisible(false);
-								}
-								element.unmask();
+			GuneaService.Util.getInstance().getHelburuGunePosibleak(
+					jabea.getGuneId(),
+					new AsyncCallback<HashMap<Integer, GuneInfo>>() {
+						public void onFailure(Throwable caught) {
+							caught.getMessage();
+							caught.printStackTrace();
+							guneak.setGuneak(new Object[0][]);
+							element.unmask();
+						}
+
+						public void onSuccess(HashMap<Integer, GuneInfo> result) {
+							Object[][] obj = new Object[result.size()][5];
+							int i = 0;
+							for (int key : result.keySet()) {
+								obj[i][0] = key;
+								obj[i][1] = result.get(key).getIzena();
+								obj[i][2] = result.get(key).getHelbidea();
+								obj[i][3] = result.get(key).getLat();
+								obj[i][4] = result.get(key).getLon();
+								markaGehitu(result.get(key));
+								i++;
 							}
-						});
+							guneak.setGuneak(obj);
+							guneak.getSelectionModel().selectFirstRow();
 
-				GuneaService.Util.getInstance().getHelburuGunePosibleak(
-						jabea.getGuneId(),
-						new AsyncCallback<HashMap<Integer, GuneInfo>>() {
-							public void onFailure(Throwable caught) {
-								caught.getMessage();
-								caught.printStackTrace();
-								guneak.setGuneak(new Object[0][]);
-								element.unmask();
-							}
+							element.unmask();
+						}
 
-							public void onSuccess(
-									HashMap<Integer, GuneInfo> result) {
-								Object[][] obj = new Object[result.size()][5];
-								int i = 0;
-								for (int key : result.keySet()) {
-									obj[i][0] = key;
-									obj[i][1] = result.get(key).getIzena();
-									obj[i][2] = result.get(key).getHelbidea();
-									obj[i][3] = result.get(key).getLat();
-									obj[i][4] = result.get(key).getLon();
-									markaGehitu(result.get(key));
-									i++;
-								}
-								guneak.setGuneak(obj);
-								guneak.getSelectionModel().selectFirstRow();
-
-								element.unmask();
-							}
-
-						});
-			} else
-				element.unmask();
+					});
 		} else
 			element.unmask();
 	}
