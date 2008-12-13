@@ -28,6 +28,7 @@ import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.CardLayout;
 import com.gwtext.client.widgets.layout.ColumnLayout;
+import com.gwtext.client.widgets.layout.ColumnLayoutData;
 import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtext.client.widgets.layout.RowLayout;
 import com.gwtext.client.widgets.tree.TreeNode;
@@ -134,7 +135,7 @@ public class Gunea implements EntryPoint, Logeable {
 		// erabiltzailearen informazioa
 		Image banner = new Image("images/banner.png");
 
-		Panel datuak = new Panel("Informazioa", 200, 100);
+		Panel datuak = new Panel("Informazioa", 250, 100);
 		datuak.setBorder(true);
 		datuak.setFrame(true);
 		datuak.setPaddings(10);
@@ -150,6 +151,7 @@ public class Gunea implements EntryPoint, Logeable {
 		Panel bannerPanel = new Panel();
 		bannerPanel.setLayout(new ColumnLayout());
 		bannerPanel.setBorder(false);
+		bannerPanel.setPaddings(15);
 		bannerPanel.setCollapsible(false);
 		bannerPanel.add(banner);
 		bannerPanel.add(datuak);
