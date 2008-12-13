@@ -11,30 +11,31 @@ import com.gwtext.client.data.IntegerFieldDef;
 import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
-import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.PagingToolbar;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.ToolTip;
-import com.gwtext.client.widgets.event.PanelListenerAdapter;
+import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.form.Field;
 import com.gwtext.client.widgets.form.NumberField;
 import com.gwtext.client.widgets.form.event.FieldListenerAdapter;
 import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.GridPanel;
+import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtextux.client.data.PagingMemoryProxy;
 
 public class Abisuak extends BarnePanela {
 
 	private String userNan;
-	final private Panel panel;
+	private final  Panel panel;
+	private static Object[][] datuak;
 
 	public Abisuak(Gunea owner) {
 		super(owner);
 		userNan = "";
 		panel = this;
-		Object[][] datuak = new Object[0][4];
+		datuak = new Object[0][4];
 
 		panel.setTitle("Nire Abisuak");
 		panel.setLayout(new FitLayout());
@@ -91,6 +92,19 @@ public class Abisuak extends BarnePanela {
 
 		pagingToolbar.addField(pageSizeField);
 		grid.setBottomToolbar(pagingToolbar);
+		
+		grid.addGridRowListener(new GridRowListenerAdapter(){
+
+			public void onRowClick(GridPanel grid, int rowIndex, EventObject e) {
+				final Window abisuPopup = new Window();
+				abisuPopup.setTitle((String)datuak[rowIndex][2]);
+				abisuPopup.setLayout(new FitLayout());
+				abisuPopup.setMaximizable(false);
+				abisuPopup.setModal(true);
+				abisuPopup.setHtml((String)datuak[rowIndex][3]);
+			}
+			
+		});
 		store.load(0, 5);
 		panel.add(grid);
 		userNan=jabea.getErabNan();
@@ -107,7 +121,7 @@ public class Abisuak extends BarnePanela {
 					}
 
 					public void onSuccess(HashMap<Integer, AbisuInfo> result) {
-						Object[][] datuak = new Object[result.size()][4];
+						datuak = new Object[result.size()][4];
 						int i = 0;
 						for (int key : result.keySet()) {
 							datuak[i][0] = key;
@@ -173,6 +187,19 @@ public class Abisuak extends BarnePanela {
 
 		pagingToolbar.addField(pageSizeField);
 		grid.setBottomToolbar(pagingToolbar);
+		
+		grid.addGridRowListener(new GridRowListenerAdapter(){
+
+			public void onRowClick(GridPanel grid, int rowIndex, EventObject e) {
+//				final Window abisuPopup = new Window();
+//				abisuPopup.setTitle((String)datuak[rowIndex][2]);
+//				abisuPopup.setLayout(new FitLayout());
+//				abisuPopup.setMaximizable(false);
+//				abisuPopup.setModal(true);
+//				abisuPopup.setHtml((String)datuak[rowIndex][3]);
+			}
+			
+		});
 		store.load(0, 5);
 		panel.add(grid);
 	}
