@@ -26,6 +26,8 @@ public interface GuneaService extends RemoteService {
 
 	public boolean erabiltzaileaAlokatuDu(String erabNan) throws Salbuespena;
 	
+	public boolean pasahitzaBerritu(String userNan, String zaharra, String berria) throws Salbuespena;
+	
 	/**
 	 * Utility class for simplifying access to the instance of async service.
 	 */

@@ -353,7 +353,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			PreparedStatement ps = connector.prepareStatement(query);
 			ps.setString(1, erabNan);
 			ResultSet rs = ps.executeQuery();
-			if(rs.next())
+			if (rs.next())
 				return (rs.getInt("alokairuKop") == 0);
 			else
 				return false;
@@ -361,7 +361,28 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
 			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
-		} 
+		}
 
+	}
+
+	@Override
+	public boolean pasahitzaBerritu(String userNan, String zaharra,
+			String berria) throws Salbuespena {
+		int rs = -1;
+		try {
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+			String query = "UPDATE erabiltzailea SET pasahitza=? WHERE nan=? AND pasahitza=?";
+			PreparedStatement ps = connector.prepareStatement(query);
+			ps.setString(1, berria);
+			ps.setString(2, userNan);
+			ps.setString(3, zaharra);
+			rs = ps.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		}
+		return rs > 0;
 	}
 }

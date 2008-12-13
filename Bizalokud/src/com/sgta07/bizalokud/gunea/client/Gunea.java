@@ -80,8 +80,6 @@ public class Gunea implements EntryPoint, Logeable {
 	private CardLayout cardLayout;
 
 	public void onModuleLoad() {
-		// mapa = new Mapa();
-		// mapa.setSize(500, 400);
 		
 		sortuPanelak();
 
@@ -185,23 +183,11 @@ public class Gunea implements EntryPoint, Logeable {
 		westData.setMaxSize(400);
 		westData.setMargins(new Margins(0, 5, 0, 0));
 
-//		borderPanel.add(westPanel, westData);
 		borderPanel.add(getMenuPanel(),westData);
 
 		centerPanel = new Panel();
 		cardLayout = new CardLayout();
 		centerPanel.setLayout(cardLayout);
-
-//		 final TabPanel centerPanel = new TabPanel();
-//		 centerPanel.setDeferredRender(false);
-//		 centerPanel.setActiveTab(0);
-
-		Panel centerPanelOne = new HTMLPanel();
-		centerPanelOne
-				.setHtml("<br><br><p>Azkeneko bi ibilaldietan bizikleta egoera onean entregatu ez\n duzunez datorren astean ezingo duzu bizikletarik alokatu.</p>");
-		centerPanelOne.setTitle("Abisua");
-		centerPanelOne.setAutoScroll(true);
-		centerPanelOne.setClosable(true);
 
 		Panel centerPanelTwo = new HTMLPanel();
 		centerPanelTwo
@@ -451,5 +437,9 @@ public class Gunea implements EntryPoint, Logeable {
 				}
 			}
 		});
+	}
+	
+	public CardLayout getCenterPanelCardLayout(){
+		return cardLayout;
 	}
 }

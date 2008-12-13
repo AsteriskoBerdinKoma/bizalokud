@@ -20,4 +20,6 @@ public interface GuneaServiceAsync {
 	public void getAbisuenZerrenda(String userNan, AsyncCallback<HashMap<Integer,AbisuInfo>> callback);
 
 	public void erabiltzaileaAlokatuDu(String erabNan, AsyncCallback<Boolean> callback);
+	
+	public void pasahitzaBerritu(String userNan, String zaharra, String berria, AsyncCallback<Boolean> callback);
 }
