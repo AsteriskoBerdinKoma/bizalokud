@@ -79,7 +79,6 @@ public class Pasahitza extends BarnePanela {
 				String nan = jabea.getErabNan();
 				GuneaService.Util.getInstance().pasahitzaBerritu(nan, getSha1(zaharra), getSha1(berria), new AsyncCallback<Boolean>(){
 
-					@Override
 					public void onFailure(final Throwable caught) {
 						caught.printStackTrace();
 						MessageBox.show(new MessageBoxConfig() {
@@ -92,7 +91,6 @@ public class Pasahitza extends BarnePanela {
 						});
 					}
 
-					@Override
 					public void onSuccess(Boolean result) {
 						//Pasahitz zaharra gaizki edo NAN ez baliozkoa
 						if (!result){
