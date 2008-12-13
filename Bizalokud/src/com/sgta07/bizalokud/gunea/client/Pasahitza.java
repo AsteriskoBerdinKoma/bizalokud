@@ -47,7 +47,7 @@ public class Pasahitza extends BarnePanela {
 		pBerria1 = new TextField("Pasahitz berria", "berria1", 210);
 		pBerria1.setPassword(true);
 		pBerria1.setAllowBlank(false);
-		pBerria1.setBlankText("Pasahitz zaharra idatzi behar duzu!");
+		pBerria1.setBlankText("Pasahitz berria idatzi behar duzu!");
 		pBerria1.setMinLength(6);
 		pBerria1.setMinLengthText("Pasahitzak gutxienez 6 karaktere eduki behar ditu");
 		
@@ -56,7 +56,7 @@ public class Pasahitza extends BarnePanela {
 		pBerria2 = new TextField("Errepikatu pasahitz berria", "berria2", 210);
 		pBerria2.setPassword(true);
 		pBerria2.setAllowBlank(false);
-		pBerria2.setBlankText("Pasahitz zaharra idatzi behar duzu!");
+		pBerria2.setBlankText("Pasahitz berria idatzi behar duzu!");
 		pBerria2.setMinLength(6);
 		pBerria2.setMinLengthText("Pasahitzak gutxienez 6 karaktere eduki behar ditu");
 		pBerria2.setRegex(pBerria1.getText().trim());

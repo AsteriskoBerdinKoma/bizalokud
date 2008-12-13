@@ -34,17 +34,38 @@ public class Abisuak extends BarnePanela {
 	private Object[][] datuak;
 	private boolean isPanelSortuta = false;
 	private ExtElement element;
+	private RecordDef recordDef;
+	private ArrayReader reader;
+	private ColumnModel columnModel;
+	private GridPanel grid;
+	private PagingToolbar pagingToolbar;
 
 	public Abisuak(Gunea owner) {
 		super(owner);
 		panel = this;
-		datuak = new Object[0][4];
 
 		panel.setTitle("Nire Abisuak");
 		panel.setLayout(new FitLayout());
 		panel.setBorder(false);
 		panel.setAutoScroll(true);
 		panel.setCollapsible(false);
+		
+		
+		datuak = new Object[0][4];
+		recordDef = new RecordDef(new FieldDef[] {
+				new IntegerFieldDef("id"), new DateFieldDef("data"),
+				new StringFieldDef("mota") });
+
+		reader = new ArrayReader(recordDef);
+		
+		ColumnConfig[] columns = new ColumnConfig[] {
+				// column ID is company which is later used in
+				// setAutoExpandColumn
+				new ColumnConfig("Id", "id", 20, true),
+				new ColumnConfig("Data", "data", 65, true),
+				new ColumnConfig("Mota", "mota", 60, true, null, "mota") };
+
+		columnModel = new ColumnModel(columns);
 
 		panelaSortu();
 
@@ -52,6 +73,7 @@ public class Abisuak extends BarnePanela {
 
 		this.addListener(new ComponentListenerAdapter() {
 			public void onShow(Component component) {
+				System.out.println("Panela erakusten");
 				element = new ExtElement(getElement());
 				element.mask("Itxaron mesedez", true);
 				datuakEguneratu();
@@ -61,25 +83,10 @@ public class Abisuak extends BarnePanela {
 	}
 
 	public void panelaSortu() {
-		//panel.remove("gridpanel");
 		PagingMemoryProxy proxy = new PagingMemoryProxy(datuak);
-		RecordDef recordDef = new RecordDef(new FieldDef[] {
-				new IntegerFieldDef("id"), new DateFieldDef("data"),
-				new StringFieldDef("mota") });
-
-		ArrayReader reader = new ArrayReader(recordDef);
 		Store store = new Store(proxy, reader, true);
 
-		ColumnConfig[] columns = new ColumnConfig[] {
-				// column ID is company which is later used in
-				// setAutoExpandColumn
-				new ColumnConfig("Id", "id", 20, true),
-				new ColumnConfig("Data", "data", 65, true),
-				new ColumnConfig("Mota", "mota", 60, true, null, "mota") };
-
-		ColumnModel columnModel = new ColumnModel(columns);
-
-		GridPanel grid = new GridPanel();
+		grid = new GridPanel();
 		grid.setColumnModel(columnModel);
 		grid.setStore(store);
 		grid.setFrame(true);
@@ -88,7 +95,7 @@ public class Abisuak extends BarnePanela {
 		grid.setHeight(250);
 		grid.setAutoExpandColumn("mota");
 
-		final PagingToolbar pagingToolbar = new PagingToolbar(store);
+		pagingToolbar = new PagingToolbar(store);
 		pagingToolbar.setPageSize(5);
 		pagingToolbar.setDisplayInfo(true);
 		pagingToolbar
@@ -128,12 +135,21 @@ public class Abisuak extends BarnePanela {
 		store.load(0, 5);
 		panel.add(grid);
 	}
+	
+	public void panelaEguneratu(){
+		System.out.println("PEG irakurtzen duena. Honakoa datu bat: "+datuak[1][2]);
+		PagingMemoryProxy proxy = new PagingMemoryProxy(datuak);
+		Store store = new Store(proxy, reader, true);
+		pagingToolbar.setStore(store);
+		grid.reconfigure(store, columnModel);
+		grid.getView().refresh();
+	}
 
 	public void datuakEguneratu() {
-		element = new ExtElement(getElement());
-		element.mask("Zure abisuak jasotzen. Itxaron mesedez", true);
-		if (isPanelSortuta && jabea.isErabIdentif()) {
-
+//		element = new ExtElement(getElement());
+//		element.mask("Zure abisuak jasotzen. Itxaron mesedez", true);
+		if (jabea.isErabIdentif()) {
+			System.out.println("RPCra pasatako NANa: "+jabea.getErabNan());
 			GuneaService.Util.getInstance().getAbisuenZerrenda(jabea.getErabNan(),
 					new AsyncCallback<HashMap<Integer, AbisuInfo>>() {
 
@@ -152,7 +168,8 @@ public class Abisuak extends BarnePanela {
 								datuak[i][3] = result.get(key).getMezua();
 								i++;
 							}
-							panelaSortu();
+							System.out.println("RPC Itzuli da. Honakoa datu bat: "+datuak[1][2]);
+							panelaEguneratu();
 							element.unmask();
 						}
 
