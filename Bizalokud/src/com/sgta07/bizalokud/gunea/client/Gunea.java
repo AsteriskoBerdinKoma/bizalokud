@@ -69,6 +69,7 @@ public class Gunea implements EntryPoint, Logeable {
 	
 	private Alokatu alokatu;
 	private Abisuak abisuak;
+	private Pasahitza pasahitza;
 
 	// Menua hasieratzeko datuak
 	private static Store store;
@@ -80,7 +81,7 @@ public class Gunea implements EntryPoint, Logeable {
 	private CardLayout cardLayout;
 
 	public void onModuleLoad() {
-		
+			
 		sortuPanelak();
 
 		GuneaService.Util.getInstance().getMyInfo(
@@ -207,6 +208,7 @@ public class Gunea implements EntryPoint, Logeable {
 		
 		centerPanel.add(abisuak);
 		centerPanel.add(alokatu);
+		centerPanel.add(pasahitza);
 
 		
 
@@ -230,6 +232,8 @@ public class Gunea implements EntryPoint, Logeable {
 		abisuak.setId("abisuak-panel");
 		alokatu = new Alokatu(this);
 		alokatu.setId("alokatu-panel");
+		pasahitza = new Pasahitza(this);
+		pasahitza.setId("pasahitza-panel");
 	}
 
 	private void resetIdleTimer() {
@@ -424,22 +428,23 @@ public class Gunea implements EntryPoint, Logeable {
 					cardLayout.setActiveItem("abisuak-panel");
 				}
 				if(node.getId().equals("alokatu")){
+					alokatu.datuakEguneratu();
 					cardLayout.setActiveItem("alokatu-panel");
 				}
 				if(node.getId().equals("entregatu")){
-					centerPanel.setActiveItemID("entregatu-panel");
+					cardLayout.setActiveItem("entregatu-panel");
 				}
 				if(node.getId().equals("datuak")){
-					centerPanel.setActiveItemID("datuak-panel");
+					cardLayout.setActiveItem("datuak-panel");
 				}
 				if(node.getId().equals("pasahitza")){
-					centerPanel.setActiveItemID("pasahitza-panel");
+					cardLayout.setActiveItem("pasahitza-panel");
 				}
 			}
 		});
 	}
 	
-	public CardLayout getCenterPanelCardLayout(){
-		return cardLayout;
+	public void getCenterPanelCardLayout(){
+		cardLayout.setActiveItem("abisuak-panel");
 	}
 }
