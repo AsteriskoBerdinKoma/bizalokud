@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.sgta07.bizalokud.gunea.client.AbisuInfo;
@@ -178,11 +179,18 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 	public HashMap<Integer, GuneInfo> getHelburuGunePosibleak(int unekoGuneId)
 			throws Salbuespena {
 		HashMap<Integer, GuneInfo> guneak = guneenZerrenda();
-		for (int id : guneak.keySet())
-			if (!helburuaAukeraDaiteke(unekoGuneId, id))
-				guneak.remove(id);
-
-		return guneak;
+		HashMap<Integer, GuneInfo> emaitza = new HashMap<Integer, GuneInfo>();
+		Set<Integer> keys = guneak.keySet();
+		for (int id : keys){
+			System.out.println(id);
+			if (helburuaAukeraDaiteke(unekoGuneId, id)){
+				emaitza.put(id, guneak.get(id));
+//				guneak.remove(id);
+				System.out.println(":" + id);
+			}
+		}
+		
+		return emaitza;
 	}
 
 	public AlokairuInfo alokatu(int unekoGuneId, int helburuGuneId,
