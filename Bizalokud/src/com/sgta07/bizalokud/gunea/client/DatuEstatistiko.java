@@ -15,7 +15,14 @@ public class DatuEstatistiko implements IsSerializable {
 	private Vector<Object[]> ibilaldienPortzentaiak;
 
 	public DatuEstatistiko() {
-
+		super();
+		this.alokairuKop=0;
+		this.alokairuLuzeenaDenbora="00:00:00";
+		this.alokairuLuzeenaEguna="Egunik ez";
+		this.ibilaldiKop=0;
+		this.egunAktiboenaDenbora="00:00:00";
+		this.egunAktiboneaEguna="Egunik ez";
+		this.ibilaldienPortzentaiak=new Vector<Object[]>();
 	}
 	
 

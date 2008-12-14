@@ -36,7 +36,6 @@ public class Abisuak extends BarnePanela {
 
 	private final Panel panel;
 	private Object[][] datuak;
-	private boolean isPanelSortuta = false;
 	private ExtElement element;
 	private RecordDef recordDef;
 	private ArrayReader reader;
@@ -73,27 +72,6 @@ public class Abisuak extends BarnePanela {
 		columnModel = new ColumnModel(columns);
 
 		panelaSortu();
-
-		isPanelSortuta = true;
-
-		this.addListener(new ComponentListenerAdapter() {
-			public void onShow(Component component) {
-				System.out.println("Abisuak erakusten");
-//				t1 = new Timer(){
-//					public void run(){
-//						datuakEguneratu();
-//					}
-//				};
-//				t1.scheduleRepeating(40000);
-				datuakEguneratu();
-			}
-			public void onHide(Component component){
-				System.out.println("Abisuak ezkutatu da");
-//				t1.cancel();
-			}
-		});
-		
-		
 
 	}
 

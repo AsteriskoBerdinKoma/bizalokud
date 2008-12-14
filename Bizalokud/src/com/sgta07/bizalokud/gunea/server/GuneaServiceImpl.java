@@ -185,15 +185,15 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		HashMap<Integer, GuneInfo> guneak = guneenZerrenda();
 		HashMap<Integer, GuneInfo> emaitza = new HashMap<Integer, GuneInfo>();
 		Set<Integer> keys = guneak.keySet();
-		for (int id : keys){
+		for (int id : keys) {
 			System.out.println(id);
-			if (helburuaAukeraDaiteke(unekoGuneId, id)){
+			if (helburuaAukeraDaiteke(unekoGuneId, id)) {
 				emaitza.put(id, guneak.get(id));
-//				guneak.remove(id);
+				// guneak.remove(id);
 				System.out.println(":" + id);
 			}
 		}
-		
+
 		return emaitza;
 	}
 
@@ -534,7 +534,6 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		DatuEstatistiko de = new DatuEstatistiko();
 		Vector<Object[]> kalkuluak = new Vector<Object[]>();
 		int alokatuKont = 0;
-		HashMap<Integer, GuneInfo> guneak = new HashMap<Integer, GuneInfo>();
 		boolean aurkitua = false;
 		String alokairuLuzeenaEguna = "";
 		String alokairuLuzeenaDenbora = "";
@@ -542,45 +541,31 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		String egunAktiboenaDenbora = "";
 
 		try {
-			guneak = guneenZerrenda();
+
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
-			String query = "SELECT hasiera_data, fk_gunehas_id, fk_gunehel_id, "
-					+ "TIMEDIFF(bukaera_data, hasiera_data) AS elapsed "
-					+ "FROM ibilbidea "
+
+			String query = "SELECT i1.fk_gunehas_id, g1.izena as hasIzena, i1.fk_gunehel_id, g2.izena as helIzena "
+					+ "FROM ibilbidea i1 INNER JOIN gunea g1 on i1.fk_gunehas_id=g1.id INNER JOIN gunea g2 on i1.fk_gunehel_id=g2.id "
 					+ "WHERE fk_erab_nan = ? AND bukatuta = 1";
 			PreparedStatement ps = connector.prepareStatement(query);
 			ps.setString(1, erabNan);
 			ResultSet rs = ps.executeQuery();
 
-			String queryEgunAktiboena = "SELECT DATE(hasiera_data) AS eguna, "
-					+ "SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(bukaera_data, hasiera_data)))) AS elapsed "
-					+ "FROM ibilbidea "
-					+ "WHERE fk_erab_nan=? AND bukatuta=1 "
-					+ "GROUP BY DATE(hasiera_data) "
-					+ "ORDER BY SEC_TO_TIME(SUM(TIME_TO_SEC(timediff(bukaera_data, hasiera_data)))) DESC "
-					+ "LIMIT 1";
-			String queryAlokairuLuzeena = "SELECT DATE(hasiera_data) AS eguna, "
-					+ "TIMEDIFF(bukaera_data, hasiera_data) AS elapsed "
-					+ "FROM ibilbidea "
-					+ "WHERE fk_erab_nan='09760589X' AND bukatuta=1 "
-					+ "ORDER BY TIMEDIFF(bukaera_data, hasiera_data) DESC "
-					+ "LIMIT 1";
-
 			while (rs.next()) {
 				alokatuKont++;
 				Object[] temp = new Object[6];
-				temp[0] = rs.getInt("fk_gunehas_id");
-				temp[1] = rs.getInt("fk_gunehel_id");
-				temp[4] = guneak.get(temp[0]);
-				temp[5] = guneak.get(temp[1]);
-				rs.getString("elapsed");
+				temp[0] = new Integer(rs.getInt("fk_gunehas_id"));
+				temp[1] = new Integer(rs.getInt("fk_gunehel_id"));
+				temp[4] = new String(rs.getString("hasIzena"));
+				temp[5] = new String(rs.getString("helIzena"));
 				for (Object[] row : kalkuluak) {
-					if (row[0] == temp[0] && row[1] == temp[1]) {
+					if (row[0].equals(temp[0]) && row[1].equals(temp[1])) {
 						row[2] = (Integer) row[2] + 1;
-						row[3] = (Double) row[2]
+						row[3] = new Integer(row[2].toString()).doubleValue()
 								/ new Integer(alokatuKont).doubleValue();
 						aurkitua = true;
+						break;
 					}
 				}
 				if (!aurkitua) {
@@ -590,8 +575,14 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				}
 				aurkitua = false;
 			}
-			rs.close();
-			ps.close();
+
+			String queryAlokairuLuzeena = "SELECT DATE(hasiera_data) AS eguna, "
+					+ "timediff(bukaera_data, hasiera_data) AS elapsed "
+					+ "FROM ibilbidea "
+					+ "WHERE fk_erab_nan=? AND bukatuta=1 "
+					+ "ORDER BY timediff(bukaera_data, hasiera_data) DESC "
+					+ "LIMIT 1";
+
 			PreparedStatement ps1 = connector
 					.prepareStatement(queryAlokairuLuzeena);
 			ps1.setString(1, erabNan);
@@ -600,16 +591,27 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				alokairuLuzeenaEguna = rs1.getString("eguna");
 				alokairuLuzeenaDenbora = rs1.getString("elapsed");
 			}
-			rs1.close();
-			ps1.close();
+
+			String queryEgunAktiboena = "SELECT DATE(hasiera_data) AS eguna, "
+					+ "SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(bukaera_data, hasiera_data)))) AS elapsed "
+					+ "FROM ibilbidea "
+					+ "WHERE fk_erab_nan=? AND bukatuta=1 "
+					+ "GROUP BY DATE(hasiera_data) "
+					+ "ORDER BY SEC_TO_TIME(SUM(TIME_TO_SEC(timediff(bukaera_data, hasiera_data)))) DESC "
+					+ "LIMIT 1";
+
 			PreparedStatement ps2 = connector
 					.prepareStatement(queryEgunAktiboena);
 			ps2.setString(1, erabNan);
 			ResultSet rs2 = ps2.executeQuery();
 			if (rs2.next()) {
-				egunAktiboenaEguna = rs1.getString("eguna");
-				egunAktiboenaDenbora = rs1.getString("elapsed");
+				egunAktiboenaEguna = rs2.getString("eguna");
+				egunAktiboenaDenbora = rs2.getString("elapsed");
 			}
+			rs.close();
+			ps.close();
+			rs1.close();
+			ps1.close();
 			rs2.close();
 			ps2.close();
 
