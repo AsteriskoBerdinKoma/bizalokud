@@ -13,7 +13,7 @@ public interface GuneaServiceAsync {
 
 	public void getHelburuGunePosibleak(int unekoGuneId, AsyncCallback<HashMap<Integer, GuneInfo>> callback);
 	
-	public void alokatu(int unekoGuneId, int helburuGuneId, String erabNan, AsyncCallback<BizikletaInfo> callback);
+	public void alokatu(int unekoGuneId, int helburuGuneId, String erabNan, AsyncCallback<AlokairuInfo> callback);
 
 	public void getMyInfo(AsyncCallback<GuneInfo> callback);
 	
@@ -22,4 +22,8 @@ public interface GuneaServiceAsync {
 	public void erabiltzaileaAlokatuDu(String erabNan, AsyncCallback<Boolean> callback);
 	
 	public void pasahitzaBerritu(String userNan, String zaharra, String berria, AsyncCallback<Boolean> callback);
+	
+	public void getAzkenAlokairuInfo(String erabNan, AsyncCallback<AlokairuInfo> callback);
+	
+	public void bizikletaBueltatu(String erabNan, AsyncCallback<AlokairuInfo> callback);
 }

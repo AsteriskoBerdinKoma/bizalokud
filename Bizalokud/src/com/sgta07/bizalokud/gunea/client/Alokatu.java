@@ -3,6 +3,7 @@ package com.sgta07.bizalokud.gunea.client;
 import java.util.HashMap;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.ExtElement;
@@ -48,16 +49,16 @@ public class Alokatu extends BarnePanela {
 	private ExtElement element;
 
 	private boolean sortua = false;
-	
+
 	private Label erroreLabel;
-	
+
 	HashMap<Integer, Marker> markak;
 
 	public Alokatu(Gunea owner) {
 		super(owner);
 
 		markak = new HashMap<Integer, Marker>();
-		
+
 		setTitle("Bizikleta Alokatu");
 		setLayout(new CardLayout());
 		setBorder(false);
@@ -89,7 +90,7 @@ public class Alokatu extends BarnePanela {
 								guneak.getSelectionModel().getSelected()
 										.getAsInteger("id"),
 								jabea.getErabNan(),
-								new AsyncCallback<BizikletaInfo>() {
+								new AsyncCallback<AlokairuInfo>() {
 									public void onFailure(final Throwable caught) {
 										caught.printStackTrace();
 
@@ -108,19 +109,31 @@ public class Alokatu extends BarnePanela {
 										});
 									}
 
-									public void onSuccess(BizikletaInfo result) {
+									public void onSuccess(AlokairuInfo result) {
 										CardLayout cardLayout = (CardLayout) getLayout();
+										DateTimeFormat dtf = new DateTimeFormat(
+												"yyyy/MM/dd HH:mm") {
+										};
+										String hasData = dtf.format(result
+												.getHasieraData());
 										String html = "<p style=\"font-size:x-large;\" align=\"center\">Alokairua ondo bete da</p><br><br>"
-												+ "<p style=\"font-size:medium;\"><b>Esleitu zaizun bizikleta zenbakia:</b>"
-												+ result.getId()
+												+ "<p style=\"font-size:medium;\">"
+												+ "<b>Hasiera data:</b> "
+												+ hasData
 												+ "<br /><br />"
-												+ "<b>Bizikletaren modeloa:</b>"
-												+ result.getModeloa()
+												+ "<b>Esleitu zaizun bizikleta zenbakia:</b> "
+												+ result.getBizikleta().getId()
+												+ "<br /><br />"
+												+ "<b>Bizikletaren modeloa:</b> "
+												+ result.getBizikleta()
+														.getModeloa()
 												+ "<br />"
-												+ "<b>Bizikletaren kolorea:</b>"
-												+ result.getKolorea() + "</p>";
+												+ "<b>Bizikletaren kolorea:</b> "
+												+ result.getBizikleta()
+														.getKolorea() + "</p>";
 										alokatuaLabel.setHtml(html);
 										cardLayout.setActiveItem(1);
+										toolbar.setVisible(false);
 										element.unmask();
 									}
 								});
@@ -170,9 +183,9 @@ public class Alokatu extends BarnePanela {
 		sm.addListener(new RowSelectionListenerAdapter() {
 			public void onRowSelect(RowSelectionModel sm, int rowIndex,
 					Record record) {
-				markaGehitu(record.getAsInteger("id"), record.getAsString("izena"), record
-						.getAsString("helbidea"), record.getAsDouble("lat"),
-						record.getAsDouble("lon"));
+				markaGehitu(record.getAsInteger("id"), record
+						.getAsString("izena"), record.getAsString("helbidea"),
+						record.getAsDouble("lat"), record.getAsDouble("lon"));
 			}
 		});
 		guneak.doOnRender(new Function() {
@@ -188,7 +201,7 @@ public class Alokatu extends BarnePanela {
 
 		first.add(guneak, westData);
 		first.add(mapPanel, new BorderLayoutData(RegionPosition.CENTER));
-		first.add(new Label("Aukeratu zein gunera joan nahi duzun"),
+		first.add(new Label("Aukeratu zein gunera joan nahi duzun eta sakatu tresna barrako \"Alokatu\" botoian"),
 				new BorderLayoutData(RegionPosition.NORTH));
 	}
 
@@ -208,7 +221,8 @@ public class Alokatu extends BarnePanela {
 		errorePanel.setId("errorePanel");
 		erroreLabel = new Label();
 		erroreLabel.setStyle("background: white;");
-		errorePanel.add(erroreLabel, new BorderLayoutData(RegionPosition.CENTER));
+		errorePanel.add(erroreLabel,
+				new BorderLayoutData(RegionPosition.CENTER));
 	}
 
 	private void createMapPanel() {
@@ -228,11 +242,11 @@ public class Alokatu extends BarnePanela {
 
 			private native void doAddEventListener(String event,
 					OneArgFunction listener) /*-{
-					var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
-					map.addEventListener(event, function(llp) {
-						listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
-					});
-				}-*/;
+							var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
+							map.addEventListener(event, function(llp) {
+								listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
+							});
+						}-*/;
 
 			{
 				addEventListener("click", new OneArgFunction() {
@@ -251,11 +265,11 @@ public class Alokatu extends BarnePanela {
 				jsObj, "lat"));
 		double lon = Double.parseDouble(JavaScriptObjectHelper.getAttribute(
 				jsObj, "lon"));
-//		String izena = JavaScriptObjectHelper.getAttribute(jsObj, "izena");
-//		String helbidea = JavaScriptObjectHelper
-//				.getAttribute(jsObj, "helbidea");
+		// String izena = JavaScriptObjectHelper.getAttribute(jsObj, "izena");
+		// String helbidea = JavaScriptObjectHelper
+		// .getAttribute(jsObj, "helbidea");
 
-		//markaGehitu(izena, helbidea, lat, lon);
+		// markaGehitu(izena, helbidea, lat, lon);
 		finkatu(lat, lon);
 		// addListenerToMarker(m.toGoogle());
 	}
@@ -275,8 +289,8 @@ public class Alokatu extends BarnePanela {
 	}
 
 	public void markaGehitu(GuneInfo gunea) {
-		markaGehitu(gunea.getId(), gunea.getIzena(), gunea.getHelbidea(), gunea.getLat(),
-				gunea.getLon());
+		markaGehitu(gunea.getId(), gunea.getIzena(), gunea.getHelbidea(), gunea
+				.getLat(), gunea.getLon());
 	}
 
 	public void markaGehitu(int id, String izena, String helbidea, double lat,
@@ -293,13 +307,13 @@ public class Alokatu extends BarnePanela {
 		mapPanel.addMarker(m);
 
 		markak.put(id, m);
-		
+
 		if (map != null)
 			map.unmask();
 	}
-	
-	public void markakKendu(){
-		for(int id: markak.keySet()){
+
+	public void markakKendu() {
+		for (int id : markak.keySet()) {
 			mapPanel.removeMarker(markak.get(id));
 			markak.remove(id);
 		}
@@ -309,34 +323,38 @@ public class Alokatu extends BarnePanela {
 		element = new ExtElement(getElement());
 		element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
 		if (sortua && jabea.isGuneaIdentif()) {
-//			markakKendu();
+			// markakKendu();
 			CardLayout cardLayout = (CardLayout) getLayout();
 			if (cardLayout.getActiveItem() != first) {
 				setActiveItem(0);
 				toolbar.setVisible(true);
 			}
-			if(jabea.isErabIdentif()){
-				GuneaService.Util.getInstance().erabiltzaileaAlokatuDu(jabea.getErabNan(), new AsyncCallback<Boolean>(){
+			if (jabea.isErabIdentif()) {
+				GuneaService.Util.getInstance().erabiltzaileaAlokatuDu(
+						jabea.getErabNan(), new AsyncCallback<Boolean>() {
 
-					public void onFailure(Throwable caught) {
-						System.out.println(caught.getMessage());
-						caught.printStackTrace();
-						datuakReseteatu();
-						erroreLabel.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
-						setActiveItem(2);
-						toolbar.setVisible(false);
-						element.unmask();
-					}
+							public void onFailure(Throwable caught) {
+								System.out.println(caught.getMessage());
+								caught.printStackTrace();
+								datuakReseteatu();
+								erroreLabel
+										.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
+								setActiveItem(2);
+								toolbar.setVisible(false);
+								element.unmask();
+							}
 
-					public void onSuccess(Boolean result) {
-						if (!result) {
-							datuakReseteatu();
-							erroreLabel.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan bizikleta bat alokatuta daukazu. Bizikleta hori itzuli behar duzu beste alokairu bat egin baino lehen.</b></p>");
-							setActiveItem(2);
-							toolbar.setVisible(false);
-						}
-						element.unmask();
-					}});
+							public void onSuccess(Boolean result) {
+								if (!result) {
+									datuakReseteatu();
+									erroreLabel
+											.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan bizikleta bat alokatuta daukazu. Bizikleta hori itzuli behar duzu beste alokairu bat egin baino lehen.</b></p>");
+									setActiveItem(2);
+									toolbar.setVisible(false);
+								}
+								element.unmask();
+							}
+						});
 			}
 			GuneaService.Util.getInstance().alokaDaiteke(jabea.getGuneId(),
 					new AsyncCallback<Boolean>() {
@@ -344,7 +362,8 @@ public class Alokatu extends BarnePanela {
 							System.out.println(caught.getMessage());
 							caught.printStackTrace();
 							datuakReseteatu();
-							erroreLabel.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
+							erroreLabel
+									.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
 							setActiveItem(2);
 							toolbar.setVisible(false);
 							element.unmask();
@@ -353,7 +372,8 @@ public class Alokatu extends BarnePanela {
 						public void onSuccess(Boolean result) {
 							if (!result) {
 								datuakReseteatu();
-								erroreLabel.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
+								erroreLabel
+										.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
 								setActiveItem(2);
 								toolbar.setVisible(false);
 							}
@@ -399,7 +419,7 @@ public class Alokatu extends BarnePanela {
 			element = new ExtElement(getElement());
 			element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
 			guneak.setGuneak(new Object[0][]);
-//			markakKendu();
+			// markakKendu();
 			setActiveItem(0);
 			toolbar.setVisible(true);
 		}

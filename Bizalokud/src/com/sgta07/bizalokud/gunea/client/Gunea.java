@@ -71,6 +71,7 @@ public class Gunea implements EntryPoint, Logeable {
 	private Alokatu alokatu;
 	private Abisuak abisuak;
 	private Pasahitza pasahitza;
+	private Entregatu entregatu;
 
 	// Menua hasieratzeko datuak
 	private static Store store;
@@ -211,6 +212,7 @@ public class Gunea implements EntryPoint, Logeable {
 		centerPanel.add(abisuak);
 		centerPanel.add(alokatu);
 		centerPanel.add(pasahitza);
+		centerPanel.add(entregatu);
 
 		
 
@@ -236,6 +238,8 @@ public class Gunea implements EntryPoint, Logeable {
 		alokatu.setId("alokatu-panel");
 		pasahitza = new Pasahitza(this);
 		pasahitza.setId("pasahitza-panel");
+		entregatu = new Entregatu(this);
+		entregatu.setId("entregatu-panel");
 	}
 
 	private void resetIdleTimer() {

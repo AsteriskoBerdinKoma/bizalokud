@@ -4,11 +4,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.sgta07.bizalokud.gunea.client.AbisuInfo;
+import com.sgta07.bizalokud.gunea.client.AlokairuInfo;
 import com.sgta07.bizalokud.gunea.client.BizikletaInfo;
 import com.sgta07.bizalokud.gunea.client.GuneInfo;
 import com.sgta07.bizalokud.gunea.client.GuneaService;
@@ -189,7 +191,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		return guneak;
 	}
 
-	public BizikletaInfo alokatu(int unekoGuneId, int helburuGuneId,
+	public AlokairuInfo alokatu(int unekoGuneId, int helburuGuneId,
 			String erabNan) throws Salbuespena {
 
 		BizikletaInfo esleitutakoBizikleta;
@@ -268,7 +270,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		}
 
 		if (result > 0)
-			return esleitutakoBizikleta;
+			return getAzkenAlokairuInfo(erabNan);
 		else
 			throw new Salbuespena(
 					"Errore bat egon da bizikleta alokatzerakoan. Barkatu eragozpenak.");
@@ -365,7 +367,6 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 	}
 
-	@Override
 	public boolean pasahitzaBerritu(String userNan, String zaharra,
 			String berria) throws Salbuespena {
 		int rs = -1;
@@ -384,5 +385,121 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
 		}
 		return rs > 0;
+	}
+
+	public AlokairuInfo getAzkenAlokairuInfo(String erabNan) throws Salbuespena {
+		AlokairuInfo azkenAlokInfo = null;
+		try {
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+
+			String query = "SELECT i.id AS id, i.hasiera_data AS hasieraData, i.bukaera_data AS bukaeraData, i.fk_erab_nan AS erabNan, b.id AS biziId, b.modeloa AS biziModelo, b.kolorea AS biziKolore, hasG.id AS hasGuneId, hasG.izena AS hasGuneIzen, hasG.helb AS hasGuneHelbide, helG.id AS helGuneId, helG.izena AS helGuneIzen, helG.helb AS helGuneHelbide, i.bukatuta AS bukatuta FROM (((ibilbidea i INNER JOIN gunea AS hasG ON hasG.id = i.fk_gunehas_id) INNER JOIN gunea AS helG ON helG.id = i.fk_gunehel_id) INNER JOIN bizikleta AS b ON b.id=i.fk_bizi_id) WHERE fk_erab_nan = ? ORDER BY hasieraData DESC LIMIT 1";
+			PreparedStatement ps = connector.prepareStatement(query);
+			ps.setString(1, erabNan);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				int id = rs.getInt("id");
+				String temp1 = rs.getString("hasieraData");
+
+				String[] s1 = temp1.substring(0, temp1.indexOf('.')).split(" ");
+				String[] hasData = s1[0].split("-");
+				String[] hasOrdua = s1[1].split(":");
+				Calendar hasCal = new GregorianCalendar(Integer
+						.parseInt(hasData[0]), Integer.parseInt(hasData[1]),
+						Integer.parseInt(hasData[2]), Integer
+								.parseInt(hasOrdua[0]), Integer
+								.parseInt(hasOrdua[1]), Integer
+								.parseInt(hasOrdua[2]));
+
+				Date hasieraData = hasCal.getTime();
+
+				Date bukaeraData = null;
+
+				String temp2 = rs.getString("bukaeraData");
+				if (temp2 != null) {
+
+					String[] s2 = temp2.substring(0, temp2.indexOf('.')).split(
+							" ");
+					String[] bukData = s2[0].split("-");
+					String[] bukOrdua = s2[1].split(":");
+					Calendar bukCal = new GregorianCalendar(Integer
+							.parseInt(bukData[0]),
+							Integer.parseInt(bukData[1]), Integer
+									.parseInt(bukData[2]), Integer
+									.parseInt(bukOrdua[0]), Integer
+									.parseInt(bukOrdua[1]), Integer
+									.parseInt(bukOrdua[2]));
+					bukaeraData = bukCal.getTime();
+				}
+				String nan = rs.getString("erabNan");
+
+				int biziId = rs.getInt("biziId");
+				String biziModelo = rs.getString("biziModelo");
+				String biziKolore = rs.getString("biziKolore");
+
+				int hasGuneId = rs.getInt("hasGuneId");
+				String hasGuneIzen = rs.getString("hasGuneIzen");
+				String hasGuneHelbide = rs.getString("hasGuneHelbide");
+
+				int helGuneId = rs.getInt("helGuneId");
+				String helGuneIzen = rs.getString("helGuneIzen");
+				String helGuneHelbide = rs.getString("helGuneHelbide");
+
+				boolean bukatuta = rs.getBoolean("bukatuta");
+
+				azkenAlokInfo = new AlokairuInfo(id, hasieraData, bukaeraData,
+						nan, new BizikletaInfo(biziId, biziModelo, biziKolore),
+						new GuneInfo(hasGuneId, hasGuneIzen, hasGuneHelbide),
+						new GuneInfo(helGuneId, helGuneIzen, helGuneHelbide),
+						bukatuta);
+			}
+
+			rs.close();
+			ps.close();
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		}
+
+		return azkenAlokInfo;
+	}
+
+	public AlokairuInfo bizikletaBueltatu(String erabNan) throws Salbuespena {
+		try {
+			
+			System.out.println(1);
+			
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+			
+			System.out.println(2);
+			
+			AlokairuInfo azkenAlokairu = getAzkenAlokairuInfo(erabNan);
+			String sql1 = "UPDATE bizikleta SET alokatuta = false, fk_uneko_gune_id = ? WHERE id = ?";
+			PreparedStatement ps1 = connector.prepareStatement(sql1);
+			ps1.setInt(1, azkenAlokairu.getHelGune().getId());
+			ps1.setInt(2, azkenAlokairu.getBizikleta().getId());
+			int result = ps1.executeUpdate();
+			
+			System.out.println(3);
+			
+			if (result > 0) {
+				String sql2 = "UPDATE ibilbidea SET bukaera_data = NOW(), bukatuta = true WHERE id = ?";
+				PreparedStatement ps2 = connector.prepareStatement(sql2);
+				ps2.setInt(1, azkenAlokairu.getId());
+				ps2.executeUpdate();
+				
+				System.out.println(4);
+			}
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		}
+
+		System.out.println(5);
+		
+		return getAzkenAlokairuInfo(erabNan);
 	}
 }
