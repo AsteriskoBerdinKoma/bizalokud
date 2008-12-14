@@ -26,24 +26,26 @@ public class Entregatu extends BarnePanela {
 
 	public Entregatu(Gunea owner) {
 		super(owner);
-		
+
 		sortuPanela();
-		
+
 		this.setTitle("Bizikleta entregatu");
 		this.setLayout(new FitLayout());
 		this.setBorder(false);
 		this.setAutoScroll(true);
 		this.setCollapsible(false);
-		
+
 		toolbar = new Toolbar();
 		toolbar.addFill();
 		setBottomToolbar(toolbar);
-		
+
 		entregatuButton = new ToolbarButton("Bizikleta entregatu",
 				new ButtonListenerAdapter() {
 					public void onClick(Button button, EventObject e) {
 						element = new ExtElement(getElement());
-						element.mask("Alokairua egiten. Itxaron mesedez.", true);
+						element
+								.mask("Alokairua egiten. Itxaron mesedez.",
+										true);
 						GuneaService.Util.getInstance().bizikletaBueltatu(
 								jabea.getErabNan(),
 								new AsyncCallback<AlokairuInfo>() {
@@ -96,9 +98,9 @@ public class Entregatu extends BarnePanela {
 				});
 		entregatuButton.setId("entregatu");
 		toolbar.addButton(entregatuButton);
-		
+
 		this.add(panel1);
-		
+
 		this.addListener(new ComponentListenerAdapter() {
 			public void onShow(Component component) {
 				element = new ExtElement(getElement());
@@ -120,8 +122,8 @@ public class Entregatu extends BarnePanela {
 
 	public void datuakEguneratu() {
 		if (jabea.isErabIdentif() && jabea.isGuneaIdentif()) {
-			GuneaService.Util.getInstance().getAzkenAlokairuInfo(jabea.getErabNan(),
-					new AsyncCallback<AlokairuInfo>() {
+			GuneaService.Util.getInstance().getAzkenAlokairuInfo(
+					jabea.getErabNan(), new AsyncCallback<AlokairuInfo>() {
 
 						public void onFailure(Throwable caught) {
 							System.out.println(caught.getMessage());
@@ -136,36 +138,44 @@ public class Entregatu extends BarnePanela {
 						public void onSuccess(AlokairuInfo result) {
 							String html = "";
 							if (result != null) {
-								DateTimeFormat dtf = new DateTimeFormat(
-										"yyyy/MM/dd HH:mm") {
-								};
-								String hasData = dtf.format(result
-										.getHasieraData());
-								html = "<p style=\"font-size:x-large;\" align=\"center\">Zure uneko alokairuaren informazioa</p><br><br>"
-										+ "<p style=\"font-size:medium;\">Hasiera gunea: "
-										+ result.getHasGune().getIzena()
-										+ " - "
-										+ result.getHasGune().getHelbidea()
-										+ "<br>"
-										+ "Hasiera data: "
-										+ hasData
-										+ "<br>"
-										+ "Bizikleta modeloa: "
-										+ result.getBizikleta().getModeloa()
-										+ "<br>"
-										+ "Bizikleta kolorea: "
-										+ result.getBizikleta().getKolorea()
-										+ "</p><br>";
-								if (result.getHelGune().getId() == jabea
-										.getGuneId()) {
-									html += "<p style=\"font-size:medium;\">Bizikleta orain entregatu nahi baduzu utzi ezazu bere lekuan eta sakatu tresna barrako \"Bizikleta entregatu\" botoia.</p>";
-									toolbar.setVisible(true);
+								if (!result.isBukatuta()) {
+									DateTimeFormat dtf = new DateTimeFormat(
+											"yyyy/MM/dd HH:mm") {
+									};
+									String hasData = dtf.format(result
+											.getHasieraData());
+									html = "<p style=\"font-size:x-large;\" align=\"center\">Zure uneko alokairuaren informazioa</p><br><br>"
+											+ "<p style=\"font-size:medium;\">Hasiera gunea: "
+											+ result.getHasGune().getIzena()
+											+ " - "
+											+ result.getHasGune().getHelbidea()
+											+ "<br>"
+											+ "Hasiera data: "
+											+ hasData
+											+ "<br>"
+											+ "Bizikleta modeloa: "
+											+ result.getBizikleta()
+													.getModeloa()
+											+ "<br>"
+											+ "Bizikleta kolorea: "
+											+ result.getBizikleta()
+													.getKolorea() + "</p><br>";
+									if (result.getHelGune().getId() == jabea
+											.getGuneId()) {
+										html += "<p style=\"font-size:medium;\">Bizikleta orain entregatu nahi baduzu utzi ezazu bere lekuan eta sakatu tresna barrako \"Bizikleta entregatu\" botoia.</p>";
+										toolbar.setVisible(true);
+									} else {
+										html += "<p style=\"font-size:medium;\">Alokatuta daukazun bizikleta ezin duzu gune honetan entregatu.<br>Entrega gunea hauxe da: <b>"
+												+ result.getHelGune()
+														.getIzena()
+												+ "</b> - "
+												+ result.getHelGune()
+														.getHelbidea()
+												+ ".</p><br><br>";
+										toolbar.setVisible(false);
+									}
 								} else {
-									html += "<p style=\"font-size:medium;\">Alokatuta daukazun bizikleta ezin duzu gune honetan entregatu.<br>Entrega gunea hauxe da: <b>"
-											+ result.getHelGune().getIzena()
-											+ "</b> - "
-											+ result.getHelGune().getHelbidea()
-											+ ".</p><br><br>";
+									html = "<p style=\"font-size:medium;\" align=\"center\">Momentu honetan ez daukazu bizikletarik alokatuta.</p><br><br>";
 									toolbar.setVisible(false);
 								}
 							} else {

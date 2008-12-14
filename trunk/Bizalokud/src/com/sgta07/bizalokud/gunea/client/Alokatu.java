@@ -54,6 +54,8 @@ public class Alokatu extends BarnePanela {
 
 	HashMap<Integer, Marker> markak;
 
+	int unmaskKont;
+
 	public Alokatu(Gunea owner) {
 		super(owner);
 
@@ -201,8 +203,11 @@ public class Alokatu extends BarnePanela {
 
 		first.add(guneak, westData);
 		first.add(mapPanel, new BorderLayoutData(RegionPosition.CENTER));
-		first.add(new Label("Aukeratu zein gunera joan nahi duzun eta sakatu tresna barrako \"Alokatu\" botoian"),
-				new BorderLayoutData(RegionPosition.NORTH));
+		first
+				.add(
+						new Label(
+								"Aukeratu zein gunera joan nahi duzun eta sakatu tresna barrako \"Alokatu\" botoian"),
+						new BorderLayoutData(RegionPosition.NORTH));
 	}
 
 	private void sortuPanel2() {
@@ -242,11 +247,11 @@ public class Alokatu extends BarnePanela {
 
 			private native void doAddEventListener(String event,
 					OneArgFunction listener) /*-{
-							var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
-							map.addEventListener(event, function(llp) {
-								listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
-							});
-						}-*/;
+									var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
+									map.addEventListener(event, function(llp) {
+										listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
+									});
+								}-*/;
 
 			{
 				addEventListener("click", new OneArgFunction() {
@@ -322,6 +327,8 @@ public class Alokatu extends BarnePanela {
 	public void datuakEguneratu() {
 		element = new ExtElement(getElement());
 		element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
+		unmaskKont = 0;
+
 		if (sortua && jabea.isGuneaIdentif()) {
 			// markakKendu();
 			CardLayout cardLayout = (CardLayout) getLayout();
@@ -330,6 +337,7 @@ public class Alokatu extends BarnePanela {
 				toolbar.setVisible(true);
 			}
 			if (jabea.isErabIdentif()) {
+				unmaskKont++;
 				GuneaService.Util.getInstance().erabiltzaileaAlokatuDu(
 						jabea.getErabNan(), new AsyncCallback<Boolean>() {
 
@@ -352,10 +360,13 @@ public class Alokatu extends BarnePanela {
 									setActiveItem(2);
 									toolbar.setVisible(false);
 								}
-								element.unmask();
+								unmaskKont--;
+								if (unmaskKont == 0)
+									element.unmask();
 							}
 						});
 			}
+			unmaskKont++;
 			GuneaService.Util.getInstance().alokaDaiteke(jabea.getGuneId(),
 					new AsyncCallback<Boolean>() {
 						public void onFailure(final Throwable caught) {
@@ -366,7 +377,9 @@ public class Alokatu extends BarnePanela {
 									.setHtml("<p style=\"vertical-align: middle;\" align=\"center\"><b>Momentu honetan ezin dira bizikletak alokatu. Saiatu beranduago mesedez.</b></p>");
 							setActiveItem(2);
 							toolbar.setVisible(false);
-							element.unmask();
+							unmaskKont--;
+							if (unmaskKont == 0)
+								element.unmask();
 						}
 
 						public void onSuccess(Boolean result) {
@@ -377,10 +390,12 @@ public class Alokatu extends BarnePanela {
 								setActiveItem(2);
 								toolbar.setVisible(false);
 							}
-							element.unmask();
+							unmaskKont--;
+							if (unmaskKont == 0)
+								element.unmask();
 						}
 					});
-
+			unmaskKont++;
 			GuneaService.Util.getInstance().getHelburuGunePosibleak(
 					jabea.getGuneId(),
 					new AsyncCallback<HashMap<Integer, GuneInfo>>() {
@@ -388,7 +403,9 @@ public class Alokatu extends BarnePanela {
 							caught.getMessage();
 							caught.printStackTrace();
 							guneak.setGuneak(new Object[0][]);
-							element.unmask();
+							unmaskKont--;
+							if (unmaskKont == 0)
+								element.unmask();
 						}
 
 						public void onSuccess(HashMap<Integer, GuneInfo> result) {
@@ -406,7 +423,9 @@ public class Alokatu extends BarnePanela {
 							guneak.setGuneak(obj);
 							guneak.getSelectionModel().selectFirstRow();
 
-							element.unmask();
+							unmaskKont--;
+							if (unmaskKont == 0)
+								element.unmask();
 						}
 
 					});

@@ -28,7 +28,6 @@ import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.CardLayout;
 import com.gwtext.client.widgets.layout.ColumnLayout;
-import com.gwtext.client.widgets.layout.ColumnLayoutData;
 import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtext.client.widgets.layout.RowLayout;
 import com.gwtext.client.widgets.tree.TreeNode;
@@ -51,7 +50,7 @@ public class Gunea implements EntryPoint, Logeable {
 
 	private boolean isGuneaIdentif;
 	private boolean isErabIdentif;
-	
+
 	private String erabNan;
 	private String erabIzena;
 	private String erabAbizen;
@@ -67,7 +66,7 @@ public class Gunea implements EntryPoint, Logeable {
 	private int ezAktKont = 0;
 	// Eguneratu gabe egondako denbora
 	private int eguneraketaKont = 0;
-	
+
 	private Alokatu alokatu;
 	private Abisuak abisuak;
 	private Pasahitza pasahitza;
@@ -77,13 +76,14 @@ public class Gunea implements EntryPoint, Logeable {
 	private static Store store;
 	private static MemoryProxy proxy;
 	private static ArrayReader reader;
-	
-	//Panel nagusien aldagaiak
+
+	// Panel nagusien aldagaiak
 	private Panel centerPanel;
 	private CardLayout cardLayout;
+	private Hasiera hasiera;
 
 	public void onModuleLoad() {
-			
+
 		sortuPanelak();
 
 		GuneaService.Util.getInstance().getMyInfo(
@@ -187,7 +187,7 @@ public class Gunea implements EntryPoint, Logeable {
 		westData.setMaxSize(400);
 		westData.setMargins(new Margins(0, 5, 0, 0));
 
-		borderPanel.add(getMenuPanel(),westData);
+		borderPanel.add(getMenuPanel(), westData);
 
 		centerPanel = new Panel();
 		cardLayout = new CardLayout();
@@ -206,15 +206,16 @@ public class Gunea implements EntryPoint, Logeable {
 		borderPanel.add(centerPanel, centerData);
 
 		panelNagusia.add(borderPanel);
-		
+
 		new Viewport(panelNagusia);
-		
+
 		centerPanel.add(abisuak);
 		centerPanel.add(alokatu);
 		centerPanel.add(pasahitza);
 		centerPanel.add(entregatu);
+		centerPanel.add(hasiera);
 
-		
+		cardLayout.setActiveItem("hasiera-panela");
 
 		// Aktibitatea dagoen edo ez detektatzen du. Aktibitaterik ez badago
 		// loginetik irtengo da.
@@ -240,6 +241,8 @@ public class Gunea implements EntryPoint, Logeable {
 		pasahitza.setId("pasahitza-panel");
 		entregatu = new Entregatu(this);
 		entregatu.setId("entregatu-panel");
+		hasiera = new Hasiera(this);
+		hasiera.setId("hasiera-panel");
 	}
 
 	private void resetIdleTimer() {
@@ -256,13 +259,15 @@ public class Gunea implements EntryPoint, Logeable {
 				orduLabel.setText(ordua);
 				ezAktKont++;
 				eguneraketaKont++;
-				if (ezAktKont == (Gunea.IRTETEKO_DENBORA - 10)) {
+				if (ezAktKont >= (Gunea.IRTETEKO_DENBORA - 10)) {
 					// TODO: Mezu kutxa erakutsi abisatzeko
-				} else if (ezAktKont == Gunea.IRTETEKO_DENBORA) {
+				} else if (ezAktKont >= Gunea.IRTETEKO_DENBORA) {
 					// TODO: Deslogeatu
 				}
-				if (eguneraketaKont == Gunea.DATU_EGUNERAKETA_DENBORA) {
-					// TODO: Datuak eguneratu
+				// Denbora bat pasa eta gero aktibo dagoen panelaren datuak
+				// eguneratuko dira
+				if (eguneraketaKont >= Gunea.DATU_EGUNERAKETA_DENBORA) {
+					eguneratuDatuak();
 				}
 			}
 		};
@@ -285,17 +290,15 @@ public class Gunea implements EntryPoint, Logeable {
 			// mapa.markaGehitu(gunea);
 			// mapa.finkatu(gunea);
 			// }
-			
-			eguneratuGuneDatuak();
+
+			eguneratuDatuak();
 		}
 	}
 
-	private void eguneratuGuneDatuak() {
-		alokatu.datuakEguneratu();
-	}
-
-	public String getHelbidea() {
-		return this.gunea.getHelbidea();
+	private void eguneratuDatuak() {
+		if (cardLayout != null && cardLayout.getActiveItem() instanceof BarnePanela)
+			((BarnePanela) cardLayout.getActiveItem()).datuakEguneratu();
+		eguneraketaKont = 0;
 	}
 
 	public void setErabiltzaileDatuak(String nan, String izena,
@@ -307,6 +310,8 @@ public class Gunea implements EntryPoint, Logeable {
 		// erabDatuak.setText("Kaixo " + izena + " " + abizenak);
 		erabDatuak.setHtml("Kaixo <b>" + izena + " " + abizenak + "</b><br>");
 		this.isErabIdentif = true;
+		
+		eguneratuDatuak();
 	}
 
 	public String getErabNan() {
@@ -329,6 +334,22 @@ public class Gunea implements EntryPoint, Logeable {
 		return gunea.getId();
 	}
 
+	public String getGuneIzena() {
+		return gunea.getIzena();
+	}
+
+	public String getGuneHelbidea() {
+		return gunea.getHelbidea();
+	}
+
+	public double getGuneLat() {
+		return gunea.getLat();
+	}
+
+	public double getGuneLon() {
+		return gunea.getLon();
+	}
+
 	public boolean isGuneaIdentif() {
 		return isGuneaIdentif;
 	}
@@ -336,7 +357,7 @@ public class Gunea implements EntryPoint, Logeable {
 	public boolean isErabIdentif() {
 		return isErabIdentif;
 	}
-	
+
 	public Panel getMenuPanel() {
 
 		Panel westPanel = new Panel();
@@ -415,42 +436,55 @@ public class Gunea implements EntryPoint, Logeable {
 	private static Object[][] getData() {
 		return new Object[][] {
 
-				new Object[] { "ekintzak-kategoria", null, "Ekintzak","ekintza-kategoria-icon", null },
-				new Object[] { "alokatu", "ekintzak-kategoria","Bizikleta Alokatu", null, null },
-				new Object[] { "entregatu", "ekintzak-kategoria","Bizikleta Entregatu", null, null },
+				new Object[] { "ekintzak-kategoria", null, "Ekintzak",
+						"ekintza-kategoria-icon", null },
+				new Object[] { "hasiera", "ekintzak-kategoria", "Hasiera",
+						null, null },
+				new Object[] { "alokatu", "ekintzak-kategoria",
+						"Bizikleta Alokatu", null, null },
+				new Object[] { "entregatu", "ekintzak-kategoria",
+						"Bizikleta Entregatu", null, null },
 
-				new Object[] { "kontua-kategoria", null, "Nire Kontua","kontua-kategoria-icon", null },
-				new Object[] { "estatistikak", "kontua-kategoria","Nire Ibilbideak", null, null },
-				new Object[] { "pasahitza", "kontua-kategoria","Pasahitza Aldatu", null, null },
-				new Object[] { "abisuak", "kontua-kategoria", "Nire Abisuak",null, null },
-				new Object[] { "datuak", "kontua-kategoria", "Nire Datuak",null, null } };
+				new Object[] { "kontua-kategoria", null, "Nire Kontua",
+						"kontua-kategoria-icon", null },
+				new Object[] { "estatistikak", "kontua-kategoria",
+						"Nire Ibilbideak", null, null },
+				new Object[] { "pasahitza", "kontua-kategoria",
+						"Pasahitza Aldatu", null, null },
+				new Object[] { "abisuak", "kontua-kategoria", "Nire Abisuak",
+						null, null },
+				new Object[] { "datuak", "kontua-kategoria", "Nire Datuak",
+						null, null } };
 	}
-	
+
 	private void addNodeClickListener(TreeNode node) {
 		node.addListener(new TreeNodeListenerAdapter() {
 			public void onClick(Node node, EventObject e) {
-				
-				if(node.getId().equals("abisuak")){
+
+				if (node.getId().equals("abisuak")) {
 					cardLayout.setActiveItem("abisuak-panel");
 				}
-				if(node.getId().equals("alokatu")){
+				if (node.getId().equals("alokatu")) {
 					alokatu.datuakEguneratu();
 					cardLayout.setActiveItem("alokatu-panel");
 				}
-				if(node.getId().equals("entregatu")){
+				if (node.getId().equals("entregatu")) {
 					cardLayout.setActiveItem("entregatu-panel");
 				}
-				if(node.getId().equals("datuak")){
+				if (node.getId().equals("datuak")) {
 					cardLayout.setActiveItem("datuak-panel");
 				}
-				if(node.getId().equals("pasahitza")){
+				if (node.getId().equals("pasahitza")) {
 					cardLayout.setActiveItem("pasahitza-panel");
+				}
+				if (node.getId().equals("hasiera")) {
+					cardLayout.setActiveItem("hasiera-panel");
 				}
 			}
 		});
 	}
-	
-	public void getCenterPanelCardLayout(){
+
+	public void getCenterPanelCardLayout() {
 		cardLayout.setActiveItem("abisuak-panel");
 	}
 }
