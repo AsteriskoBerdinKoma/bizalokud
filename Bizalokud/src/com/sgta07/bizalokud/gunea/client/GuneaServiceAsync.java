@@ -28,4 +28,6 @@ public interface GuneaServiceAsync {
 	public void bizikletaBueltatu(String erabNan, AsyncCallback<AlokairuInfo> callback);
 	
 	public void abisuaIrakurriDa(String erabNan, int id, AsyncCallback<Boolean> callback);
+	
+	public void nireIbilbideakLortu(String erabNan, AsyncCallback<DatuEstatistiko> callback);
 }

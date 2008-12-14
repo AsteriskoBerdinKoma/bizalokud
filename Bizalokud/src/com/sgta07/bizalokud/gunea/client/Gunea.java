@@ -485,6 +485,6 @@ public class Gunea implements EntryPoint, Logeable {
 	}
 
 	public void getCenterPanelCardLayout() {
-		cardLayout.setActiveItem("abisuak-panel");
+		cardLayout.setActiveItem("hasiera-panel");
 	}
 }

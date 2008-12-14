@@ -8,11 +8,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.Vector;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.sgta07.bizalokud.gunea.client.AbisuInfo;
 import com.sgta07.bizalokud.gunea.client.AlokairuInfo;
 import com.sgta07.bizalokud.gunea.client.BizikletaInfo;
+import com.sgta07.bizalokud.gunea.client.DatuEstatistiko;
 import com.sgta07.bizalokud.gunea.client.GuneInfo;
 import com.sgta07.bizalokud.gunea.client.GuneaService;
 import com.sgta07.bizalokud.gunea.client.Salbuespena;
@@ -119,7 +121,9 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			ResultSet rs3 = ps3.executeQuery();
 
 			if (rs1.next() && rs2.next() && rs3.next())
-				tokiLibreak = rs3.getInt("toki_kop") - (rs1.getInt("bizikletakLibre") + rs2.getInt("bideanDirenak"));
+				tokiLibreak = rs3.getInt("toki_kop")
+						- (rs1.getInt("bizikletakLibre") + rs2
+								.getInt("bideanDirenak"));
 
 			rs1.close();
 			rs2.close();
@@ -288,7 +292,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			ps.setString(1, getThreadLocalRequest().getLocalAddr());
 
 			ResultSet rs = ps.executeQuery();
-			if (rs.next()){
+			if (rs.next()) {
 				emaitza = new GuneInfo(rs.getInt("id"), rs.getString("izena"),
 						rs.getString("helb"));
 				emaitza.setLatLon(rs.getDouble("lat"), rs.getDouble("lon"));
@@ -471,29 +475,29 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 	public AlokairuInfo bizikletaBueltatu(String erabNan) throws Salbuespena {
 		try {
-			
+
 			System.out.println(1);
-			
+
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
-			
+
 			System.out.println(2);
-			
+
 			AlokairuInfo azkenAlokairu = getAzkenAlokairuInfo(erabNan);
 			String sql1 = "UPDATE bizikleta SET alokatuta = false, fk_uneko_gune_id = ? WHERE id = ?";
 			PreparedStatement ps1 = connector.prepareStatement(sql1);
 			ps1.setInt(1, azkenAlokairu.getHelGune().getId());
 			ps1.setInt(2, azkenAlokairu.getBizikleta().getId());
 			int result = ps1.executeUpdate();
-			
+
 			System.out.println(3);
-			
+
 			if (result > 0) {
 				String sql2 = "UPDATE ibilbidea SET bukaera_data = NOW(), bukatuta = true WHERE id = ?";
 				PreparedStatement ps2 = connector.prepareStatement(sql2);
 				ps2.setInt(1, azkenAlokairu.getId());
 				ps2.executeUpdate();
-				
+
 				System.out.println(4);
 			}
 		} catch (ClassNotFoundException e) {
@@ -503,7 +507,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		}
 
 		System.out.println(5);
-		
+
 		return getAzkenAlokairuInfo(erabNan);
 	}
 
@@ -523,5 +527,101 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
 		}
 		return rs > 0;
+	}
+
+	public DatuEstatistiko nireIbilbideakLortu(String erabNan)
+			throws Salbuespena {
+		DatuEstatistiko de = new DatuEstatistiko();
+		Vector<Object[]> kalkuluak = new Vector<Object[]>();
+		int alokatuKont = 0;
+		HashMap<Integer, GuneInfo> guneak = new HashMap<Integer, GuneInfo>();
+		boolean aurkitua = false;
+		String alokairuLuzeenaEguna = "";
+		String alokairuLuzeenaDenbora = "";
+		String egunAktiboenaEguna = "";
+		String egunAktiboenaDenbora = "";
+
+		try {
+			guneak = guneenZerrenda();
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+			String query = "SELECT hasiera_data, fk_gunehas_id, fk_gunehel_id, "
+					+ "TIMEDIFF(bukaera_data, hasiera_data) AS elapsed "
+					+ "FROM ibilbidea "
+					+ "WHERE fk_erab_nan = ? AND bukatuta = 1";
+			PreparedStatement ps = connector.prepareStatement(query);
+			ps.setString(1, erabNan);
+			ResultSet rs = ps.executeQuery();
+
+			String queryEgunAktiboena = "SELECT DATE(hasiera_data) AS eguna, "
+					+ "SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(bukaera_data, hasiera_data)))) AS elapsed "
+					+ "FROM ibilbidea "
+					+ "WHERE fk_erab_nan=? AND bukatuta=1 "
+					+ "GROUP BY DATE(hasiera_data) "
+					+ "ORDER BY SEC_TO_TIME(SUM(TIME_TO_SEC(timediff(bukaera_data, hasiera_data)))) DESC "
+					+ "LIMIT 1";
+			String queryAlokairuLuzeena = "SELECT DATE(hasiera_data) AS eguna, "
+					+ "TIMEDIFF(bukaera_data, hasiera_data) AS elapsed "
+					+ "FROM ibilbidea "
+					+ "WHERE fk_erab_nan='09760589X' AND bukatuta=1 "
+					+ "ORDER BY TIMEDIFF(bukaera_data, hasiera_data) DESC "
+					+ "LIMIT 1";
+
+			while (rs.next()) {
+				alokatuKont++;
+				Object[] temp = new Object[6];
+				temp[0] = rs.getInt("fk_gunehas_id");
+				temp[1] = rs.getInt("fk_gunehel_id");
+				temp[4] = guneak.get(temp[0]);
+				temp[5] = guneak.get(temp[1]);
+				rs.getString("elapsed");
+				for (Object[] row : kalkuluak) {
+					if (row[0] == temp[0] && row[1] == temp[1]) {
+						row[2] = (Integer) row[2] + 1;
+						row[3] = (Double) row[2]
+								/ new Integer(alokatuKont).doubleValue();
+						aurkitua = true;
+					}
+				}
+				if (!aurkitua) {
+					temp[2] = 1;
+					temp[3] = 1.0 / new Integer(alokatuKont).doubleValue();
+					kalkuluak.addElement(temp);
+				}
+				aurkitua = false;
+			}
+			rs.close();
+			ps.close();
+			PreparedStatement ps1 = connector
+					.prepareStatement(queryAlokairuLuzeena);
+			ps1.setString(1, erabNan);
+			ResultSet rs1 = ps1.executeQuery();
+			if (rs1.next()) {
+				alokairuLuzeenaEguna = rs1.getString("eguna");
+				alokairuLuzeenaDenbora = rs1.getString("elapsed");
+			}
+			rs1.close();
+			ps1.close();
+			PreparedStatement ps2 = connector
+					.prepareStatement(queryEgunAktiboena);
+			ps2.setString(1, erabNan);
+			ResultSet rs2 = ps2.executeQuery();
+			if (rs2.next()) {
+				egunAktiboenaEguna = rs1.getString("eguna");
+				egunAktiboenaDenbora = rs1.getString("elapsed");
+			}
+			rs2.close();
+			ps2.close();
+
+			de = new DatuEstatistiko(alokatuKont, alokairuLuzeenaDenbora,
+					alokairuLuzeenaEguna, kalkuluak.size(),
+					egunAktiboenaDenbora, egunAktiboenaEguna, kalkuluak);
+
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		}
+		return de;
 	}
 }
