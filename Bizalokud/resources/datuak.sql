@@ -181,15 +181,15 @@ INSERT INTO `informazioa` SET data='2008-11-23 18:13:10', mezua='Boulevardeko gu
 -- 'ibilbidea' taulako datuak
 --
 
-INSERT INTO `ibilbidea` SET fk_bizi_id=1, hasiera_data='2008-12-12 13:40:00', bukaera_data=null, fk_erab_nan='09726776F', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=0;
-INSERT INTO `ibilbidea` SET fk_bizi_id=2, hasiera_data='2008-12-12 16:40:00', bukaera_data=null, fk_erab_nan='09204851K', fk_gunehas_id=2, fk_gunehel_id=12, bukatuta=0;
+INSERT INTO `ibilbidea` SET fk_bizi_id=68, hasiera_data='2008-12-12 13:40:00', bukaera_data=null, fk_erab_nan='09726776F', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=0;
+INSERT INTO `ibilbidea` SET fk_bizi_id=69, hasiera_data='2008-12-12 16:40:00', bukaera_data=null, fk_erab_nan='09204851K', fk_gunehas_id=2, fk_gunehel_id=12, bukatuta=0;
 
 -- Miriamek egindako ibilbide bukatuak, estatistikak erakusteko
-INSERT INTO `ibilbidea` SET fk_bizi_id=38, hasiera_data='2008-12-12 13:40:00', bukaera_data='2008-12-12 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
-INSERT INTO `ibilbidea` SET fk_bizi_id=38, hasiera_data='2008-12-11 09:40:00', bukaera_data='2008-12-11 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
-INSERT INTO `ibilbidea` SET fk_bizi_id=39, hasiera_data='2008-11-12 13:40:00', bukaera_data='2008-11-12 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
-INSERT INTO `ibilbidea` SET fk_bizi_id=39, hasiera_data='2008-12-12 17:40:00', bukaera_data='2008-12-12 19:00:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
-INSERT INTO `ibilbidea` SET fk_bizi_id=40, hasiera_data='2008-12-01 13:40:00', bukaera_data='2008-12-01 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
+INSERT INTO `ibilbidea` SET fk_bizi_id=60, hasiera_data='2008-12-12 13:40:00', bukaera_data='2008-12-12 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
+INSERT INTO `ibilbidea` SET fk_bizi_id=60, hasiera_data='2008-12-11 09:40:00', bukaera_data='2008-12-11 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
+INSERT INTO `ibilbidea` SET fk_bizi_id=61, hasiera_data='2008-11-12 13:40:00', bukaera_data='2008-11-12 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
+INSERT INTO `ibilbidea` SET fk_bizi_id=61, hasiera_data='2008-12-12 17:40:00', bukaera_data='2008-12-12 19:00:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
+INSERT INTO `ibilbidea` SET fk_bizi_id=62, hasiera_data='2008-12-01 13:40:00', bukaera_data='2008-12-01 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=1, fk_gunehel_id=12, bukatuta=1;
 INSERT INTO `ibilbidea` SET fk_bizi_id=14, hasiera_data='2008-12-02 13:40:00', bukaera_data='2008-12-02 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=3, fk_gunehel_id=7, bukatuta=1;
 INSERT INTO `ibilbidea` SET fk_bizi_id=15, hasiera_data='2008-12-03 13:40:00', bukaera_data='2008-12-03 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=3, fk_gunehel_id=7, bukatuta=1;
 INSERT INTO `ibilbidea` SET fk_bizi_id=16, hasiera_data='2008-11-14 08:40:00', bukaera_data='2008-11-14 09:30:00', fk_erab_nan='09760589X', fk_gunehas_id=3, fk_gunehel_id=8, bukatuta=1;
@@ -200,7 +200,7 @@ INSERT INTO `ibilbidea` SET fk_bizi_id=35, hasiera_data='2008-10-10 13:40:00', b
 INSERT INTO `ibilbidea` SET fk_bizi_id=6, hasiera_data='2008-10-09 13:40:00', bukaera_data='2008-10-09 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=12, fk_gunehel_id=1, bukatuta=1;
 INSERT INTO `ibilbidea` SET fk_bizi_id=4, hasiera_data='2008-10-23 13:40:00', bukaera_data='2008-10-23 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=12, fk_gunehel_id=1, bukatuta=1;
 INSERT INTO `ibilbidea` SET fk_bizi_id=4, hasiera_data='2008-10-24 13:40:00', bukaera_data='2008-10-24 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=5, fk_gunehel_id=1, bukatuta=1;
-INSERT INTO `ibilbidea` SET fk_bizi_id=40, hasiera_data='2008-09-12 13:40:00', bukaera_data='2008-09-12 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=8, fk_gunehel_id=12, bukatuta=1;
-INSERT INTO `ibilbidea` SET fk_bizi_id=42, hasiera_data='2008-09-30 13:40:00', bukaera_data='2008-09-30 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=8, fk_gunehel_id=12, bukatuta=1;
-INSERT INTO `ibilbidea` SET fk_bizi_id=42, hasiera_data='2008-09-15 13:40:00', bukaera_data='2008-09-15 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=12, fk_gunehel_id=12, bukatuta=1;
-INSERT INTO `ibilbidea` SET fk_bizi_id=41, hasiera_data='2008-12-12 09:30:00', bukaera_data='2008-12-12 11:34:00', fk_erab_nan='09760589X', fk_gunehas_id=12, fk_gunehel_id=12, bukatuta=1;
+INSERT INTO `ibilbidea` SET fk_bizi_id=63, hasiera_data='2008-09-12 13:40:00', bukaera_data='2008-09-12 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=8, fk_gunehel_id=12, bukatuta=1;
+INSERT INTO `ibilbidea` SET fk_bizi_id=63, hasiera_data='2008-09-30 13:40:00', bukaera_data='2008-09-30 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=8, fk_gunehel_id=12, bukatuta=1;
+INSERT INTO `ibilbidea` SET fk_bizi_id=64, hasiera_data='2008-09-15 13:40:00', bukaera_data='2008-09-15 17:30:00', fk_erab_nan='09760589X', fk_gunehas_id=12, fk_gunehel_id=12, bukatuta=1;
+INSERT INTO `ibilbidea` SET fk_bizi_id=65, hasiera_data='2008-12-12 09:30:00', bukaera_data='2008-12-12 11:34:00', fk_erab_nan='09760589X', fk_gunehas_id=12, fk_gunehel_id=12, bukatuta=1;
