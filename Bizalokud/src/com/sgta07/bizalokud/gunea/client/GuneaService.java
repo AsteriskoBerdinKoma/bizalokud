@@ -32,6 +32,8 @@ public interface GuneaService extends RemoteService {
 	
 	public AlokairuInfo bizikletaBueltatu(String erabNan) throws Salbuespena;
 	
+	public boolean abisuaIrakurriDa(String erabNan, int id) throws Salbuespena;
+	
 	/**
 	 * Utility class for simplifying access to the instance of async service.
 	 */

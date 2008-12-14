@@ -502,4 +502,22 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		
 		return getAzkenAlokairuInfo(erabNan);
 	}
+
+	public boolean abisuaIrakurriDa(String erabNan, int id) throws Salbuespena {
+		int rs = -1;
+		try {
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+			String query = "UPDATE abisuak SET irakurrita=1 WHERE nan=? AND id=?";
+			PreparedStatement ps = connector.prepareStatement(query);
+			ps.setString(1, erabNan);
+			ps.setInt(2, id);
+			rs = ps.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		}
+		return rs > 0;
+	}
 }

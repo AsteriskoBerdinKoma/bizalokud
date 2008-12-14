@@ -2,13 +2,21 @@ package com.sgta07.bizalokud.gunea.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.MessageBox;
 import com.gwtext.client.widgets.MessageBoxConfig;
 import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.FieldSet;
 import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.layout.AbsoluteLayout;
+import com.gwtext.client.widgets.layout.BorderLayout;
+import com.gwtext.client.widgets.layout.BorderLayoutData;
+import com.gwtext.client.widgets.layout.ColumnLayout;
 import com.gwtext.client.widgets.layout.FitLayout;
 
 public class Pasahitza extends BarnePanela {
@@ -25,42 +33,47 @@ public class Pasahitza extends BarnePanela {
 		panel = this;
 
 		panel.setTitle("Pasahitz aldaketa");
-		panel.setLayout(new FitLayout());
 		panel.setBorder(false);
-		panel.setAutoScroll(true);
-		panel.setCollapsible(false);
+		panel.setLayout(new ColumnLayout());
 
 		// Formularioa sortu
 		FormPanel formPanel = new FormPanel();
-		formPanel.setHeight(500);
-		formPanel.setWidth(800);
+		formPanel.setAutoHeight(true);
+		formPanel.setAutoWidth(true);
 		formPanel.setLabelWidth(150);
+		formPanel.setButtonAlign(Position.CENTER);
+		
+		FieldSet fs = new FieldSet("Datu berriak sartu");
+		fs.setAutoHeight(true);
+		fs.setAutoWidth(true);
 
 
 		// FieldSetera eremuak gehitu
-		pZaharra = new TextField("Pasahitz zaharra", "zaharra", 210);
+		pZaharra = new TextField("Pasahitz zaharra", "zaharra");
 		pZaharra.setPassword(true);
 		pZaharra.setAllowBlank(false);
 		pZaharra.setBlankText("Pasahitz zaharra idatzi behar duzu!");
-		formPanel.add(pZaharra);
+		fs.add(pZaharra);
 
-		pBerria1 = new TextField("Pasahitz berria", "berria1", 210);
+		pBerria1 = new TextField("Pasahitz berria", "berria1");
 		pBerria1.setPassword(true);
 		pBerria1.setAllowBlank(false);
 		pBerria1.setBlankText("Pasahitz berria idatzi behar duzu!");
 		pBerria1.setMinLength(6);
 		pBerria1.setMinLengthText("Pasahitzak gutxienez 6 karaktere eduki behar ditu");
 		
-		formPanel.add(pBerria1);
+		fs.add(pBerria1);
 
-		pBerria2 = new TextField("Errepikatu pasahitz berria", "berria2", 210);
+		pBerria2 = new TextField("Errepikatu pasahitz berria", "berria2");
 		pBerria2.setPassword(true);
 		pBerria2.setAllowBlank(false);
 		pBerria2.setBlankText("Pasahitz berria idatzi behar duzu!");
 		pBerria2.setMinLength(6);
 		pBerria2.setMinLengthText("Pasahitzak gutxienez 6 karaktere eduki behar ditu");
 		pBerria2.setRegex(pBerria1.getText().trim());
-		formPanel.add(pBerria2);
+		fs.add(pBerria2);
+		
+		formPanel.add(fs);
 		
 		Button gordeButton = new Button("Gorde");
 		Button utziButton = new Button("Utzi");
