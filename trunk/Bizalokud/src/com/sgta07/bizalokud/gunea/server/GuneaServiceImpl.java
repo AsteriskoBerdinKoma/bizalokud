@@ -102,14 +102,14 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 			String queryBizikletaLibre = "SELECT COUNT(*) AS bizikletakLibre "
 					+ "FROM bizikleta "
-					+ "WHERE alta = 'true' AND alokatuta = 'false' AND fk_uneko_gune_id = ?";
+					+ "WHERE alta = true AND alokatuta = false AND fk_uneko_gune_id = ?";
 			PreparedStatement ps1 = connector
 					.prepareStatement(queryBizikletaLibre);
 			ps1.setInt(1, helburuGuneId);
 			ResultSet rs1 = ps1.executeQuery();
 
 			String queryTokiLibre = "SELECT COUNT(*) AS bideanDirenak "
-					+ "FROM ibilbidea WHERE fk_gunehel_id = ? AND bukatuta = 0";
+					+ "FROM ibilbidea WHERE fk_gunehel_id = ? AND bukatuta = false";
 			PreparedStatement ps2 = connector.prepareStatement(queryTokiLibre);
 			ps2.setInt(1, helburuGuneId);
 			ResultSet rs2 = ps2.executeQuery();
@@ -120,11 +120,8 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			ps3.setInt(1, helburuGuneId);
 			ResultSet rs3 = ps3.executeQuery();
 
-			if (rs1.next() && rs2.next() && rs3.next()) {
-				tokiLibreak = rs3.getInt("toki_kop")
-						- rs1.getInt("bizikletakLibre")
-						+ rs2.getInt("bideanDirenak");
-			}
+			if (rs1.next() && rs2.next() && rs3.next())
+				tokiLibreak = rs3.getInt("toki_kop") - (rs1.getInt("bizikletakLibre") + rs2.getInt("bideanDirenak"));
 
 			rs1.close();
 			rs2.close();
