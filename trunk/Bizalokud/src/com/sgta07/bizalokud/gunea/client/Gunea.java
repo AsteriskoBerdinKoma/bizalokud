@@ -215,7 +215,7 @@ public class Gunea implements EntryPoint, Logeable {
 		centerPanel.add(pasahitza);
 		centerPanel.add(entregatu);
 
-		centerPanelTwo.setActiveItem(0);
+		centerPanel.setActiveItem(0);
 
 		// Aktibitatea dagoen edo ez detektatzen du. Aktibitaterik ez badago
 		// loginetik irtengo da.

@@ -3,10 +3,13 @@ package com.sgta07.bizalokud.gunea.client;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.ExtElement;
+import com.gwtext.client.core.Function;
 import com.gwtext.client.core.RegionPosition;
+import com.gwtext.client.widgets.BoxComponent;
 import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.event.ComponentListenerAdapter;
+import com.gwtext.client.widgets.event.PanelListenerAdapter;
 import com.gwtext.client.widgets.form.Label;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
@@ -31,6 +34,7 @@ public class Hasiera extends BarnePanela {
 	private Label bizModeloLabel;
 	private Label bizKoloreLabel;
 	private ExtElement element;
+	private boolean mapRendered;
 
 	public Hasiera(Gunea owner) {
 		super(owner);
@@ -54,17 +58,9 @@ public class Hasiera extends BarnePanela {
 		guneHelbideLabel = new Label();
 		azpipanel.add(guneIzenLabel, new RowLayoutData());
 		azpipanel.add(guneHelbideLabel, new RowLayoutData());
-		Panel mapaAzpiPanel = new Panel();
-		mapaAzpiPanel.setFrame(false);
-		mapaAzpiPanel.setBorder(false);
-		mapPanel = new GoogleMap();
-		mapPanel.setBorder(true);
-		mapPanel.setFrame(true);
-		mapPanel.addLargeControls();
-		mapPanel.setSize(500, 400);
-		mapaAzpiPanel.add(mapPanel);
+		sortuMapa();
 		guneaPanel.add(azpipanel, new ColumnLayoutData(0.5));
-		guneaPanel.add(mapaAzpiPanel, new ColumnLayoutData(0.5));
+		guneaPanel.add(mapPanel, new ColumnLayoutData(0.5));
 
 		Panel alokairuPanel = new Panel("Zure uneko alokairuaren informazioa");
 		alokairuPanel.setAutoScroll(true);
@@ -84,7 +80,7 @@ public class Hasiera extends BarnePanela {
 		alokairuPanel.add(bizModeloLabel, new RowLayoutData());
 		alokairuPanel.add(bizKoloreLabel, new RowLayoutData());
 
-		panel.add(guneaPanel, new RowLayoutData());
+		panel.add(guneaPanel, new RowLayoutData(420));
 		panel.add(alokairuPanel, new RowLayoutData());
 		
 		this.add(panel, new BorderLayoutData(RegionPosition.CENTER));
@@ -97,6 +93,33 @@ public class Hasiera extends BarnePanela {
 
 		});
 	}
+	
+	public void sortuMapa(){
+		mapPanel = new GoogleMap();
+		mapPanel.setBorder(false);
+		mapPanel.setFrame(true);
+		mapPanel.addLargeControls();
+		mapPanel.setWidth(500);
+		mapPanel.setHeight(400);
+		
+		mapRendered = false;
+
+		mapPanel.addListener(MapPanel.MAP_RENDERED_EVENT, new Function() {
+			public void execute() {
+				mapRendered = true;
+			}
+		});
+
+		mapPanel.addListener(new PanelListenerAdapter() {
+			public void onResize(BoxComponent component, int adjWidth,
+					int adjHeight, int rawWidth, int rawHeight) {
+
+				if (mapRendered)
+					mapPanel.resizeTo(mapPanel.getInnerWidth(), mapPanel
+							.getInnerHeight());
+			}
+		});
+	}
 
 	public void datuakEguneratu() {
 		element = new ExtElement(getElement());
@@ -106,16 +129,13 @@ public class Hasiera extends BarnePanela {
 			guneIzenLabel.setText("Gune honen izena: " + jabea.getGuneIzena());
 			guneHelbideLabel.setText("Gune honen helbidea: "
 					+ jabea.getGuneHelbidea());
+			
 			LatLonPoint latLonPoint = new LatLonPoint(jabea.getGuneLat(), jabea
 					.getGuneLon());
-
-			mapPanel.setCenterAndZoom(latLonPoint, 17);
-
-			Marker m = new Marker(latLonPoint);
-			mapPanel.setCenterAndZoom(latLonPoint, 17);
-			m.setInfoBubble("<h1>" + jabea.getGuneIzena()
-					+ "</h1><br><b>Helbidea:</b> " + jabea.getGuneHelbidea());
-			mapPanel.addMarker(m);
+            Marker m = new Marker(latLonPoint);
+            mapPanel.setCenterAndZoom(latLonPoint, 17);
+            m.setInfoBubble("<h1>" + jabea.getGuneIzena() + "<h1><br><b>Helbidea:</b> " + jabea.getGuneHelbidea());
+            mapPanel.addMarker(m);
 
 			if (jabea.isErabIdentif()) {
 				GuneaService.Util.getInstance().getAzkenAlokairuInfo(

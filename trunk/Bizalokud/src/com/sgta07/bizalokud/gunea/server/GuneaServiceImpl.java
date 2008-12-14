@@ -280,9 +280,11 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			ps.setString(1, getThreadLocalRequest().getLocalAddr());
 
 			ResultSet rs = ps.executeQuery();
-			if (rs.next())
+			if (rs.next()){
 				emaitza = new GuneInfo(rs.getInt("id"), rs.getString("izena"),
 						rs.getString("helb"));
+				emaitza.setLatLon(rs.getDouble("lat"), rs.getDouble("lon"));
+			}
 			// connector.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
