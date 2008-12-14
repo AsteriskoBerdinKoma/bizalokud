@@ -78,18 +78,18 @@ public class Abisuak extends BarnePanela {
 
 		this.addListener(new ComponentListenerAdapter() {
 			public void onShow(Component component) {
-				System.out.println("Panela erakusten");
-				t1 = new Timer(){
-					public void run(){
-						datuakEguneratu();
-					}
-				};
-				t1.scheduleRepeating(40000);
+				System.out.println("Abisuak erakusten");
+//				t1 = new Timer(){
+//					public void run(){
+//						datuakEguneratu();
+//					}
+//				};
+//				t1.scheduleRepeating(40000);
 				datuakEguneratu();
 			}
 			public void onHide(Component component){
 				System.out.println("Abisuak ezkutatu da");
-				t1.cancel();
+//				t1.cancel();
 			}
 		});
 		
@@ -139,6 +139,25 @@ public class Abisuak extends BarnePanela {
 		grid.addGridRowListener(new GridRowListenerAdapter() {
 
 			public void onRowClick(GridPanel grid, int rowIndex, EventObject e) {
+				
+				final Window abisuPopup = new Window();
+				abisuPopup.setHeight(400);
+				abisuPopup.setWidth(600);
+				abisuPopup.setAutoScroll(true);
+				abisuPopup.setTitle((String) datuak[rowIndex][2]);
+				abisuPopup.setLayout(new FitLayout());
+				abisuPopup.setMaximizable(false);
+				abisuPopup.setModal(true);
+				abisuPopup.setHtml((String) datuak[rowIndex][3]);
+				abisuPopup.setCloseAction(Window.CLOSE);
+//				Button ok = new Button("Ados");
+////				ok.addListener(new ButtonListenerAdapter(){
+////					public void onClick(Button ok, EventObject e){
+////						abisuPopup.close();
+////					}
+////				});
+////				abisuPopup.add(ok);
+				abisuPopup.show();
 				GuneaService.Util.getInstance().abisuaIrakurriDa(jabea.getErabNan(), Integer.parseInt((String)datuak[rowIndex][0]), new AsyncCallback<Boolean>(){
 
 					public void onFailure(Throwable caught) {
@@ -152,12 +171,6 @@ public class Abisuak extends BarnePanela {
 					}
 					
 				});
-				final Window abisuPopup = new Window();
-				abisuPopup.setTitle((String) datuak[rowIndex][2]);
-				abisuPopup.setLayout(new FitLayout());
-				abisuPopup.setMaximizable(false);
-				abisuPopup.setModal(true);
-				abisuPopup.setHtml((String) datuak[rowIndex][3]);
 			}
 
 		});
@@ -166,7 +179,6 @@ public class Abisuak extends BarnePanela {
 	}
 	
 	public void panelaEguneratu(){
-		System.out.println("PEG irakurtzen duena. Honakoa datu bat: "+datuak[1][2]);
 		panel.remove("grid");
 		PagingMemoryProxy proxy = new PagingMemoryProxy(datuak);
 		Store store = new Store(proxy, reader, true);
@@ -209,6 +221,24 @@ public class Abisuak extends BarnePanela {
 		gridBerria.addGridRowListener(new GridRowListenerAdapter() {
 
 			public void onRowClick(GridPanel gridBerria, int rowIndex, EventObject e) {
+				final Window abisuPopup = new Window();
+				abisuPopup.setHeight(400);
+				abisuPopup.setWidth(600);
+				abisuPopup.setAutoScroll(true);
+				abisuPopup.setTitle((String) datuak[rowIndex][2]);
+				abisuPopup.setLayout(new FitLayout());
+				abisuPopup.setMaximizable(false);
+				abisuPopup.setModal(true);
+				abisuPopup.setHtml((String) datuak[rowIndex][3]);
+				abisuPopup.setCloseAction(Window.CLOSE);
+//				Button ok = new Button("Ados");
+////				ok.addListener(new ButtonListenerAdapter(){
+////					public void onClick(Button ok, EventObject e){
+////						abisuPopup.close();
+////					}
+////				});
+////				abisuPopup.add(ok);
+				abisuPopup.show();
 				GuneaService.Util.getInstance().abisuaIrakurriDa(jabea.getErabNan(), Integer.parseInt((String)datuak[rowIndex][0]), new AsyncCallback<Boolean>(){
 
 					public void onFailure(Throwable caught) {
@@ -222,24 +252,6 @@ public class Abisuak extends BarnePanela {
 					}
 					
 				});
-				final Window abisuPopup = new Window();
-				abisuPopup.setHeight(400);
-				abisuPopup.setWidth(600);
-				abisuPopup.setAutoScroll(true);
-				abisuPopup.setTitle((String) datuak[rowIndex][2]);
-				abisuPopup.setLayout(new FitLayout());
-				abisuPopup.setMaximizable(false);
-				abisuPopup.setModal(true);
-				abisuPopup.setHtml((String) datuak[rowIndex][3]);
-				abisuPopup.setCloseAction(Window.CLOSE);
-				Button ok = new Button("Ados");
-//				ok.addListener(new ButtonListenerAdapter(){
-//					public void onClick(Button ok, EventObject e){
-//						abisuPopup.close();
-//					}
-//				});
-//				abisuPopup.add(ok);
-				abisuPopup.show();
 			}
 
 		});
@@ -252,7 +264,6 @@ public class Abisuak extends BarnePanela {
 		element = new ExtElement(getElement());
 		element.mask("Itxaron mesedez", true);
 		if (jabea.isErabIdentif()) {
-			System.out.println("RPCra pasatako NANa: "+jabea.getErabNan());
 			GuneaService.Util.getInstance().getAbisuenZerrenda(jabea.getErabNan(),
 					new AsyncCallback<HashMap<Integer, AbisuInfo>>() {
 
@@ -271,7 +282,6 @@ public class Abisuak extends BarnePanela {
 								datuak[i][3] = result.get(key).getMezua();
 								i++;
 							}
-							System.out.println("RPC Itzuli da. Honakoa datu bat:");
 							panelaEguneratu();
 							element.unmask();
 						}
