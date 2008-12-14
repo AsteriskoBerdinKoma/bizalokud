@@ -67,7 +67,6 @@ public class Login implements EntryPoint {
 		formPanel.setAutoWidth(true);
 		formPanel.setAutoHeight(true);
 
-		// add some fields
 		FieldSet fieldSet = new FieldSet("Sartu zure NAN eta pasahitza");
 		fieldSet.setAutoHeight(true);
 		fieldSet.setAutoWidth(true);

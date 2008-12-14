@@ -59,8 +59,8 @@ public class Hasiera extends BarnePanela {
 		azpipanel.add(guneIzenLabel, new RowLayoutData());
 		azpipanel.add(guneHelbideLabel, new RowLayoutData());
 		sortuMapa();
-		guneaPanel.add(azpipanel, new ColumnLayoutData(0.5));
-		guneaPanel.add(mapPanel, new ColumnLayoutData(0.5));
+		guneaPanel.add(azpipanel, new ColumnLayoutData(0.4));
+		guneaPanel.add(mapPanel, new ColumnLayoutData(0.6));
 
 		Panel alokairuPanel = new Panel("Zure uneko alokairuaren informazioa");
 		alokairuPanel.setAutoScroll(true);
@@ -80,7 +80,7 @@ public class Hasiera extends BarnePanela {
 		alokairuPanel.add(bizModeloLabel, new RowLayoutData());
 		alokairuPanel.add(bizKoloreLabel, new RowLayoutData());
 
-		panel.add(guneaPanel, new RowLayoutData(420));
+		panel.add(guneaPanel, new RowLayoutData(430));
 		panel.add(alokairuPanel, new RowLayoutData());
 		
 		this.add(panel, new BorderLayoutData(RegionPosition.CENTER));
