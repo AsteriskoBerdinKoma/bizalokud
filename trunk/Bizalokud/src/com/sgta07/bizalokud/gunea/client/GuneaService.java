@@ -17,7 +17,7 @@ public interface GuneaService extends RemoteService {
 
 	public HashMap<Integer, GuneInfo> getHelburuGunePosibleak(int unekoGuneId) throws Salbuespena;
 	
-	public BizikletaInfo alokatu(int unekoGuneId, int helburuGuneId, String erabNan)
+	public AlokairuInfo alokatu(int unekoGuneId, int helburuGuneId, String erabNan)
 			throws Salbuespena;
 
 	public GuneInfo getMyInfo() throws Salbuespena;
@@ -27,6 +27,10 @@ public interface GuneaService extends RemoteService {
 	public boolean erabiltzaileaAlokatuDu(String erabNan) throws Salbuespena;
 	
 	public boolean pasahitzaBerritu(String userNan, String zaharra, String berria) throws Salbuespena;
+	
+	public AlokairuInfo getAzkenAlokairuInfo(String erabNan) throws Salbuespena;
+	
+	public AlokairuInfo bizikletaBueltatu(String erabNan) throws Salbuespena;
 	
 	/**
 	 * Utility class for simplifying access to the instance of async service.

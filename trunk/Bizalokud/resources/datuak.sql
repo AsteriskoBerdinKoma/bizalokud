@@ -12,7 +12,7 @@ USE `bizalokud`;
 
 INSERT INTO `gunea` SET alta=1, toki_kop=40, izena='Unibertsitateak', helb='Paseo de Manuel Lardizábal, 1 20018', ip='127.0.0.1', lat=43.307274, lon=-2.0115459;
 INSERT INTO `gunea` SET alta=1, toki_kop=20, izena='Benta-berri', helb='Plaza de José María Sert, 20018', ip='192.160.1.97', lat=43.3106089, lon=-2.0065429;
-INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Hondarreta', helb='Paseo de Eduardo Chillida, 20008', ip='192.160.1.98', lat=43.3188779, lon=-2.0050853;
+INSERT INTO `gunea` SET alta=1, toki_kop=15, izena='Ondarreta', helb='Paseo de Eduardo Chillida, 20008', ip='192.160.1.98', lat=43.3188779, lon=-2.0050853;
 INSERT INTO `gunea` SET alta=1, toki_kop=25, izena='La Perla', helb='Paseo de Miraconcha, 1 20007', ip='192.160.1.99', lat=43.3152454, lon=-1.9879533;
 INSERT INTO `gunea` SET alta=1, toki_kop=30, izena='Boulevard', helb='Calle de Hernani, 1 20003', ip='192.160.1.100', lat=43.3214625, lon=-1.9849477;
 INSERT INTO `gunea` SET alta=1, toki_kop=20, izena='Anoeta', helb='Paseo de Anoeta, 1 20010', ip='192.160.1.101', lat=43.3020628, lon=-1.9755453;
