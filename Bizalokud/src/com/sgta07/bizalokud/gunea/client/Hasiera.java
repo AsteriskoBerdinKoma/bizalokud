@@ -3,10 +3,13 @@ package com.sgta07.bizalokud.gunea.client;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.ExtElement;
+import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.event.ComponentListenerAdapter;
 import com.gwtext.client.widgets.form.Label;
+import com.gwtext.client.widgets.layout.BorderLayout;
+import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.ColumnLayout;
 import com.gwtext.client.widgets.layout.ColumnLayoutData;
 import com.gwtext.client.widgets.layout.RowLayout;
@@ -33,8 +36,11 @@ public class Hasiera extends BarnePanela {
 		super(owner);
 
 		this.setTitle("Hasiera");
-		this.setLayout(new RowLayout());
-
+		this.setLayout(new BorderLayout());
+		
+		Panel panel = new Panel();
+		panel.setLayout(new RowLayout());
+		
 		Panel guneaPanel = new Panel("Gune honen informazioa");
 		guneaPanel.setAutoScroll(true);
 		guneaPanel.setFrame(false);
@@ -78,8 +84,10 @@ public class Hasiera extends BarnePanela {
 		alokairuPanel.add(bizModeloLabel, new RowLayoutData());
 		alokairuPanel.add(bizKoloreLabel, new RowLayoutData());
 
-		this.add(guneaPanel, new RowLayoutData());
-		this.add(alokairuPanel, new RowLayoutData());
+		panel.add(guneaPanel, new RowLayoutData());
+		panel.add(alokairuPanel, new RowLayoutData());
+		
+		this.add(panel, new BorderLayoutData(RegionPosition.CENTER));
 
 		this.addListener(new ComponentListenerAdapter() {
 

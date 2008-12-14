@@ -87,9 +87,6 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		} catch (SQLException e) {
 			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
 		}
-
-		// return bizikletakLibre > 1;
-
 	}
 
 	public boolean helburuaAukeraDaiteke(int unekoGuneId, int helburuGuneId)
