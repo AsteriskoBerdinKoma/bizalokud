@@ -26,4 +26,6 @@ public interface GuneaServiceAsync {
 	public void getAzkenAlokairuInfo(String erabNan, AsyncCallback<AlokairuInfo> callback);
 	
 	public void bizikletaBueltatu(String erabNan, AsyncCallback<AlokairuInfo> callback);
+	
+	public void abisuaIrakurriDa(String erabNan, int id, AsyncCallback<Boolean> callback);
 }

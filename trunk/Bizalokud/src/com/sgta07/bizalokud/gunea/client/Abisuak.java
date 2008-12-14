@@ -2,6 +2,7 @@ package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.ExtElement;
@@ -12,11 +13,14 @@ import com.gwtext.client.data.IntegerFieldDef;
 import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
+import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.PagingToolbar;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.ToolTip;
 import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Window.CloseAction;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.event.ComponentListenerAdapter;
 import com.gwtext.client.widgets.form.Field;
 import com.gwtext.client.widgets.form.NumberField;
@@ -39,6 +43,7 @@ public class Abisuak extends BarnePanela {
 	private ColumnModel columnModel;
 	private GridPanel grid;
 	private PagingToolbar pagingToolbar;
+	private Timer t1;
 
 	public Abisuak(Gunea owner) {
 		super(owner);
@@ -74,11 +79,21 @@ public class Abisuak extends BarnePanela {
 		this.addListener(new ComponentListenerAdapter() {
 			public void onShow(Component component) {
 				System.out.println("Panela erakusten");
-				element = new ExtElement(getElement());
-				element.mask("Itxaron mesedez", true);
+				t1 = new Timer(){
+					public void run(){
+						datuakEguneratu();
+					}
+				};
+				t1.scheduleRepeating(40000);
 				datuakEguneratu();
 			}
+			public void onHide(Component component){
+				System.out.println("Abisuak ezkutatu da");
+				t1.cancel();
+			}
 		});
+		
+		
 
 	}
 
@@ -87,6 +102,7 @@ public class Abisuak extends BarnePanela {
 		Store store = new Store(proxy, reader, true);
 
 		grid = new GridPanel();
+		grid.setId("grid");
 		grid.setColumnModel(columnModel);
 		grid.setStore(store);
 		grid.setFrame(true);
@@ -123,6 +139,19 @@ public class Abisuak extends BarnePanela {
 		grid.addGridRowListener(new GridRowListenerAdapter() {
 
 			public void onRowClick(GridPanel grid, int rowIndex, EventObject e) {
+				GuneaService.Util.getInstance().abisuaIrakurriDa(jabea.getErabNan(), Integer.parseInt((String)datuak[rowIndex][0]), new AsyncCallback<Boolean>(){
+
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
+					public void onSuccess(Boolean result) {
+						if(!result){
+							System.out.println("Arazoa DB eguneratzean");
+						}
+						
+					}
+					
+				});
 				final Window abisuPopup = new Window();
 				abisuPopup.setTitle((String) datuak[rowIndex][2]);
 				abisuPopup.setLayout(new FitLayout());
@@ -138,16 +167,90 @@ public class Abisuak extends BarnePanela {
 	
 	public void panelaEguneratu(){
 		System.out.println("PEG irakurtzen duena. Honakoa datu bat: "+datuak[1][2]);
+		panel.remove("grid");
 		PagingMemoryProxy proxy = new PagingMemoryProxy(datuak);
 		Store store = new Store(proxy, reader, true);
-		pagingToolbar.setStore(store);
-		grid.reconfigure(store, columnModel);
-		grid.getView().refresh();
+		
+		GridPanel gridBerria = new GridPanel();
+		gridBerria.setId("grid");
+		gridBerria.setColumnModel(columnModel);
+		gridBerria.setStore(store);
+		gridBerria.setFrame(true);
+		gridBerria.setStripeRows(true);
+		gridBerria.setWidth(600);
+		gridBerria.setHeight(250);
+		gridBerria.setAutoExpandColumn("mota");
+
+		pagingToolbar = new PagingToolbar(store);
+		pagingToolbar.setPageSize(5);
+		pagingToolbar.setDisplayInfo(true);
+		pagingToolbar
+				.setDisplayMsg("Erakusten diren abisuak: {0} - {1} {2}(e)tik");
+		pagingToolbar.setEmptyMsg("Ez daukazu abisurik");
+
+		NumberField pageSizeField = new NumberField();
+		pageSizeField.setWidth(40);
+		pageSizeField.setSelectOnFocus(true);
+		pageSizeField.addListener(new FieldListenerAdapter() {
+			public void onSpecialKey(Field field, EventObject e) {
+				if (e.getKey() == EventObject.ENTER) {
+					int pageSize = Integer.parseInt(field.getValueAsString());
+					pagingToolbar.setPageSize(pageSize);
+				}
+			}
+		});
+
+		ToolTip toolTip = new ToolTip("Sartu orriaren tamaina");
+		toolTip.applyTo(pageSizeField);
+
+		pagingToolbar.addField(pageSizeField);
+		gridBerria.setBottomToolbar(pagingToolbar);
+
+		gridBerria.addGridRowListener(new GridRowListenerAdapter() {
+
+			public void onRowClick(GridPanel gridBerria, int rowIndex, EventObject e) {
+				GuneaService.Util.getInstance().abisuaIrakurriDa(jabea.getErabNan(), Integer.parseInt((String)datuak[rowIndex][0]), new AsyncCallback<Boolean>(){
+
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
+					public void onSuccess(Boolean result) {
+						if(!result){
+							System.out.println("Arazoa DB eguneratzean");
+						}
+						
+					}
+					
+				});
+				final Window abisuPopup = new Window();
+				abisuPopup.setHeight(400);
+				abisuPopup.setWidth(600);
+				abisuPopup.setAutoScroll(true);
+				abisuPopup.setTitle((String) datuak[rowIndex][2]);
+				abisuPopup.setLayout(new FitLayout());
+				abisuPopup.setMaximizable(false);
+				abisuPopup.setModal(true);
+				abisuPopup.setHtml((String) datuak[rowIndex][3]);
+				abisuPopup.setCloseAction(Window.CLOSE);
+				Button ok = new Button("Ados");
+//				ok.addListener(new ButtonListenerAdapter(){
+//					public void onClick(Button ok, EventObject e){
+//						abisuPopup.close();
+//					}
+//				});
+//				abisuPopup.add(ok);
+				abisuPopup.show();
+			}
+
+		});
+		store.load(0, 5);
+		panel.add(gridBerria);
+		panel.doLayout();
 	}
 
 	public void datuakEguneratu() {
-//		element = new ExtElement(getElement());
-//		element.mask("Zure abisuak jasotzen. Itxaron mesedez", true);
+		element = new ExtElement(getElement());
+		element.mask("Itxaron mesedez", true);
 		if (jabea.isErabIdentif()) {
 			System.out.println("RPCra pasatako NANa: "+jabea.getErabNan());
 			GuneaService.Util.getInstance().getAbisuenZerrenda(jabea.getErabNan(),
@@ -168,7 +271,7 @@ public class Abisuak extends BarnePanela {
 								datuak[i][3] = result.get(key).getMezua();
 								i++;
 							}
-							System.out.println("RPC Itzuli da. Honakoa datu bat: "+datuak[1][2]);
+							System.out.println("RPC Itzuli da. Honakoa datu bat:");
 							panelaEguneratu();
 							element.unmask();
 						}
@@ -178,7 +281,7 @@ public class Abisuak extends BarnePanela {
 	}
 
 	public void datuakReseteatu() {
-		// TODO Auto-generated method stub
+		panelaSortu();
 
 	}
 }
