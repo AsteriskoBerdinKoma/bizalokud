@@ -2,7 +2,6 @@ package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
 
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.ExtElement;
@@ -13,14 +12,11 @@ import com.gwtext.client.data.IntegerFieldDef;
 import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
-import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.PagingToolbar;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.ToolTip;
 import com.gwtext.client.widgets.Window;
-import com.gwtext.client.widgets.Window.CloseAction;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.event.ComponentListenerAdapter;
 import com.gwtext.client.widgets.form.Field;
 import com.gwtext.client.widgets.form.NumberField;
@@ -42,7 +38,6 @@ public class Abisuak extends BarnePanela {
 	private ColumnModel columnModel;
 	private GridPanel grid;
 	private PagingToolbar pagingToolbar;
-	private Timer t1;
 
 	public Abisuak(Gunea owner) {
 		super(owner);
@@ -72,6 +67,12 @@ public class Abisuak extends BarnePanela {
 		columnModel = new ColumnModel(columns);
 
 		panelaSortu();
+		
+		this.addListener(new ComponentListenerAdapter(){
+			public void onShow(Component component){
+				datuakEguneratu();
+			}
+		});
 
 	}
 
