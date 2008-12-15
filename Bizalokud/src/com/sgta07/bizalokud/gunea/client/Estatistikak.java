@@ -2,7 +2,10 @@ package com.sgta07.bizalokud.gunea.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.ExtElement;
+import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.event.ComponentListener;
+import com.gwtext.client.widgets.event.ComponentListenerAdapter;
 import com.gwtext.client.widgets.layout.FitLayout;
 
 public class Estatistikak extends BarnePanela {
@@ -20,6 +23,11 @@ public class Estatistikak extends BarnePanela {
 		panel.setAutoScroll(true);
 		panel.setCollapsible(false);
 
+		addListener(new ComponentListenerAdapter(){
+			public void onShow(Component component) {
+				datuakEguneratu();
+			}
+		});
 	}
 
 	public void datuakEguneratu() {
@@ -46,10 +54,10 @@ public class Estatistikak extends BarnePanela {
 							System.out.println("Egindako Ibilaldiak: "
 									+ result.getIbilaldiKop());
 							System.out.println("Bidiaien portzentaiak");
-							for (Object[] row : result
+							for (IbilaldienPortzentaiak row : result
 									.getIbilaldienPortzentaiak()) {
-								System.out.println(row[4] + " - " + row[5]
-										+ ": " + ((Double) row[3] * 100) + "%");
+								System.out.println(row.getHasIzena() + " - " + row.getHelIzena()
+										+ ": " + ((Double) row.getTemp3() * 100) + "%");
 							}
 							element.unmask();
 						}

@@ -82,6 +82,7 @@ public class Gunea implements EntryPoint, Logeable {
 	private Panel centerPanel;
 	private CardLayout cardLayout;
 	private Hasiera hasiera;
+	private Panel infoPanel;
 
 	public void onModuleLoad() {
 
@@ -247,6 +248,12 @@ public class Gunea implements EntryPoint, Logeable {
 		hasiera.setId("hasiera-panel");
 		estatistikak = new Estatistikak(this);
 		estatistikak.setId("estatistikak-panel");
+	}
+	
+	private void sortuInformazioPanela(){
+		infoPanel = new Panel();
+		infoPanel.setLayout(new CardLayout());
+		
 	}
 
 	private void resetIdleTimer() {
