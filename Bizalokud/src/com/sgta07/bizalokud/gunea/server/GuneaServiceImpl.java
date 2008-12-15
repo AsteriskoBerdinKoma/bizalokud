@@ -546,7 +546,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
 
-			String query = "SELECT i1.fk_gunehas_id, g1.izena as hasIzena, i1.fk_gunehel_id, g2.izena as helIzena "
+			String query = "SELECT i1.fk_gunehas_id as hasId, g1.izena as hasIzena, i1.fk_gunehel_id helId, g2.izena as helIzena "
 					+ "FROM ibilbidea i1 INNER JOIN gunea g1 on i1.fk_gunehas_id=g1.id INNER JOIN gunea g2 on i1.fk_gunehel_id=g2.id "
 					+ "WHERE fk_erab_nan = ? AND bukatuta = 1";
 			PreparedStatement ps = connector.prepareStatement(query);
@@ -555,26 +555,26 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 			while (rs.next()) {
 				alokatuKont++;
-				Object[] temp = new Object[6];
-				temp[0] = new Integer(rs.getInt("fk_gunehas_id"));
-				temp[1] = new Integer(rs.getInt("fk_gunehel_id"));
-				temp[4] = new String(rs.getString("hasIzena"));
-				temp[5] = new String(rs.getString("helIzena"));
+				IbilaldienPortzentaiak temp = new IbilaldienPortzentaiak();
+				temp.setHasierakoGuneId(rs.getInt("hasId"));
+				temp.setHelburuGuneId(rs.getInt("helId"));
+				temp.setHasierakoGuneIzena(rs.getString("hasIzena"));
+				temp.setHelburuGuneIzena(rs.getString("helIzena"));
 				for (IbilaldienPortzentaiak row : kalkuluak) {
-					if (row.getGunehas_id() == ((Integer)temp[0]).intValue() && row.getGunehel_id() == ((Integer)temp[1]).intValue()) {
-						row.setTmp2((Integer) row.getTemp2() + 1);
-						row.setTmp3(new Integer(row.getTemp2()).doubleValue()
-								/ new Integer(alokatuKont).doubleValue());
+					if (row.getHasierakoGuneId() == temp.getHasierakoGuneId() && row.getHelburuGuneId()==temp.getHelburuGuneId()) {
+						row.setEgindakoAldiKop(row.getEgindakoAldiKop()+1);
 						aurkitua = true;
 						break;
 					}
 				}
 				if (!aurkitua) {
-					temp[2] = 1;
-					temp[3] = 1.0 / new Integer(alokatuKont).doubleValue();
-					kalkuluak.addElement(new IbilaldienPortzentaiak(((Integer)temp[0]).intValue(), ((Integer)temp[1]).intValue(), ((Integer)temp[2]).intValue(), ((Double)temp[3]).doubleValue(), String.valueOf(temp[4]),String.valueOf(temp[5])));
+					temp.setEgindakoAldiKop(1);
+					kalkuluak.addElement(temp);
 				}
 				aurkitua = false;
+			}
+			for(IbilaldienPortzentaiak row: kalkuluak){
+				row.setPortzentaia(alokatuKont);
 			}
 
 			String queryAlokairuLuzeena = "SELECT DATE(hasiera_data) AS eguna, "
