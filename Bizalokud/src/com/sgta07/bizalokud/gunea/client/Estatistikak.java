@@ -51,21 +51,6 @@ public class Estatistikak extends BarnePanela {
 						}
 
 						public void onSuccess(DatuEstatistiko result) {
-							System.out.println("Alokairu Kopurua: "
-									+ result.getAlokairuKop());
-							System.out.println("Alokairu Luzeena: "
-									+ result.getAlokairuLuzeenaEguna() + ": "
-									+ result.getAlokairuLuzeenaDenbora());
-							System.out.println("Egun aktiboena: "
-									+ result.getEgunAktiboneaEguna() + ": "
-									+ result.getEgunAktiboenaDenbora());
-							System.out.println("Egindako Ibilaldiak: "
-									+ result.getIbilaldiKop());
-							System.out.println("Bidiaien portzentaiak");
-							for (IbilaldienPortzentaiak row : result.getIbilaldienPortzentaiak()) {
-								System.out.println(row.getHasierakoGuneIzena() + " - " + row.getHelburuGuneIzena()
-										+ ": " + (row.getPortzentaia() * 100) + "%");
-							}
 							
 							String html = "<p><span class=\"style1\">Alokairu Kopurua: </span>" +
 										  result.getAlokairuKop()+"</p><br>"+
