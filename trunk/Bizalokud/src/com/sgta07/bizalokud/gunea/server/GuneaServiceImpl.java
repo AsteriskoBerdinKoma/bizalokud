@@ -574,7 +574,9 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				aurkitua = false;
 			}
 			for(IbilaldienPortzentaiak row: kalkuluak){
-				row.setPortzentaia(alokatuKont);
+				double r = new Integer(row.getEgindakoAldiKop()).doubleValue()/new Integer(alokatuKont).doubleValue();
+				Double p = new Double(Math.round(r*1000.0)/1000.0);
+				row.setPortzentaia(p.doubleValue());
 			}
 
 			String queryAlokairuLuzeena = "SELECT DATE(hasiera_data) AS eguna, "
