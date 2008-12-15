@@ -6,13 +6,15 @@ import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.event.ComponentListener;
 import com.gwtext.client.widgets.event.ComponentListenerAdapter;
+import com.gwtext.client.widgets.form.Label;
 import com.gwtext.client.widgets.layout.FitLayout;
+import com.gwtext.client.widgets.layout.RowLayoutData;
 
 public class Estatistikak extends BarnePanela {
 
-	private String userNan;
 	private Panel panel;
 	private ExtElement element;
+	private Label infoLabel;
 
 	public Estatistikak(Gunea owner) {
 		super(owner);
@@ -22,6 +24,10 @@ public class Estatistikak extends BarnePanela {
 		panel.setBorder(false);
 		panel.setAutoScroll(true);
 		panel.setCollapsible(false);
+		panel.setPaddings(15);
+		infoLabel = new Label();
+		infoLabel.setStyle("background: white;");
+		panel.add(infoLabel, new RowLayoutData());
 
 		addListener(new ComponentListenerAdapter(){
 			public void onShow(Component component) {
@@ -40,6 +46,8 @@ public class Estatistikak extends BarnePanela {
 						public void onFailure(Throwable caught) {
 							caught.printStackTrace();
 							element.unmask();
+							String html = "<p style=\"font-size:medium;\" align=\"center\"><b>Momentu honetan ezin dira datuak eskuratu.<br> Mesedez saiatu berriz beranduago.</b></p>";
+							infoLabel.setHtml(html);
 						}
 
 						public void onSuccess(DatuEstatistiko result) {
@@ -58,6 +66,23 @@ public class Estatistikak extends BarnePanela {
 								System.out.println(row.getHasierakoGuneIzena() + " - " + row.getHelburuGuneIzena()
 										+ ": " + (row.getPortzentaia() * 100) + "%");
 							}
+							
+							String html = "<p><span class=\"style1\">Alokairu Kopurua: </span>" +
+										  result.getAlokairuKop()+"</p><br>"+
+										  "<p><span class=\"style1\">Alokairu Luzeena: </span>"+
+										  result.getAlokairuLuzeenaEguna()+" | "+result.getAlokairuLuzeenaDenbora()+"</p><br>"+
+										  "<p><span class=\"style1\">Egun Aktiboena: </span>"+
+										  result.getEgunAktiboneaEguna()+" | "+result.getEgunAktiboenaDenbora()+"</p><br>"+
+										  "<p><span class=\"style1\">Egindako Ibilaldi Kopurua: </span>"+
+										  result.getIbilaldiKop()+"</p><br>"+
+										  "<table width=\"600\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" class=\"taula\">"+
+										  "<tr><th colspan=\"2\" bgcolor=\"#CEEFFF\" class=\"style1\" scope=\"col\"><div align=\"center\">Ibilaldien Portzentaiak</div></th></tr>";
+							for (IbilaldienPortzentaiak row : result.getIbilaldienPortzentaiak()) {
+								html+="<tr><td><div align=\"center\">"+row.getHasierakoGuneIzena() + " - " + row.getHelburuGuneIzena()+"</div></td>"+
+							    "<td><div align=\"center\">"+(row.getPortzentaia() * 100) + "%"+"</div></td></tr>";
+							}
+							html+="</table>";
+							infoLabel.setHtml(html);
 							element.unmask();
 							panel.doLayout();
 						}
