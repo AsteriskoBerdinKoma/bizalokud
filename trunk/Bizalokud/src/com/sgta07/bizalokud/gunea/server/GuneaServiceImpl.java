@@ -17,6 +17,7 @@ import com.sgta07.bizalokud.gunea.client.BizikletaInfo;
 import com.sgta07.bizalokud.gunea.client.DatuEstatistiko;
 import com.sgta07.bizalokud.gunea.client.GuneInfo;
 import com.sgta07.bizalokud.gunea.client.GuneaService;
+import com.sgta07.bizalokud.gunea.client.IbilaldienPortzentaiak;
 import com.sgta07.bizalokud.gunea.client.Salbuespena;
 import com.sgta07.bizalokud.zerbitzaria.db.Connector;
 
@@ -532,7 +533,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 	public DatuEstatistiko nireIbilbideakLortu(String erabNan)
 			throws Salbuespena {
 		DatuEstatistiko de = new DatuEstatistiko();
-		Vector<Object[]> kalkuluak = new Vector<Object[]>();
+		Vector<IbilaldienPortzentaiak> kalkuluak = new Vector<IbilaldienPortzentaiak>();
 		int alokatuKont = 0;
 		boolean aurkitua = false;
 		String alokairuLuzeenaEguna = "";
@@ -559,11 +560,11 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				temp[1] = new Integer(rs.getInt("fk_gunehel_id"));
 				temp[4] = new String(rs.getString("hasIzena"));
 				temp[5] = new String(rs.getString("helIzena"));
-				for (Object[] row : kalkuluak) {
-					if (row[0].equals(temp[0]) && row[1].equals(temp[1])) {
-						row[2] = (Integer) row[2] + 1;
-						row[3] = new Integer(row[2].toString()).doubleValue()
-								/ new Integer(alokatuKont).doubleValue();
+				for (IbilaldienPortzentaiak row : kalkuluak) {
+					if (row.getGunehas_id() == ((Integer)temp[0]).intValue() && row.getGunehel_id() == ((Integer)temp[1]).intValue()) {
+						row.setTmp2((Integer) row.getTemp2() + 1);
+						row.setTmp3(new Integer(row.getTemp2()).doubleValue()
+								/ new Integer(alokatuKont).doubleValue());
 						aurkitua = true;
 						break;
 					}
@@ -571,7 +572,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				if (!aurkitua) {
 					temp[2] = 1;
 					temp[3] = 1.0 / new Integer(alokatuKont).doubleValue();
-					kalkuluak.addElement(temp);
+					kalkuluak.addElement(new IbilaldienPortzentaiak(((Integer)temp[0]).intValue(), ((Integer)temp[1]).intValue(), ((Integer)temp[2]).intValue(), ((Double)temp[3]).doubleValue(), String.valueOf(temp[4]),String.valueOf(temp[5])));
 				}
 				aurkitua = false;
 			}

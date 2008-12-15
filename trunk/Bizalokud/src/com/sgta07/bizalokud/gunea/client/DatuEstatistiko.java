@@ -12,7 +12,7 @@ public class DatuEstatistiko implements IsSerializable {
 	private int ibilaldiKop;
 	private String egunAktiboenaDenbora;
 	private String egunAktiboneaEguna;
-	private Vector<Object[]> ibilaldienPortzentaiak;
+	private Vector<IbilaldienPortzentaiak> ibilaldienPortzentaiak;
 
 	public DatuEstatistiko() {
 		super();
@@ -22,14 +22,14 @@ public class DatuEstatistiko implements IsSerializable {
 		this.ibilaldiKop=0;
 		this.egunAktiboenaDenbora="00:00:00";
 		this.egunAktiboneaEguna="Egunik ez";
-		this.ibilaldienPortzentaiak=new Vector<Object[]>();
+		this.ibilaldienPortzentaiak=new Vector<IbilaldienPortzentaiak>();
 	}
 	
 
 	public DatuEstatistiko(int alokairuKop, String alokairuLuzeenaDenbora,
 			String alokairuLuzeenaEguna, int ibilaldiKop,
 			String egunAktiboenaDenbora, String egunAktiboneaEguna,
-			Vector<Object[]> ibilaldienPortzentaiak) {
+			Vector<IbilaldienPortzentaiak> ibilaldienPortzentaiak) {
 		super();
 		this.alokairuKop = alokairuKop;
 		this.alokairuLuzeenaDenbora = alokairuLuzeenaDenbora;
@@ -65,9 +65,8 @@ public class DatuEstatistiko implements IsSerializable {
 		return egunAktiboneaEguna;
 	}
 
-	public Vector<Object[]> getIbilaldienPortzentaiak() {
+	public Vector<IbilaldienPortzentaiak> getIbilaldienPortzentaiak() {
 		return ibilaldienPortzentaiak;
 	}
-
 	
 }
