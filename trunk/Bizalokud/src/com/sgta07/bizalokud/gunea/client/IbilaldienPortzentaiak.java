@@ -3,56 +3,94 @@ package com.sgta07.bizalokud.gunea.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class IbilaldienPortzentaiak implements IsSerializable{
-	private int gunehas_id;
-	private int gunehel_id;
-	private int temp2;
-	private double temp3; 
-	private String hasIzena;
-	private String helIzena;
+	private int hasierakoGuneId;
+	private int helburuGuneId;
+	private String hasierakoGuneIzena;
+	private String helburuGuneIzena;
+	private int egindakoAldiKop;
+	private double portzentaia; 
+
 
 	public IbilaldienPortzentaiak() {
 
 	}
 
-	public IbilaldienPortzentaiak(int gunehas_id, int gunehel_id,
-			int temp2, double temp3, String hasIzena, String helIzena) {
-		this.gunehas_id = gunehas_id;
-		this.gunehel_id = gunehel_id;
-		this.temp2 = temp2;
-		this.temp3 = temp3;
-		this.hasIzena = hasIzena;
-		this.helIzena = helIzena;
+
+	public IbilaldienPortzentaiak(int hasierakoGuneId, int helburuGuneId,
+			String hasierakoGuneIzena, String helburuGuneIzena,
+			int egindakoAldiKop, double portzentaia) {
+		super();
+		this.hasierakoGuneId = hasierakoGuneId;
+		this.helburuGuneId = helburuGuneId;
+		this.hasierakoGuneIzena = hasierakoGuneIzena;
+		this.helburuGuneIzena = helburuGuneIzena;
+		this.egindakoAldiKop = egindakoAldiKop;
+		this.portzentaia = portzentaia;
 	}
 
-	public int getGunehas_id() {
-		return gunehas_id;
+
+	public int getHasierakoGuneId() {
+		return hasierakoGuneId;
 	}
 
-	public int getGunehel_id() {
-		return gunehel_id;
+
+	public void setHasierakoGuneId(int hasierakoGuneId) {
+		this.hasierakoGuneId = hasierakoGuneId;
 	}
 
-	public int getTemp2() {
-		return temp2;
+
+	public int getHelburuGuneId() {
+		return helburuGuneId;
 	}
 
-	public double getTemp3() {
-		return temp3;
+
+	public void setHelburuGuneId(int helburuGuneId) {
+		this.helburuGuneId = helburuGuneId;
 	}
 
-	public String getHasIzena() {
-		return hasIzena;
+
+	public String getHasierakoGuneIzena() {
+		return hasierakoGuneIzena;
 	}
 
-	public String getHelIzena() {
-		return helIzena;
+
+	public void setHasierakoGuneIzena(String hasierakoGuneIzena) {
+		this.hasierakoGuneIzena = hasierakoGuneIzena;
 	}
 
-	public void setTmp2(int i) {
-		this.temp2 = i;
+
+	public String getHelburuGuneIzena() {
+		return helburuGuneIzena;
 	}
 
-	public void setTmp3(double d) {
-		this.temp3 = d;
-	}	
+
+	public void setHelburuGuneIzena(String helburuGuneIzena) {
+		this.helburuGuneIzena = helburuGuneIzena;
+	}
+
+
+	public int getEgindakoAldiKop() {
+		return egindakoAldiKop;
+	}
+
+
+	public void setEgindakoAldiKop(int egindakoAldiKop) {
+		this.egindakoAldiKop = egindakoAldiKop;
+	}
+
+
+	public double getPortzentaia() {
+		return portzentaia;
+	}
+
+
+	public void setPortzentaia(double portzentaia) {
+		this.portzentaia = portzentaia;
+	}
+	
+	public void setPortzentaia(int alokairuKop) {
+		this.portzentaia = (double)egindakoAldiKop / (double)alokairuKop;
+	}
+
+	
 }

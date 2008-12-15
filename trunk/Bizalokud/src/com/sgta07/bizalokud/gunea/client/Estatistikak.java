@@ -39,7 +39,7 @@ public class Estatistikak extends BarnePanela {
 
 						public void onFailure(Throwable caught) {
 							caught.printStackTrace();
-
+							element.unmask();
 						}
 
 						public void onSuccess(DatuEstatistiko result) {
@@ -54,12 +54,12 @@ public class Estatistikak extends BarnePanela {
 							System.out.println("Egindako Ibilaldiak: "
 									+ result.getIbilaldiKop());
 							System.out.println("Bidiaien portzentaiak");
-							for (IbilaldienPortzentaiak row : result
-									.getIbilaldienPortzentaiak()) {
-								System.out.println(row.getHasIzena() + " - " + row.getHelIzena()
-										+ ": " + ((Double) row.getTemp3() * 100) + "%");
+							for (IbilaldienPortzentaiak row : result.getIbilaldienPortzentaiak()) {
+								System.out.println(row.getHasierakoGuneIzena() + " - " + row.getHelburuGuneIzena()
+										+ ": " + (row.getPortzentaia() * 100) + "%");
 							}
 							element.unmask();
+							panel.doLayout();
 						}
 
 					});
