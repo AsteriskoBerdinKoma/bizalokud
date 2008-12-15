@@ -2,34 +2,28 @@ package com.sgta07.bizalokud.gunea.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.core.Position;
-import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.MessageBox;
 import com.gwtext.client.widgets.MessageBoxConfig;
 import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.form.FieldSet;
 import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.widgets.form.TextField;
-import com.gwtext.client.widgets.layout.AbsoluteLayout;
-import com.gwtext.client.widgets.layout.BorderLayout;
-import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.ColumnLayout;
-import com.gwtext.client.widgets.layout.FitLayout;
 
 public class Pasahitza extends BarnePanela {
 
-	private String userNan;
 	private final Panel panel;
 	private TextField pZaharra;
 	private TextField pBerria1;
 	private TextField pBerria2;
+	private ExtElement element;
 
 	public Pasahitza(Gunea owner) {
 		super(owner);
-		userNan = "";
 		panel = this;
 
 		panel.setTitle("Pasahitz aldaketa");
@@ -86,10 +80,13 @@ public class Pasahitza extends BarnePanela {
 				String zaharra = pZaharra.getText().trim();
 				String berria = pBerria1.getText().trim();
 				String nan = jabea.getErabNan();
+				element = new ExtElement(getElement());
+				element.mask("Pasahitza eguneratzen. Itxaron mesedez...", true);
 				GuneaService.Util.getInstance().pasahitzaBerritu(nan, getSha1(zaharra), getSha1(berria), new AsyncCallback<Boolean>(){
 
 					public void onFailure(final Throwable caught) {
 						caught.printStackTrace();
+						element.unmask();
 						MessageBox.show(new MessageBoxConfig() {
 							{
 								setTitle("Errorea zerbitzaria atzitzean");
@@ -101,6 +98,7 @@ public class Pasahitza extends BarnePanela {
 					}
 
 					public void onSuccess(Boolean result) {
+						element.unmask();
 						//Pasahitz zaharra gaizki edo NAN ez baliozkoa
 						if (!result){
 							MessageBox.show(new MessageBoxConfig() {
