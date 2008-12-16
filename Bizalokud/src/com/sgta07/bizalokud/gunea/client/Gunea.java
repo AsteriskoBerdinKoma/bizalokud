@@ -72,6 +72,7 @@ public class Gunea implements EntryPoint, Logeable {
 	private Pasahitza pasahitza;
 	private Entregatu entregatu;
 	private Estatistikak estatistikak;
+	private NireDatuak niredatuak;
 
 	// Menua hasieratzeko datuak
 	private static Store store;
@@ -217,6 +218,7 @@ public class Gunea implements EntryPoint, Logeable {
 		centerPanel.add(pasahitza);
 		centerPanel.add(entregatu);
 		centerPanel.add(estatistikak);
+		centerPanel.add(niredatuak);
 
 		centerPanel.setActiveItem(0);
 
@@ -248,6 +250,8 @@ public class Gunea implements EntryPoint, Logeable {
 		hasiera.setId("hasiera-panel");
 		estatistikak = new Estatistikak(this);
 		estatistikak.setId("estatistikak-panel");
+		niredatuak = new NireDatuak(this);
+		niredatuak.setId("niredatuak-panel");
 	}
 	
 	private void sortuInformazioPanela(){
@@ -483,7 +487,7 @@ public class Gunea implements EntryPoint, Logeable {
 					cardLayout.setActiveItem("entregatu-panel");
 				}
 				if (node.getId().equals("datuak")) {
-					cardLayout.setActiveItem("datuak-panel");
+					cardLayout.setActiveItem("niredatuak-panel");
 				}
 				if (node.getId().equals("pasahitza")) {
 					cardLayout.setActiveItem("pasahitza-panel");
