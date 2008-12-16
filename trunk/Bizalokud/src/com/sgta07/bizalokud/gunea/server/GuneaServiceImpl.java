@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.servlet.http.HttpSession;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.sgta07.bizalokud.gunea.client.AbisuInfo;
 import com.sgta07.bizalokud.gunea.client.AlokairuInfo;
@@ -20,6 +22,7 @@ import com.sgta07.bizalokud.gunea.client.GuneaService;
 import com.sgta07.bizalokud.gunea.client.IbilaldienPortzentaiak;
 import com.sgta07.bizalokud.gunea.client.InforMezuInfo;
 import com.sgta07.bizalokud.gunea.client.Salbuespena;
+import com.sgta07.bizalokud.login.client.EzBaliozkoSaioaException;
 import com.sgta07.bizalokud.zerbitzaria.db.Connector;
 
 public class GuneaServiceImpl extends RemoteServiceServlet implements
@@ -32,8 +35,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 	private Connector connector = new Connector();
 
-	public boolean alokaDaiteke(int guneId) throws Salbuespena {
-
+	public boolean alokaDaiteke(int guneId) throws Salbuespena {		
 		try {
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
@@ -197,11 +199,16 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public AlokairuInfo alokatu(int unekoGuneId, int helburuGuneId,
-			String erabNan) throws Salbuespena {
+			String erabNan) throws Salbuespena, EzBaliozkoSaioaException {
 
 		BizikletaInfo esleitutakoBizikleta;
 		int result = -1;
 
+		HttpSession session = this.getThreadLocalRequest().getSession();
+		Boolean valid = (Boolean)session.getAttribute("valid");
+		if(valid == null || valid == false)
+			throw new EzBaliozkoSaioaException();
+		
 		try {
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
@@ -307,9 +314,14 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public HashMap<Integer, AbisuInfo> getAbisuenZerrenda(String userNan)
-			throws Salbuespena {
+			throws Salbuespena, EzBaliozkoSaioaException {
 		HashMap<Integer, AbisuInfo> emaitza = new HashMap<Integer, AbisuInfo>();
 
+		HttpSession session = this.getThreadLocalRequest().getSession();
+		Boolean valid = (Boolean)session.getAttribute("valid");
+		if(valid == null || valid == false)
+			throw new EzBaliozkoSaioaException();
+		
 		try {
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
@@ -345,7 +357,12 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		return emaitza;
 	}
 
-	public boolean erabiltzaileaAlokatuDu(String erabNan) throws Salbuespena {
+	public boolean erabiltzaileaAlokatuDu(String erabNan) throws Salbuespena, EzBaliozkoSaioaException {
+		HttpSession session = this.getThreadLocalRequest().getSession();
+		Boolean valid = (Boolean)session.getAttribute("valid");
+		if(valid == null || valid == false)
+			throw new EzBaliozkoSaioaException();
+		
 		try {
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
@@ -366,7 +383,13 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public boolean pasahitzaBerritu(String userNan, String zaharra,
-			String berria) throws Salbuespena {
+			String berria) throws Salbuespena, EzBaliozkoSaioaException {
+		
+		HttpSession session = this.getThreadLocalRequest().getSession();
+		Boolean valid = (Boolean)session.getAttribute("valid");
+		if(valid == null || valid == false)
+			throw new EzBaliozkoSaioaException();
+		
 		int rs = -1;
 		try {
 			if (!connector.isConnectedToDatabase())
@@ -385,7 +408,12 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		return rs > 0;
 	}
 
-	public AlokairuInfo getAzkenAlokairuInfo(String erabNan) throws Salbuespena {
+	public AlokairuInfo getAzkenAlokairuInfo(String erabNan) throws Salbuespena, EzBaliozkoSaioaException {
+		HttpSession session = this.getThreadLocalRequest().getSession();
+		Boolean valid = (Boolean)session.getAttribute("valid");
+		if(valid == null || valid == false)
+			throw new EzBaliozkoSaioaException();
+		
 		AlokairuInfo azkenAlokInfo = null;
 		try {
 			if (!connector.isConnectedToDatabase())
@@ -463,7 +491,12 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		return azkenAlokInfo;
 	}
 
-	public AlokairuInfo bizikletaBueltatu(String erabNan) throws Salbuespena {
+	public AlokairuInfo bizikletaBueltatu(String erabNan) throws Salbuespena, EzBaliozkoSaioaException {
+		HttpSession session = this.getThreadLocalRequest().getSession();
+		Boolean valid = (Boolean)session.getAttribute("valid");
+		if(valid == null || valid == false)
+			throw new EzBaliozkoSaioaException();
+		
 		try {
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
@@ -489,7 +522,12 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		return getAzkenAlokairuInfo(erabNan);
 	}
 
-	public boolean abisuaIrakurriDa(String erabNan, int id) throws Salbuespena {
+	public boolean abisuaIrakurriDa(String erabNan, int id) throws Salbuespena, EzBaliozkoSaioaException {
+		HttpSession session = this.getThreadLocalRequest().getSession();
+		Boolean valid = (Boolean)session.getAttribute("valid");
+		if(valid == null || valid == false)
+			throw new EzBaliozkoSaioaException();
+		
 		int rs = -1;
 		try {
 			if (!connector.isConnectedToDatabase())
@@ -508,7 +546,12 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public DatuEstatistiko nireIbilbideakLortu(String erabNan)
-			throws Salbuespena {
+			throws Salbuespena, EzBaliozkoSaioaException {
+		HttpSession session = this.getThreadLocalRequest().getSession();
+		Boolean valid = (Boolean)session.getAttribute("valid");
+		if(valid == null || valid == false)
+			throw new EzBaliozkoSaioaException();
+		
 		DatuEstatistiko de = new DatuEstatistiko();
 		Vector<IbilaldienPortzentaiak> kalkuluak = new Vector<IbilaldienPortzentaiak>();
 		int alokatuKont = 0;
@@ -610,7 +653,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public HashMap<Integer, InforMezuInfo> getInforMezuInfo()
-			throws Salbuespena {
+			throws Salbuespena {		
 		HashMap<Integer, InforMezuInfo> map = new HashMap<Integer, InforMezuInfo>();
 
 		try {
@@ -646,7 +689,12 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public boolean erabDatuakEguneratu(HashMap<String, String> datuak, String erabNan)
-			throws Salbuespena {
+			throws Salbuespena, EzBaliozkoSaioaException {
+		HttpSession session = this.getThreadLocalRequest().getSession();
+		Boolean valid = (Boolean)session.getAttribute("valid");
+		if(valid == null || valid == false)
+			throw new EzBaliozkoSaioaException();
+		
 		int rs = -1;
 		try {
 			if (!connector.isConnectedToDatabase())
@@ -659,6 +707,11 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			ps.setString(4, datuak.get("Telf. Zenbakia"));
 			ps.setString(5, erabNan);
 			rs = ps.executeUpdate();
+			
+			if (rs > 0){
+				session.setAttribute("izena", datuak.get("Izena"));
+				session.setAttribute("abuzenak", datuak.get("Abizenak"));
+			}
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {

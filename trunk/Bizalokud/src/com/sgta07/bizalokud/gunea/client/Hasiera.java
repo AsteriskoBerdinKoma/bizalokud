@@ -182,8 +182,11 @@ public class Hasiera extends BarnePanela {
 								element.unmask();
 							}
 						});
-			} else
+			} else{
+				alokairuPanel
+				.setHtml("");
 				element.unmask();
+			}
 		} else
 			element.unmask();
 	}
