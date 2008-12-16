@@ -75,10 +75,6 @@ public class NireDatuak extends BarnePanela {
 			public void onPropertyChange(PropertyGridPanel source,
 					String recordID, Object value, Object oldValue) {
 						datuak.put(recordID.toString(), value.toString());
-						System.out.println(datuak.get(recordID));
-				System.out.println(Format.format(
-						"Property '{0}' changed from {1} to {2}.", recordID,
-						String.valueOf(oldValue), String.valueOf(value)));
 						aldaketakDaude=true;
 						
 			}
@@ -150,15 +146,16 @@ public class NireDatuak extends BarnePanela {
 			}
 
 			public void onSuccess(Boolean result) {
-				System.out.println("Erantzuna: "+result);
 				element.unmask();
 				MessageBox
 				.show(new MessageBoxConfig() {
 					{
 						setTitle("Datuak Eguneratuta");
-						setMsg("Zure datuak eguneratu egin dira.\nAldaketak hurrengo kautotzean ikusiko dituzu.");
+						setMsg("Zure datuak eguneratu egin dira.");
 						setButtons(MessageBox.OK);
 						setIconCls(MessageBox.INFO);
+						jabea.setErabiltzaileDatuak(jabea.getErabNan(), datuak.get("Izena"), datuak.get("Abizenak"), datuak.get("ePosta"), datuak.get("Telf. Zenbakia"), jabea.isAdmin());
+						datuakEguneratu();
 					}
 				});
 				aldaketakDaude = false;
