@@ -645,10 +645,25 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		return map;
 	}
 
-	@Override
-	public boolean erabDatuakEguneratu(Vector<String> datuak)
+	public boolean erabDatuakEguneratu(HashMap<String, String> datuak, String erabNan)
 			throws Salbuespena {
-		// TODO Auto-generated method stub
-		return false;
+		int rs = -1;
+		try {
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+			String query = "UPDATE erabiltzailea SET izena=?, abizenak=?, eposta=?, telefonoa=? WHERE nan=?";
+			PreparedStatement ps = connector.prepareStatement(query);
+			ps.setString(1, datuak.get("Izena"));
+			ps.setString(2, datuak.get("Abizenak"));
+			ps.setString(3, datuak.get("ePosta"));
+			ps.setString(4, datuak.get("Telf. Zenbakia"));
+			ps.setString(5, erabNan);
+			rs = ps.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		}
+		return rs > 0;
 	}
 }
