@@ -1,8 +1,6 @@
 package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
-import java.util.Vector;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -39,7 +37,7 @@ public interface GuneaService extends RemoteService {
 	
 	public HashMap<Integer, InforMezuInfo> getInforMezuInfo() throws Salbuespena;
 	
-	public boolean erabDatuakEguneratu(Vector<String> datuak) throws Salbuespena;
+	public boolean erabDatuakEguneratu(HashMap<String,String> datuak, String erabNan) throws Salbuespena;
 	
 	/**
 	 * Utility class for simplifying access to the instance of async service.

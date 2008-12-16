@@ -1,8 +1,6 @@
 package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
-import java.util.Vector;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface GuneaServiceAsync {
@@ -34,5 +32,5 @@ public interface GuneaServiceAsync {
 	
 	public void getInforMezuInfo(AsyncCallback<HashMap<Integer, InforMezuInfo>> callback);
 	
-	public void erabDatuakEguneratu(Vector<String> datuak, AsyncCallback<Boolean> callback);
+	public void erabDatuakEguneratu(HashMap<String,String> datuak, String erabNan, AsyncCallback<Boolean> callback);
 }
