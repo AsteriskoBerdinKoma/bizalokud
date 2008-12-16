@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="ImageViewer" default="all" basedir="C:\Documents and Settings\Torwidev\workSpaces\sgta\Bizalokud">
+	<description>
+		This is build file for GWT module 'com.sgta07.bizalokud.gunea.Gunea' deployment.
+		GWT Designer generates it each time when you initiate deployment.
+		
+		You can use this file later for manual deployment, but keep in mind, that
+		classpath is hardcoded in it, so after changes in classpath you should
+		regenerate build file.
+	</description>
+
+	<property name="gwt.home" value="C:/Downloads/[ Utilidades ]/gwt-windows-1.5.3" />
+	<property name="gwt.module.id" value="com.sgta07.bizalokud.gunea.Gunea" />
+	<property name="war.name" value="Gunea.war" />
+
+	<target name="jars" description="Package up the module project and required projects as jars">
+		<mkdir dir="@dot/${gwt.module.id}/WEB-INF/lib" />
+		<!--=== Bizalokud ===-->
+		<jar destfile="@dot/${gwt.module.id}/WEB-INF/lib/Bizalokud.jar">
+			<fileset dir="C:/Documents and Settings/Torwidev/workSpaces/sgta/Bizalokud/src">
+				<include name="**"/>
+			</fileset>
+			<fileset dir="C:/Documents and Settings/Torwidev/workSpaces/sgta/Bizalokud/bin">
+				<include name="**/*.class"/>
+			</fileset>
+		</jar>
+		<copy todir="@dot/${gwt.module.id}/WEB-INF/lib">
+			<fileset file="C:\Documents and Settings\Torwidev\workSpaces\sgta\Bizalokud\lib\gwtext.jar"/>
+			<fileset file="C:\Documents and Settings\Torwidev\workSpaces\sgta\Bizalokud\lib\mysql-connector-java-5.1.7-bin.jar"/>
+			<fileset file="C:\Documents and Settings\Torwidev\workSpaces\sgta\Bizalokud\lib\gwtextux.jar"/>
+		</copy>		
+	</target>
+
+	<target name="gwt-compile" description="Compile to JavaScript">
+		<delete dir="@dot" />
+		<java classname="com.google.gwt.dev.GWTCompiler" fork="yes" failonerror="true" maxmemory="256m">
+			<classpath>
+				<pathelement location="C:/Documents and Settings/Torwidev/workSpaces/sgta/Bizalokud/src" />
+				<pathelement location="C:/Documents and Settings/Torwidev/workSpaces/sgta/Bizalokud/bin" />
+				<pathelement location="C:/Downloads/[ Utilidades ]/gwt-windows-1.5.3/gwt-user.jar" />
+				<pathelement location="C:/Documents and Settings/Torwidev/workSpaces/sgta/Bizalokud/lib/gwtext.jar" />
+				<pathelement location="C:/Documents and Settings/Torwidev/workSpaces/sgta/Bizalokud/lib/mysql-connector-java-5.1.7-bin.jar" />
+				<pathelement location="C:/Documents and Settings/Torwidev/workSpaces/sgta/Bizalokud/lib/gwtextux.jar" />
+				<pathelement location="C:/Downloads/[ Utilidades ]/gwt-windows-1.5.3/gwt-dev-windows.jar" />
+			</classpath>
+			<arg value="-style"/>
+			<arg value="OBFUSCATED"/>
+			<arg value="-out" />
+			<arg file="@dot" />
+			<arg value="${gwt.module.id}" />
+		</java>
+	</target>
+
+	<target name="web-xml">
+		<mkdir dir="@dot/${gwt.module.id}/WEB-INF" />
+		<echo file="@dot/${gwt.module.id}/WEB-INF/web.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+	<servlet>
+		<servlet-name>com.sgta07.bizalokud.login.server.LoginServiceImpl</servlet-name>
+		<servlet-class>com.sgta07.bizalokud.login.server.LoginServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>com.sgta07.bizalokud.login.server.LoginServiceImpl</servlet-name>
+		<url-pattern>/LoginService</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>com.sgta07.bizalokud.gunea.server.GuneaServiceImpl</servlet-name>
+		<servlet-class>com.sgta07.bizalokud.gunea.server.GuneaServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>com.sgta07.bizalokud.gunea.server.GuneaServiceImpl</servlet-name>
+		<url-pattern>/GuneaService</url-pattern>
+	</servlet-mapping>
+
+</web-app>
+]]></echo>
+	</target>
+
+	<target name="war" depends="gwt-compile, jars, web-xml">
+		<!-- update compilation results -->
+		<!--<delete dir="@dot/${gwt.module.id}/.gwt-compiler" />
+		<move todir="@dot/${gwt.module.id}">
+			<fileset dir="@dot/${gwt.module.id}/std">
+				<include name="**"/>
+			</fileset>
+		</move>-->
+		<!-- do create WAR -->
+		<delete file="${war.name}" />
+		<copy file="${gwt.home}/gwt-servlet.jar" todir="@dot/${gwt.module.id}/WEB-INF/lib" />
+		<jar destfile="${war.name}" basedir="@dot/${gwt.module.id}" duplicate="preserve" />
+		<!-- clean up -->
+		<delete dir="@dot" />
+	</target>
+	
+	<target name="deploy" depends="war">
+		<move file="${war.name}" todir="C:/Documents and Settings/Torwidev/Escritorio" />
+	</target>
+
+	<target name="all" depends="deploy" />
+
+</project>
