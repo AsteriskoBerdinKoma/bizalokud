@@ -7,7 +7,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.data.ArrayReader;
-import com.gwtext.client.data.DateFieldDef;
 import com.gwtext.client.data.FieldDef;
 import com.gwtext.client.data.IntegerFieldDef;
 import com.gwtext.client.data.RecordDef;
