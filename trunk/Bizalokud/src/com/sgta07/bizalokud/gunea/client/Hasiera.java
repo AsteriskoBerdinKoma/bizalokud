@@ -41,6 +41,7 @@ public class Hasiera extends BarnePanela {
 		this.setTitle("Hasiera");
 		this.setLayout(new FitLayout());
 		this.setPaddings(0);
+		this.setAutoScroll(true);
 
 		Panel panel = new Panel();
 		panel.setLayout(new RowLayout());
@@ -62,7 +63,7 @@ public class Hasiera extends BarnePanela {
 		alokairuPanel.setFrame(false);
 		alokairuPanel.setBorder(true);
 
-		panel.add(guneaPanel, new RowLayoutData(430));
+		panel.add(guneaPanel, new RowLayoutData(230));
 		panel.add(alokairuPanel, new RowLayoutData());
 
 		this.add(panel);
@@ -81,8 +82,8 @@ public class Hasiera extends BarnePanela {
 		mapPanel.setBorder(false);
 		mapPanel.setFrame(true);
 		mapPanel.addLargeControls();
-		mapPanel.setWidth(500);
-		mapPanel.setHeight(400);
+		mapPanel.setWidth(300);
+		mapPanel.setHeight(200);
 
 		mapRendered = false;
 
