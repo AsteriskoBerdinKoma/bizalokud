@@ -60,6 +60,8 @@ public class Gunea implements EntryPoint, Logeable {
 	private String erabNan;
 	private String erabIzena;
 	private String erabAbizen;
+	private String erabEPosta;
+	private String erabTelefonoa;
 	private boolean erabAdminDa;
 
 	// private Mapa mapa;
@@ -93,6 +95,7 @@ public class Gunea implements EntryPoint, Logeable {
 
 	private HashMap<Integer, InforMezuInfo> inforMezuak;
 	private ClickListener inforMezuClickListener;
+	
 
 	public void onModuleLoad() {
 
@@ -399,9 +402,11 @@ public class Gunea implements EntryPoint, Logeable {
 	}
 
 	public void setErabiltzaileDatuak(String nan, String izena,
-			String abizenak, boolean adminDa) {
+			String abizenak, String eposta, String telefonoa, boolean adminDa) {
 		this.erabNan = nan;
 		this.erabIzena = izena;
+		this.erabEPosta = eposta;
+		this.erabTelefonoa = telefonoa;
 		this.erabAbizen = abizenak;
 		this.erabAdminDa = adminDa;
 		// erabDatuak.setText("Kaixo " + izena + " " + abizenak);
@@ -421,6 +426,14 @@ public class Gunea implements EntryPoint, Logeable {
 
 	public String getErabAbizen() {
 		return erabAbizen;
+	}
+	
+	public String getErabEposta() {
+		return erabEPosta;
+	}
+	
+	public String getErabTelefonoa() {
+		return erabTelefonoa;
 	}
 
 	public boolean isAdmin() {
