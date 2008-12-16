@@ -18,6 +18,7 @@ import com.sgta07.bizalokud.gunea.client.DatuEstatistiko;
 import com.sgta07.bizalokud.gunea.client.GuneInfo;
 import com.sgta07.bizalokud.gunea.client.GuneaService;
 import com.sgta07.bizalokud.gunea.client.IbilaldienPortzentaiak;
+import com.sgta07.bizalokud.gunea.client.InforMezuInfo;
 import com.sgta07.bizalokud.gunea.client.Salbuespena;
 import com.sgta07.bizalokud.zerbitzaria.db.Connector;
 
@@ -187,11 +188,8 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 		HashMap<Integer, GuneInfo> emaitza = new HashMap<Integer, GuneInfo>();
 		Set<Integer> keys = guneak.keySet();
 		for (int id : keys) {
-			System.out.println(id);
 			if (helburuaAukeraDaiteke(unekoGuneId, id)) {
 				emaitza.put(id, guneak.get(id));
-				// guneak.remove(id);
-				System.out.println(":" + id);
 			}
 		}
 
@@ -327,22 +325,13 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				String[] ordua = s[1].split(":");
 
 				Calendar cal = new GregorianCalendar(Integer.parseInt(data[0]),
-						Integer.parseInt(data[1]), Integer.parseInt(data[2]),
+						Integer.parseInt(data[1])-1, Integer.parseInt(data[2]),
 						Integer.parseInt(ordua[0]), Integer.parseInt(ordua[1]),
 						Integer.parseInt(ordua[2]));
 
 				AbisuInfo aiu = new AbisuInfo(id, cal.getTime(), rs
 						.getBoolean("irakurrita"), rs.getString("mota"), rs
 						.getString("mezua"));
-
-				// Date d = new Date(Integer.parseInt(data[0]), Integer
-				// .parseInt(data[1]) - 1, Integer.parseInt(data[2]),
-				// Integer.parseInt(ordua[0]), Integer.parseInt(ordua[1]),
-				// Integer.parseInt(ordua[2]));
-				//				
-				// AbisuInfo aiu = new AbisuInfo(id, d, rs
-				// .getBoolean("irakurrita"), rs.getString("mota"), rs
-				// .getString("mezua"));
 
 				emaitza.put(id, aiu);
 			}
@@ -414,7 +403,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				String[] hasData = s1[0].split("-");
 				String[] hasOrdua = s1[1].split(":");
 				Calendar hasCal = new GregorianCalendar(Integer
-						.parseInt(hasData[0]), Integer.parseInt(hasData[1]),
+						.parseInt(hasData[0]), Integer.parseInt(hasData[1])-1,
 						Integer.parseInt(hasData[2]), Integer
 								.parseInt(hasOrdua[0]), Integer
 								.parseInt(hasOrdua[1]), Integer
@@ -433,7 +422,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 					String[] bukOrdua = s2[1].split(":");
 					Calendar bukCal = new GregorianCalendar(Integer
 							.parseInt(bukData[0]),
-							Integer.parseInt(bukData[1]), Integer
+							Integer.parseInt(bukData[1])-1, Integer
 									.parseInt(bukData[2]), Integer
 									.parseInt(bukOrdua[0]), Integer
 									.parseInt(bukOrdua[1]), Integer
@@ -476,13 +465,8 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 	public AlokairuInfo bizikletaBueltatu(String erabNan) throws Salbuespena {
 		try {
-
-			System.out.println(1);
-
 			if (!connector.isConnectedToDatabase())
 				connector.connect();
-
-			System.out.println(2);
 
 			AlokairuInfo azkenAlokairu = getAzkenAlokairuInfo(erabNan);
 			String sql1 = "UPDATE bizikleta SET alokatuta = false, fk_uneko_gune_id = ? WHERE id = ?";
@@ -490,24 +474,17 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			ps1.setInt(1, azkenAlokairu.getHelGune().getId());
 			ps1.setInt(2, azkenAlokairu.getBizikleta().getId());
 			int result = ps1.executeUpdate();
-
-			System.out.println(3);
-
 			if (result > 0) {
 				String sql2 = "UPDATE ibilbidea SET bukaera_data = NOW(), bukatuta = true WHERE id = ?";
 				PreparedStatement ps2 = connector.prepareStatement(sql2);
 				ps2.setInt(1, azkenAlokairu.getId());
 				ps2.executeUpdate();
-
-				System.out.println(4);
 			}
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {
 			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
 		}
-
-		System.out.println(5);
 
 		return getAzkenAlokairuInfo(erabNan);
 	}
@@ -561,8 +538,10 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				temp.setHasierakoGuneIzena(rs.getString("hasIzena"));
 				temp.setHelburuGuneIzena(rs.getString("helIzena"));
 				for (IbilaldienPortzentaiak row : kalkuluak) {
-					if (row.getHasierakoGuneId() == temp.getHasierakoGuneId() && row.getHelburuGuneId()==temp.getHelburuGuneId()) {
-						row.setEgindakoAldiKop(row.getEgindakoAldiKop()+1);
+					if (row.getHasierakoGuneId() == temp.getHasierakoGuneId()
+							&& row.getHelburuGuneId() == temp
+									.getHelburuGuneId()) {
+						row.setEgindakoAldiKop(row.getEgindakoAldiKop() + 1);
 						aurkitua = true;
 						break;
 					}
@@ -573,7 +552,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				}
 				aurkitua = false;
 			}
-			for(IbilaldienPortzentaiak row: kalkuluak){
+			for (IbilaldienPortzentaiak row : kalkuluak) {
 				double r = new Integer(row.getEgindakoAldiKop()).doubleValue()/new Integer(alokatuKont).doubleValue();
 				Double p = new Double(Math.round(r*1000.0)/1000.0);
 				row.setPortzentaia(p.doubleValue());
@@ -628,5 +607,41 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
 		}
 		return de;
+	}
+
+	public HashMap<Integer, InforMezuInfo> getInforMezuInfo()
+			throws Salbuespena {
+		HashMap<Integer, InforMezuInfo> map = new HashMap<Integer, InforMezuInfo>();
+
+		try {
+			if (!connector.isConnectedToDatabase())
+				connector.connect();
+
+			String query = "SELECT id, data as d, mezua FROM bizalokud.informazioa i order by d desc";
+			PreparedStatement ps = connector.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				String temp = rs.getString("d");
+				String[] s1 = temp.substring(0, temp.indexOf('.')).split(" ");
+				String[] data = s1[0].split("-");
+				String[] ordua = s1[1].split(":");
+				Calendar cal = new GregorianCalendar(Integer.parseInt(data[0]),
+						Integer.parseInt(data[1])-1, Integer.parseInt(data[2]),
+						Integer.parseInt(ordua[0]), Integer.parseInt(ordua[1]),
+						Integer.parseInt(ordua[2]));
+				map.put(id, new InforMezuInfo(id, cal.getTime(), rs
+						.getString("mezua")));
+			}
+
+			rs.close();
+			ps.close();
+		} catch (ClassNotFoundException e) {
+			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
+		} catch (SQLException e) {
+			throw new Salbuespena("SQL: " + e.getMessage(), e.getCause());
+		}
+
+		return map;
 	}
 }

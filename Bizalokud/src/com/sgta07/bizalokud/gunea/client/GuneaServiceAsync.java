@@ -30,4 +30,6 @@ public interface GuneaServiceAsync {
 	public void abisuaIrakurriDa(String erabNan, int id, AsyncCallback<Boolean> callback);
 	
 	public void nireIbilbideakLortu(String erabNan, AsyncCallback<DatuEstatistiko> callback);
+	
+	public void getInforMezuInfo(AsyncCallback<HashMap<Integer, InforMezuInfo>> callback);
 }

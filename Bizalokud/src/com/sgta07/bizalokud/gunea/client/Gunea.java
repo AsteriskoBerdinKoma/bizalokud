@@ -1,12 +1,16 @@
 package com.sgta07.bizalokud.gunea.client;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Margins;
@@ -22,6 +26,7 @@ import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.widgets.HTMLPanel;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Viewport;
+import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.form.Label;
 import com.gwtext.client.widgets.layout.AccordionLayout;
 import com.gwtext.client.widgets.layout.BorderLayout;
@@ -30,6 +35,7 @@ import com.gwtext.client.widgets.layout.CardLayout;
 import com.gwtext.client.widgets.layout.ColumnLayout;
 import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtext.client.widgets.layout.RowLayout;
+import com.gwtext.client.widgets.layout.RowLayoutData;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
@@ -85,9 +91,14 @@ public class Gunea implements EntryPoint, Logeable {
 	private Hasiera hasiera;
 	private Panel infoPanel;
 
+	private HashMap<Integer, InforMezuInfo> inforMezuak;
+	private ClickListener inforMezuClickListener;
+
 	public void onModuleLoad() {
 
 		sortuPanelak();
+
+		sortuInformazioPanela();
 
 		GuneaService.Util.getInstance().getMyInfo(
 				new AsyncCallback<GuneInfo>() {
@@ -169,20 +180,23 @@ public class Gunea implements EntryPoint, Logeable {
 				.add(bannerPanel, new BorderLayoutData(RegionPosition.NORTH));
 
 		// Hegoaldeko panela: Azken minutuko informazioak jasotzeko
-		Panel southPanel = new HTMLPanel(
-				"<br>"
-						+ "<li>Amarako gunea bihartik aurrera itxita egongo da, konponketak egiteko!</li> "
-						+ "<li>Groseko obrak direla eta, Sagues-Bulevard ibilbidea ez hartzea gomendatzen da</li>");
-		southPanel.setHeight(100);
-		southPanel.setCollapsible(false);
-		southPanel.setTitle("Azken orduko informazioa");
-
+		// Panel southPanel = new HTMLPanel(
+		// "<br>"
+		// +
+		// "<li>Amarako gunea bihartik aurrera itxita egongo da, konponketak egiteko!</li> "
+		// +
+		// "<li>Groseko obrak direla eta, Sagues-Bulevard ibilbidea ez hartzea gomendatzen da</li>");
+		// southPanel.setHeight(100);
+		// southPanel.setCollapsible(false);
+		// southPanel.setTitle("Azken orduko informazioa");
+		//
 		BorderLayoutData southData = new BorderLayoutData(RegionPosition.SOUTH);
 		southData.setMinSize(100);
 		southData.setMaxSize(200);
 		southData.setMargins(new Margins(0, 0, 0, 0));
 		southData.setSplit(true);
-		borderPanel.add(southPanel, southData);
+		borderPanel.add(infoPanel, southData);
+		// borderPanel.add(southPanel, southData);
 
 		BorderLayoutData westData = new BorderLayoutData(RegionPosition.WEST);
 		westData.setSplit(true);
@@ -253,11 +267,40 @@ public class Gunea implements EntryPoint, Logeable {
 		niredatuak = new NireDatuak(this);
 		niredatuak.setId("niredatuak-panel");
 	}
-	
-	private void sortuInformazioPanela(){
+
+	private void sortuInformazioPanela() {
 		infoPanel = new Panel();
-		infoPanel.setLayout(new CardLayout());
-		
+		infoPanel.setLayout(new RowLayout());
+		infoPanel.setHeight(200);
+		infoPanel.setAutoScroll(true);
+
+		inforMezuClickListener = new ClickListener() {
+
+			public void onClick(Widget sender) {
+				int id = Integer.parseInt(sender.getElement().getId()
+						.substring(5));
+
+				DateTimeFormat dtf = new DateTimeFormat("yyyy/MM/dd HH:mm") {
+				};
+				String data = dtf.format(inforMezuak.get(id).getData());
+
+				final Window abisuPopup = new Window();
+				abisuPopup.setHeight(150);
+				abisuPopup.setWidth(320);
+				abisuPopup.setAutoScroll(true);
+				abisuPopup.setTitle(data);
+				abisuPopup.setLayout(new FitLayout());
+				abisuPopup.setMaximizable(false);
+				abisuPopup.setModal(true);
+				abisuPopup
+						.setHtml("<p style=\"font-size:medium;\"><b>Data:</b> "
+								+ data
+								+ "<p><br><p style=\"font-size:medium;\"><b>Mezua:</b> "
+								+ inforMezuak.get(id).getMezua() + "</p>");
+				abisuPopup.setCloseAction(Window.CLOSE);
+				abisuPopup.show();
+			}
+		};
 	}
 
 	private void resetIdleTimer() {
@@ -311,8 +354,47 @@ public class Gunea implements EntryPoint, Logeable {
 	}
 
 	private void eguneratuDatuak() {
-		if (cardLayout != null && cardLayout.getActiveItem() instanceof BarnePanela)
+		if (cardLayout != null
+				&& cardLayout.getActiveItem() instanceof BarnePanela)
 			((BarnePanela) cardLayout.getActiveItem()).datuakEguneratu();
+
+		GuneaService.Util.getInstance().getInforMezuInfo(
+				new AsyncCallback<HashMap<Integer, InforMezuInfo>>() {
+
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+						infoPanel
+								.setHtml("<p style=\"font-size:medium;\"><b>Ezin izan dira azken orduko mezuak jaso.</b></p>");
+					}
+
+					public void onSuccess(HashMap<Integer, InforMezuInfo> result) {
+						inforMezuak = result;
+						if (infoPanel != null) {
+							if (result != null && !result.isEmpty()) {
+								infoPanel.removeAll(true);
+								for (int id : result.keySet()) {
+									Hyperlink hpl = new Hyperlink();
+									DateTimeFormat dtf = new DateTimeFormat(
+											"yyyy/MM/dd HH:mm") {
+									};
+									String data = dtf.format(result.get(id)
+											.getData());
+									String str = result.get(id).getMezua();
+									if (str.length() > 50)
+										str = str.substring(0, 50) + "...";
+									hpl.setHTML("<p style=\"cursor: pointer; cursor: hand;\">" + data + " - " + str +"</p>");
+									hpl.addClickListener(inforMezuClickListener);
+									hpl.getElement().setId("mezu-" + id);
+									infoPanel.add(hpl, new RowLayoutData());
+								}
+							} else {
+								infoPanel
+										.setHtml("<p style=\"font-size:medium;\"><b>Ez dago azken orduko mezurik.</b></p>");
+							}
+						}
+					}
+				});
+
 		eguneraketaKont = 0;
 	}
 
@@ -325,7 +407,7 @@ public class Gunea implements EntryPoint, Logeable {
 		// erabDatuak.setText("Kaixo " + izena + " " + abizenak);
 		erabDatuak.setHtml("Kaixo <b>" + izena + " " + abizenak + "</b><br>");
 		this.isErabIdentif = true;
-		
+
 		eguneratuDatuak();
 	}
 
