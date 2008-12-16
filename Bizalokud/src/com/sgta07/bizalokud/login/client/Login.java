@@ -159,7 +159,7 @@ public class Login implements EntryPoint {
 												if (result.isBaimena()) {
 													window.hide();
 													logeatuta = true;
-													jabea.setErabiltzaileDatuak(result.getNan(), result.getIzena(), result.getAbizenak(), result.isAdmin());
+													jabea.setErabiltzaileDatuak(result.getNan(), result.getIzena(), result.getAbizenak(),result.getEPosta(),result.getTelefonoa(), result.isAdmin());
 												} else {
 													MessageBox
 															.show(new MessageBoxConfig() {

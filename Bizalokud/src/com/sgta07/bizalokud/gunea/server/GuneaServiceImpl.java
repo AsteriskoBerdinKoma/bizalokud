@@ -644,4 +644,11 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 
 		return map;
 	}
+
+	@Override
+	public boolean erabDatuakEguneratu(Vector<String> datuak)
+			throws Salbuespena {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

@@ -53,6 +53,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
 				String nan = rs.getString("nan");
 				String izena = rs.getString("izena");
 				String abizenak = rs.getString("abizenak");
+				String ePosta = rs.getString("eposta");
+				String telefonoa = rs.getString("telefonoa");
 				boolean isAltan = rs.getBoolean("alta");
 				boolean isAdmin = rs.getString("mota").equals("admin");
 				ps.close();
@@ -66,7 +68,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
 					session.setAttribute("altan", isAltan);
 					if (isAltan) {
 						session.setAttribute("valid", true);
-						return new LoginInfo(nan, izena, abizenak, isAdmin, true);
+						return new LoginInfo(nan, izena, abizenak, ePosta, telefonoa, isAdmin, true);
 					} else {
 						session.setAttribute("valid", false);
 						return new LoginInfo("Kontu hau bajan emanda dago.");
