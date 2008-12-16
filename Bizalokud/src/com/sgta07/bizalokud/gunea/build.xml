@@ -11,7 +11,7 @@
 
 	<property name="gwt.home" value="C:/Downloads/[ Utilidades ]/gwt-windows-1.5.3" />
 	<property name="gwt.module.id" value="com.sgta07.bizalokud.gunea.Gunea" />
-	<property name="war.name" value="Gunea.war" />
+	<property name="war.name" value="Bizalokud.war" />
 
 	<target name="jars" description="Package up the module project and required projects as jars">
 		<mkdir dir="@dot/${gwt.module.id}/WEB-INF/lib" />
