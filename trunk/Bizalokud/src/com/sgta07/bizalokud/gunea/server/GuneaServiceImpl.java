@@ -712,6 +712,7 @@ public class GuneaServiceImpl extends RemoteServiceServlet implements
 				session.setAttribute("izena", datuak.get("Izena"));
 				session.setAttribute("abuzenak", datuak.get("Abizenak"));
 			}
+			ps.close();
 		} catch (ClassNotFoundException e) {
 			throw new Salbuespena("CNF: " + e.getMessage(), e.getCause());
 		} catch (SQLException e) {

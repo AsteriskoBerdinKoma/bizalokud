@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventCallback;
 import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.data.ArrayReader;
@@ -99,6 +100,7 @@ public class Gunea implements EntryPoint, Logeable {
 	private ClickListener inforMezuClickListener;
 	private Login login;
 	private MessageBoxConfig unloginMBC;
+	private ExtElement element;
 
 	public void onModuleLoad() {
 
@@ -382,18 +384,9 @@ public class Gunea implements EntryPoint, Logeable {
 		this.gunea = gunea;
 		if (gunea != null) {
 			this.isGuneaIdentif = true;
-			// guneIzenDatuak.setText(gunea.getIzena() + " gunean zaude");
-			// guneHelbideDatuak.setText(gunea.getHelbidea());
 			guneIzenDatuak.setHtml("<b>" + gunea.getIzena()
 					+ "</b> gunean zaude<br>");
 			guneHelbideDatuak.setHtml("<b>" + gunea.getHelbidea() + "</b><br>");
-			// if (!gunea.hasLatLon())
-			// mapa.updateMap(gunea.getIzena(), gunea.getHelbidea(),
-			// JavaScriptObjectHelper.createObject(), mapa);
-			// else {
-			// mapa.markaGehitu(gunea);
-			// mapa.finkatu(gunea);
-			// }
 
 			eguneratuDatuak();
 		}
@@ -404,6 +397,8 @@ public class Gunea implements EntryPoint, Logeable {
 				&& cardLayout.getActiveItem() instanceof BarnePanela)
 			((BarnePanela) cardLayout.getActiveItem()).datuakEguneratu();
 
+		element = new ExtElement(infoPanel.getElement());
+		element.mask("Azken orduko informazioa jasotzen. Itxaron mesedez", true);
 		GuneaService.Util.getInstance().getInforMezuInfo(
 				new AsyncCallback<HashMap<Integer, InforMezuInfo>>() {
 
@@ -411,6 +406,7 @@ public class Gunea implements EntryPoint, Logeable {
 						caught.printStackTrace();
 						infoPanel
 								.setHtml("<p style=\"font-size:medium;\"><b>Ezin izan dira azken orduko mezuak jaso.</b></p>");
+						element.unmask();
 					}
 
 					public void onSuccess(HashMap<Integer, InforMezuInfo> result) {
@@ -444,6 +440,7 @@ public class Gunea implements EntryPoint, Logeable {
 										.setHtml("<p style=\"font-size:medium;\"><b>Ez dago azken orduko mezurik.</b></p>");
 							}
 						}
+						element.unmask();
 					}
 				});
 
