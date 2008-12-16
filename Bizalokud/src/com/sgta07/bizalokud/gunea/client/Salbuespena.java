@@ -31,5 +31,9 @@ public class Salbuespena extends Exception {
 	public String getMessage(){
 		return this.erroreMezua;
 	}
+	
+	public String getMezuGenerikoa() {
+		return mezuGenerikoa;
+	}
 
 }

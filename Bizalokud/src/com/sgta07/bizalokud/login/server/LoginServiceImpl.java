@@ -21,7 +21,6 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
 
 	private Connector connector = new Connector();
 
-	@Override
 	public LoginInfo login(String user, String pass) {
 		HttpSession session = this.getThreadLocalRequest().getSession();
 
@@ -90,5 +89,23 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
 			session.setAttribute("valid", false);
 			return new LoginInfo("Errorea datu basea atzitzerakoan");
 		}
+	}
+
+	public boolean saioaAmaitu() {
+		try {
+			HttpSession session = this.getThreadLocalRequest().getSession();
+			session.removeAttribute("nan");
+			session.removeAttribute("izena");
+			session.removeAttribute("abuzenak");
+			session.removeAttribute("isAdmin");
+			session.removeAttribute("altan");
+			
+			session.setAttribute("valid", false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 }

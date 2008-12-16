@@ -5,11 +5,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Position;
 import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.MessageBox;
 import com.gwtext.client.widgets.MessageBoxConfig;
 import com.gwtext.client.widgets.WaitConfig;
 import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.event.WindowListenerAdapter;
 import com.gwtext.client.widgets.form.FieldSet;
 import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.widgets.form.TextField;
@@ -24,20 +26,26 @@ import com.gwtext.client.widgets.layout.FitLayout;
 public class Login implements EntryPoint {
 
 	private boolean logeatuta;
-	
+
 	private Logeable jabea;
+	
+	private TextField erabiltzaileaTextField;
+	private TextField pasahitzaTextField;
+
+	public Login() {
+		super();
+	}
+	
+	public Login(Logeable owner) {
+		super();
+		this.jabea = owner;
+	}
 	
 	public void onModuleLoad() {
 		logeatuta = false;
 	}
 
-	public boolean isLogeatuta() {
-		return logeatuta;
-	}
-
-	public void erakutsi(Logeable owner) {
-		this.jabea = owner;
-		
+	public void erakutsi() {
 		final Window window = new Window();
 		window.setTitle("Login");
 		window.setLayout(new FitLayout());
@@ -46,10 +54,6 @@ public class Login implements EntryPoint {
 
 		window.setWidth(300);
 		window.setHeight(200);
-		// TODO: Konpilatzerakoan bi lerro hauek deskomentatu eta goiko biak
-		// komentatu
-		// window.setAutoWidth(true);
-		// window.setAutoHeight(true);
 
 		window.setBorder(false);
 		window.setResizable(false);
@@ -58,6 +62,16 @@ public class Login implements EntryPoint {
 		window.setButtonAlign(Position.CENTER);
 
 		window.setCloseAction(Window.HIDE);
+		
+		window.addListener(new WindowListenerAdapter(){
+			
+			public boolean doBeforeHide(Component component) {
+				erabiltzaileaTextField.reset();
+				pasahitzaTextField.reset();
+				return super.doBeforeHide(component);
+			}
+		});
+		
 		window.setPlain(true);
 
 		final FormPanel formPanel = new FormPanel();
@@ -71,14 +85,15 @@ public class Login implements EntryPoint {
 		fieldSet.setAutoHeight(true);
 		fieldSet.setAutoWidth(true);
 
-		final TextField erabiltzaileaTextField = new TextField("NAN", "user",
+		erabiltzaileaTextField = new TextField("NAN", "user",
 				150);
+		erabiltzaileaTextField.setAllowBlank(false);
+		erabiltzaileaTextField.setBlankText("NAN zenbakia sartu behar duzu");
 		erabiltzaileaTextField.setValidator(new Validator() {
 			public boolean validate(String value) throws ValidationException {
 				if (value.length() != 9)
 					throw new ValidationException(
 							"NANak 8 digitu eta hizki bat eduki behar du.");
-				// El último carácter debe ser una letra
 				if (!Character.isLetter(value.charAt(8)))
 					throw new ValidationException(
 							"NANak 8 digitu eta hizki bat eduki behar du.");
@@ -91,15 +106,17 @@ public class Login implements EntryPoint {
 				return true;
 			}
 		});
-		erabiltzaileaTextField.setValidationEvent(false);
+//		erabiltzaileaTextField.setValidationEvent(false);
 
-		final TextField pasahitzaTextField = new TextField("Pasahitza", "pass",
+		pasahitzaTextField = new TextField("Pasahitza", "pass",
 				150);
 		pasahitzaTextField.setPassword(true);
+		pasahitzaTextField.setAllowBlank(false);
+		pasahitzaTextField.setBlankText("Pasahitza sartu behar duzu.");
 		pasahitzaTextField.setVtype(VType.ALPHANUM);
 		pasahitzaTextField
 				.setVtypeText("Pasahitzak bakarrik hizkiak, zenbakiak eta _ eduki ditzake");
-		pasahitzaTextField.setValidationEvent(false);
+//		pasahitzaTextField.setValidationEvent(false);
 
 		fieldSet.add(erabiltzaileaTextField);
 		fieldSet.add(pasahitzaTextField);
@@ -159,7 +176,20 @@ public class Login implements EntryPoint {
 												if (result.isBaimena()) {
 													window.hide();
 													logeatuta = true;
-													jabea.setErabiltzaileDatuak(result.getNan(), result.getIzena(), result.getAbizenak(),result.getEPosta(),result.getTelefonoa(), result.isAdmin());
+													jabea
+															.setErabiltzaileDatuak(
+																	result
+																			.getNan(),
+																	result
+																			.getIzena(),
+																	result
+																			.getAbizenak(),
+																	result
+																			.getEPosta(),
+																	result
+																			.getTelefonoa(),
+																	result
+																			.isAdmin());
 												} else {
 													MessageBox
 															.show(new MessageBoxConfig() {
@@ -197,31 +227,29 @@ public class Login implements EntryPoint {
 
 		window.show();
 	}
-	
-//	public String getNan(){
-//		if (loginInfo != null)
-//			return loginInfo.getNan();
-//		else
-//			return null;
-//	}
-//	
-//	public String getIzena(){
-//		if(loginInfo != null)
-//			return loginInfo.getIzena();
-//		else
-//			return null;
-//	}
-//	
-//	public String getAbizenak(){
-//		if(loginInfo != null)
-//			return loginInfo.getAbizenak();
-//		else
-//			return null;
-//	}
+
+	public boolean isLogeatuta() {
+		return logeatuta;
+	}
+
+	public void saioaAmaitu() {
+		LoginService.Util.getInstance().saioaAmaitu(
+				new AsyncCallback<Boolean>() {
+
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+						jabea.saioaAmaitutzatEman(false);
+					}
+
+					public void onSuccess(Boolean result) {
+						jabea.saioaAmaitutzatEman(result);
+					}
+				});
+	}
 
 	// SHA1 hasha sortuko duen javascript funtzioari (js/crypto/sha1.js)
 	// deintzen dio.
 	public native String getSha1(String str)/*-{
-								return $wnd.SHA1(str);
-							}-*/;
+			return $wnd.SHA1(str);
+		}-*/;
 }

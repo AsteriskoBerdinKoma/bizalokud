@@ -24,6 +24,8 @@ import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.widgets.HTMLPanel;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.MessageBoxConfig;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Viewport;
 import com.gwtext.client.widgets.Window;
@@ -48,7 +50,7 @@ import com.sgta07.bizalokud.login.client.Login;
 public class Gunea implements EntryPoint, Logeable {
 
 	// Zenbat segundu egon behar da aktibitaterik gabe sistematik irtetzeko
-	private final static int IRTETEKO_DENBORA = 30;
+	private final static int IRTETEKO_DENBORA = 40;
 	// Datuak zenbat segunduro eguneratuko diren
 	private final static int DATU_EGUNERAKETA_DENBORA = 40;
 
@@ -95,13 +97,14 @@ public class Gunea implements EntryPoint, Logeable {
 
 	private HashMap<Integer, InforMezuInfo> inforMezuak;
 	private ClickListener inforMezuClickListener;
-	
+	private Login login;
+	private MessageBoxConfig unloginMBC;
 
 	public void onModuleLoad() {
 
 		sortuPanelak();
 
-		sortuInformazioPanela();
+		sortuInforMezuPanela();
 
 		GuneaService.Util.getInstance().getMyInfo(
 				new AsyncCallback<GuneInfo>() {
@@ -122,8 +125,8 @@ public class Gunea implements EntryPoint, Logeable {
 					}
 				});
 
-		Login login = new Login();
-		login.erakutsi(this);
+		login = new Login(this);
+		login.erakutsi();
 
 		Panel panelNagusia = new Panel();
 		panelNagusia.setBorder(false);
@@ -165,6 +168,16 @@ public class Gunea implements EntryPoint, Logeable {
 		datuak.setStyle("backgroundColor: #dfe8f6;");
 		datuak.setBodyStyle("backgroundColor: #dfe8f6;");
 		datuak.setStyle("vertical-align: middle;");
+		Hyperlink irtenLink = new Hyperlink();
+		irtenLink
+				.setHTML("<p style=\"cursor: pointer; cursor: hand;\">Irten</p>");
+		irtenLink.addClickListener(new ClickListener() {
+
+			public void onClick(Widget sender) {
+				login.saioaAmaitu();
+			}
+		});
+		datuak.add(irtenLink);
 
 		Panel bannerPanel = new Panel();
 		bannerPanel.setLayout(new ColumnLayout());
@@ -271,7 +284,7 @@ public class Gunea implements EntryPoint, Logeable {
 		niredatuak.setId("niredatuak-panel");
 	}
 
-	private void sortuInformazioPanela() {
+	private void sortuInforMezuPanela() {
 		infoPanel = new Panel();
 		infoPanel.setLayout(new RowLayout());
 		infoPanel.setHeight(200);
@@ -312,18 +325,48 @@ public class Gunea implements EntryPoint, Logeable {
 
 	private void denboraHasi() {
 
+		final String msg = "Denbora gehiegi daramazu aktibitate seinalerik eman gabe. Saioa orain amaitu nahi duzu?";
+
+		unloginMBC = new MessageBoxConfig() {
+			{
+				setTitle("Denbora gehiegi inaktibo");
+				setButtons(MessageBox.YESNO);
+				setIconCls(MessageBox.WARNING);
+				setCallback(new MessageBox.PromptCallback() {
+
+					public void execute(String btnID, String text) {
+						if (btnID.equals("yes"))
+							login.saioaAmaitu();
+						ezAktKont = 0;
+						MessageBox.hide();
+					}
+				});
+			}
+		};
+
 		Timer timer = new Timer() {
 			public void run() {
 				DateTimeFormat dtf = new DateTimeFormat("HH:mm") {
 				};
 				String ordua = dtf.format(new Date());
 				orduLabel.setText(ordua);
-				ezAktKont++;
 				eguneraketaKont++;
-				if (ezAktKont >= (Gunea.IRTETEKO_DENBORA - 10)) {
-					// TODO: Mezu kutxa erakutsi abisatzeko
-				} else if (ezAktKont >= Gunea.IRTETEKO_DENBORA) {
-					// TODO: Deslogeatu
+				if (isErabIdentif) {
+					ezAktKont++;
+					if (ezAktKont >= (Gunea.IRTETEKO_DENBORA - 15)) {
+						unloginMBC.setMsg(msg
+								+ "\nErantzunik eman ezean saioa "
+								+ String.valueOf(Gunea.IRTETEKO_DENBORA
+										- ezAktKont)
+								+ " segundutan amaituko da.");
+						//if (ezAktKont == (Gunea.IRTETEKO_DENBORA - 10))
+							MessageBox.show(unloginMBC);
+						if (ezAktKont == Gunea.IRTETEKO_DENBORA) {
+							MessageBox.hide();
+							login.saioaAmaitu();
+							ezAktKont = 0;
+						}
+					}
 				}
 				// Denbora bat pasa eta gero aktibo dagoen panelaren datuak
 				// eguneratuko dira
@@ -385,8 +428,14 @@ public class Gunea implements EntryPoint, Logeable {
 									String str = result.get(id).getMezua();
 									if (str.length() > 50)
 										str = str.substring(0, 50) + "...";
-									hpl.setHTML("<p style=\"cursor: pointer; cursor: hand;\">" + data + " - " + str +"</p>");
-									hpl.addClickListener(inforMezuClickListener);
+									hpl
+											.setHTML("<p style=\"cursor: pointer; cursor: hand;\">"
+													+ data
+													+ " - "
+													+ str
+													+ "</p>");
+									hpl
+											.addClickListener(inforMezuClickListener);
 									hpl.getElement().setId("mezu-" + id);
 									infoPanel.add(hpl, new RowLayoutData());
 								}
@@ -412,8 +461,28 @@ public class Gunea implements EntryPoint, Logeable {
 		// erabDatuak.setText("Kaixo " + izena + " " + abizenak);
 		erabDatuak.setHtml("Kaixo <b>" + izena + " " + abizenak + "</b><br>");
 		this.isErabIdentif = true;
+		
+		ezAktKont = 0;
 
 		eguneratuDatuak();
+	}
+
+	public void saioaAmaitutzatEman(boolean saioaAmaituta) {
+		this.erabNan = "";
+		this.erabIzena = "";
+		this.erabEPosta = "";
+		this.erabTelefonoa = "";
+		this.erabAbizen = "";
+		this.erabAdminDa = false;
+		erabDatuak.setHtml("");
+		this.isErabIdentif = false;
+
+		cardLayout.setActiveItem("hasiera-panel");
+		eguneratuDatuak();
+		
+		ezAktKont = 0;
+
+		login.erakutsi();
 	}
 
 	public String getErabNan() {
@@ -427,11 +496,11 @@ public class Gunea implements EntryPoint, Logeable {
 	public String getErabAbizen() {
 		return erabAbizen;
 	}
-	
+
 	public String getErabEposta() {
 		return erabEPosta;
 	}
-	
+
 	public String getErabTelefonoa() {
 		return erabTelefonoa;
 	}

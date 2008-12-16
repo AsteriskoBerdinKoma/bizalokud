@@ -9,6 +9,8 @@ public interface LoginService extends RemoteService {
 	
 	public LoginInfo login(String user, String pass);
 	
+	public boolean saioaAmaitu();
+	
 	/**
 	 * Utility class for simplifying access to the instance of async service.
 	 */
