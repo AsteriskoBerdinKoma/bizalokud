@@ -3,7 +3,6 @@ package com.sgta07.bizalokud.gunea.client;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.ExtElement;
-import com.gwtext.client.core.Position;
 import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Component;
@@ -13,16 +12,13 @@ import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.event.ComponentListener;
 import com.gwtext.client.widgets.event.ComponentListenerAdapter;
-import com.gwtext.client.widgets.form.FieldSet;
 import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.widgets.form.TextField;
 import com.gwtext.client.widgets.form.ValidationException;
 import com.gwtext.client.widgets.form.Validator;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
-import com.gwtext.client.widgets.layout.ColumnLayout;
 
 public class Pasahitza extends BarnePanela {
 

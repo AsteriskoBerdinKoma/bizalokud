@@ -4,7 +4,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.event.ComponentListener;
 import com.gwtext.client.widgets.event.ComponentListenerAdapter;
 import com.gwtext.client.widgets.form.Label;
 import com.gwtext.client.widgets.layout.FitLayout;
@@ -73,12 +72,17 @@ public class Estatistikak extends BarnePanela {
 						}
 
 					});
+		} else {
+			element.unmask();
+			String html = "<p style=\"font-size:medium;\" align=\"center\"><b>Ez dago daturik erakusteko.</b></p>";
+			infoLabel.setHtml(html);
 		}
 
 	}
 
 	public void datuakReseteatu() {
-		// TODO Auto-generated method stub
+		String html = "<p style=\"font-size:medium;\" align=\"center\"><b>Ez dago daturik erakusteko.</b></p>";
+		infoLabel.setHtml(html);
 
 	}
 
