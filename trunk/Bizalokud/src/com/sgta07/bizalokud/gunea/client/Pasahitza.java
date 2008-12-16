@@ -134,6 +134,7 @@ public class Pasahitza extends BarnePanela {
 												pZaharra.reset();
 												pBerria1.reset();
 												pBerria2.reset();
+												jabea.saioaAmaitutzatEman(true);
 											}
 										});
 									}
