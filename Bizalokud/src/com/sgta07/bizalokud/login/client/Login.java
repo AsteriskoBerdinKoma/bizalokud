@@ -52,7 +52,7 @@ public class Login implements EntryPoint {
 		window.setMaximizable(false);
 		window.setModal(true);
 
-		window.setWidth(300);
+		window.setWidth(320);
 		window.setHeight(200);
 
 		window.setBorder(false);

@@ -300,10 +300,6 @@ public class Alokatu extends BarnePanela {
 
 	public void markaGehitu(int id, String izena, String helbidea, double lat,
 			double lon) {
-		ExtElement map = ExtElement.get("mapPanel");
-		if (map != null)
-			map.mask("Mapa eguneratzen. Itxaron mesedez.", true);
-
 		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
 		Marker m = new Marker(latLonPoint);
 		mapPanel.setCenterAndZoom(latLonPoint, 17);
@@ -311,10 +307,7 @@ public class Alokatu extends BarnePanela {
 				+ helbidea);
 		mapPanel.addMarker(m);
 
-		markak.put(id, m);
-
-		if (map != null)
-			map.unmask();
+		markak.put(id, m);		
 	}
 
 	public void markakKendu() {
