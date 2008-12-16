@@ -2,6 +2,7 @@ package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.ExtElement;
@@ -48,28 +49,29 @@ public class Abisuak extends BarnePanela {
 		panel.setBorder(false);
 		panel.setAutoScroll(true);
 		panel.setCollapsible(false);
-		
-		
-		datuak = new Object[0][4];
-		recordDef = new RecordDef(new FieldDef[] {
-				new IntegerFieldDef("id"), new DateFieldDef("data"),
-				new StringFieldDef("mota") });
+
+		datuak = new Object[0][5];
+		recordDef = new RecordDef(new FieldDef[] { new IntegerFieldDef("id"),
+				new StringFieldDef("data"), new StringFieldDef("mezua"),
+				new StringFieldDef("mezuLabur"), new StringFieldDef("mota") });
 
 		reader = new ArrayReader(recordDef);
-		
+
 		ColumnConfig[] columns = new ColumnConfig[] {
 				// column ID is company which is later used in
 				// setAutoExpandColumn
-				new ColumnConfig("Id", "id", 20, true),
-				new ColumnConfig("Data", "data", 65, true),
-				new ColumnConfig("Mota", "mota", 60, true, null, "mota") };
+				new ColumnConfig("Id", "id", 20, true, null, "id"),
+				new ColumnConfig("Data", "data", 100, true, null, "data"),
+				new ColumnConfig("Mezua", "mezuLabur", 80, true, null,
+						"mezuLabur"),
+				new ColumnConfig("Mota", "mota", 80, true, null, "mota") };
 
 		columnModel = new ColumnModel(columns);
 
 		panelaSortu();
-		
-		this.addListener(new ComponentListenerAdapter(){
-			public void onShow(Component component){
+
+		this.addListener(new ComponentListenerAdapter() {
+			public void onShow(Component component) {
 				datuakEguneratu();
 			}
 		});
@@ -88,7 +90,7 @@ public class Abisuak extends BarnePanela {
 		grid.setStripeRows(true);
 		grid.setWidth(600);
 		grid.setHeight(250);
-		grid.setAutoExpandColumn("mota");
+		grid.setAutoExpandColumn("mezuLabur");
 
 		pagingToolbar = new PagingToolbar(store);
 		pagingToolbar.setPageSize(5);
@@ -118,50 +120,55 @@ public class Abisuak extends BarnePanela {
 		grid.addGridRowListener(new GridRowListenerAdapter() {
 
 			public void onRowClick(GridPanel grid, int rowIndex, EventObject e) {
-				
+
 				final Window abisuPopup = new Window();
 				abisuPopup.setHeight(400);
 				abisuPopup.setWidth(600);
 				abisuPopup.setAutoScroll(true);
-				abisuPopup.setTitle((String) datuak[rowIndex][2]);
+				abisuPopup.setTitle((String) datuak[rowIndex][4]);
 				abisuPopup.setLayout(new FitLayout());
 				abisuPopup.setMaximizable(false);
 				abisuPopup.setModal(true);
-				abisuPopup.setHtml((String) datuak[rowIndex][3]);
+				abisuPopup.setHtml((String) datuak[rowIndex][2]);
 				abisuPopup.setCloseAction(Window.CLOSE);
-//				Button ok = new Button("Ados");
-////				ok.addListener(new ButtonListenerAdapter(){
-////					public void onClick(Button ok, EventObject e){
-////						abisuPopup.close();
-////					}
-////				});
-////				abisuPopup.add(ok);
+				// Button ok = new Button("Ados");
+				// // ok.addListener(new ButtonListenerAdapter(){
+				// // public void onClick(Button ok, EventObject e){
+				// // abisuPopup.close();
+				// // }
+				// // });
+				// // abisuPopup.add(ok);
 				abisuPopup.show();
-				GuneaService.Util.getInstance().abisuaIrakurriDa(jabea.getErabNan(), Integer.parseInt((String)datuak[rowIndex][0]), new AsyncCallback<Boolean>(){
+				GuneaService.Util.getInstance().abisuaIrakurriDa(
+						jabea.getErabNan(),
+						Integer.parseInt((String) datuak[rowIndex][0]),
+						new AsyncCallback<Boolean>() {
 
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					public void onSuccess(Boolean result) {
-						if(!result){
-							System.out.println("Arazoa DB eguneratzean");
-						}
-						
-					}
-					
-				});
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+							}
+
+							public void onSuccess(Boolean result) {
+								if (!result) {
+									System.out
+											.println("Arazoa DB eguneratzean");
+								}
+
+							}
+
+						});
 			}
 
 		});
 		store.load(0, 5);
 		panel.add(grid);
 	}
-	
-	public void panelaEguneratu(){
+
+	public void panelaEguneratu() {
 		panel.remove("grid");
 		PagingMemoryProxy proxy = new PagingMemoryProxy(datuak);
 		Store store = new Store(proxy, reader, true);
-		
+
 		GridPanel gridBerria = new GridPanel();
 		gridBerria.setId("grid");
 		gridBerria.setColumnModel(columnModel);
@@ -199,38 +206,44 @@ public class Abisuak extends BarnePanela {
 
 		gridBerria.addGridRowListener(new GridRowListenerAdapter() {
 
-			public void onRowClick(GridPanel gridBerria, int rowIndex, EventObject e) {
+			public void onRowClick(GridPanel gridBerria, int rowIndex,
+					EventObject e) {
 				final Window abisuPopup = new Window();
 				abisuPopup.setHeight(400);
 				abisuPopup.setWidth(600);
 				abisuPopup.setAutoScroll(true);
-				abisuPopup.setTitle((String) datuak[rowIndex][2]);
+				abisuPopup.setTitle((String) datuak[rowIndex][4]);
 				abisuPopup.setLayout(new FitLayout());
 				abisuPopup.setMaximizable(false);
 				abisuPopup.setModal(true);
-				abisuPopup.setHtml((String) datuak[rowIndex][3]);
+				abisuPopup.setHtml((String) datuak[rowIndex][2]);
 				abisuPopup.setCloseAction(Window.CLOSE);
-//				Button ok = new Button("Ados");
-////				ok.addListener(new ButtonListenerAdapter(){
-////					public void onClick(Button ok, EventObject e){
-////						abisuPopup.close();
-////					}
-////				});
-////				abisuPopup.add(ok);
+				// Button ok = new Button("Ados");
+				// // ok.addListener(new ButtonListenerAdapter(){
+				// // public void onClick(Button ok, EventObject e){
+				// // abisuPopup.close();
+				// // }
+				// // });
+				// // abisuPopup.add(ok);
 				abisuPopup.show();
-				GuneaService.Util.getInstance().abisuaIrakurriDa(jabea.getErabNan(), Integer.parseInt((String)datuak[rowIndex][0]), new AsyncCallback<Boolean>(){
+				GuneaService.Util.getInstance().abisuaIrakurriDa(
+						jabea.getErabNan(),
+						Integer.parseInt((String) datuak[rowIndex][0]),
+						new AsyncCallback<Boolean>() {
 
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					public void onSuccess(Boolean result) {
-						if(!result){
-							System.out.println("Arazoa DB eguneratzean");
-						}
-						
-					}
-					
-				});
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+							}
+
+							public void onSuccess(Boolean result) {
+								if (!result) {
+									System.out
+											.println("Arazoa DB eguneratzean");
+								}
+
+							}
+
+						});
 			}
 
 		});
@@ -243,7 +256,8 @@ public class Abisuak extends BarnePanela {
 		element = new ExtElement(getElement());
 		element.mask("Itxaron mesedez", true);
 		if (jabea.isErabIdentif()) {
-			GuneaService.Util.getInstance().getAbisuenZerrenda(jabea.getErabNan(),
+			GuneaService.Util.getInstance().getAbisuenZerrenda(
+					jabea.getErabNan(),
 					new AsyncCallback<HashMap<Integer, AbisuInfo>>() {
 
 						public void onFailure(Throwable caught) {
@@ -252,13 +266,22 @@ public class Abisuak extends BarnePanela {
 						}
 
 						public void onSuccess(HashMap<Integer, AbisuInfo> result) {
-							datuak = new Object[result.size()][4];
+							datuak = new Object[result.size()][5];
 							int i = 0;
 							for (int key : result.keySet()) {
 								datuak[i][0] = key;
-								datuak[i][1] = result.get(key).getData();
-								datuak[i][2] = result.get(key).getMota();
-								datuak[i][3] = result.get(key).getMezua();
+								DateTimeFormat dtf = new DateTimeFormat(
+										"yyyy/MM/dd HH:mm") {
+								};
+								String data = dtf.format(result.get(key)
+										.getData());
+								datuak[i][1] = data;
+								datuak[i][2] = result.get(key).getMezua();
+								String str = result.get(key).getMezua();
+								if (str.length() > 50)
+									str = str.substring(0, 50) + "...";
+								datuak[i][3] = str;
+								datuak[i][4] = result.get(key).getMota();
 								i++;
 							}
 							panelaEguneratu();
