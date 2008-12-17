@@ -287,7 +287,8 @@ public class Gunea implements EntryPoint, Logeable {
 	}
 
 	private void sortuInforMezuPanela() {
-		infoPanel = new Panel();
+		infoPanel = new Panel("Azken ordua");
+		infoPanel.setBorder(true);
 		infoPanel.setLayout(new RowLayout());
 		infoPanel.setHeight(200);
 		infoPanel.setAutoScroll(true);
