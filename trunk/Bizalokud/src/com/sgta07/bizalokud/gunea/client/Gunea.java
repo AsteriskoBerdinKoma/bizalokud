@@ -372,7 +372,7 @@ public class Gunea implements EntryPoint, Logeable {
 				}
 				// Denbora bat pasa eta gero aktibo dagoen panelaren datuak
 				// eguneratuko dira
-				if (eguneraketaKont >= Gunea.DATU_EGUNERAKETA_DENBORA) {
+				if (eguneraketaKont == Gunea.DATU_EGUNERAKETA_DENBORA) {
 					eguneratuDatuak();
 				}
 			}

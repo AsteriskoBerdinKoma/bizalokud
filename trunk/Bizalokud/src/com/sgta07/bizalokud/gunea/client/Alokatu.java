@@ -1,6 +1,7 @@
 package com.sgta07.bizalokud.gunea.client;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -247,11 +248,11 @@ public class Alokatu extends BarnePanela {
 
 			private native void doAddEventListener(String event,
 					OneArgFunction listener) /*-{
-									var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
-									map.addEventListener(event, function(llp) {
-										listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
-									});
-								}-*/;
+															var map = this.@com.gwtext.client.widgets.map.MapPanel::mapJS;
+															map.addEventListener(event, function(llp) {
+																listener.@com.sgta07.bizalokud.gunea.client.OneArgFunction::execute(Lcom/google/gwt/core/client/JavaScriptObject;)(llp);
+															});
+														}-*/;
 
 			{
 				addEventListener("click", new OneArgFunction() {
@@ -300,20 +301,48 @@ public class Alokatu extends BarnePanela {
 
 	public void markaGehitu(int id, String izena, String helbidea, double lat,
 			double lon) {
-		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
-		Marker m = new Marker(latLonPoint);
-		mapPanel.setCenterAndZoom(latLonPoint, 17);
-		m.setInfoBubble("<h1>" + izena + "</h1><br><b>Helbidea:</b> "
-				+ helbidea);
-		mapPanel.addMarker(m);
 
-		markak.put(id, m);		
+		LatLonPoint latLonPoint = new LatLonPoint(lat, lon);
+		mapPanel.setCenterAndZoom(latLonPoint, 17);
+
+		if (!markak.containsKey(id)) {
+			Marker m = new Marker(latLonPoint);
+			m.setInfoBubble("<h1>" + izena + "</h1><br><b>Helbidea:</b> "
+					+ helbidea);
+			mapPanel.addMarker(m);
+			addListenerToMarker(m.toGoogle());
+			markak.put(id, m);
+		}
+	}
+	
+	public void aukeratuGunea(Object coords){
+		String koord = coords.toString();
+		String[] latLon = koord.substring(koord.indexOf('(')+1, koord.indexOf(')')).split(", ");
+//		System.out.println("|" + latLon[0] + "|" + latLon[1] + "|");
+		double lat = Double.parseDouble(latLon[0]);
+		double lon = Double.parseDouble(latLon[1]);
+		for(Record r : guneak.getStore().getRecords()){
+			if(r.getAsDouble("lat") == lat && r.getAsDouble("lon") == lon){
+				guneak.getSelectionModel().selectRecords(r);
+				break;
+			}
+		}
 	}
 
+	private native void addListenerToMarker(JavaScriptObject markerJS)/*-{
+		var self = this;
+		$wnd.GEvent.addListener(markerJS, 'click',
+	       function(coords) { 
+	       		self.@com.sgta07.bizalokud.gunea.client.Alokatu::aukeratuGunea(Ljava/lang/Object;)(coords);
+	       });
+	}-*/;
+
 	public void markakKendu() {
-		for (int id : markak.keySet()) {
+		if(mapPanel != null){
+		Set<Integer> keys = markak.keySet();
+		for (int id : keys)
 			mapPanel.removeMarker(markak.get(id));
-			markak.remove(id);
+		markak.clear();
 		}
 	}
 
@@ -323,7 +352,6 @@ public class Alokatu extends BarnePanela {
 		unmaskKont = 0;
 
 		if (sortua && jabea.isGuneaIdentif()) {
-			// markakKendu();
 			CardLayout cardLayout = (CardLayout) getLayout();
 			if (cardLayout.getActiveItem() != first) {
 				setActiveItem(0);
@@ -402,6 +430,7 @@ public class Alokatu extends BarnePanela {
 						}
 
 						public void onSuccess(HashMap<Integer, GuneInfo> result) {
+							markakKendu();
 							Object[][] obj = new Object[result.size()][5];
 							int i = 0;
 							for (int key : result.keySet()) {
@@ -431,7 +460,7 @@ public class Alokatu extends BarnePanela {
 			element = new ExtElement(getElement());
 			element.mask("Guneen informazioa jasotzen. Itxaron mesedez", true);
 			guneak.setGuneak(new Object[0][]);
-			// markakKendu();
+			markakKendu();
 			setActiveItem(0);
 			toolbar.setVisible(true);
 		}
