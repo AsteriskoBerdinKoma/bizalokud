@@ -22,18 +22,11 @@ import com.gwtext.client.widgets.map.Marker;
 public class Hasiera extends BarnePanela {
 
 	private MapPanel mapPanel;
-	// private Label guneIzenLabel;
-	// private Label guneHelbideLabel;
-	// private Label hasieraGuneLabel;
-	// private Label helburuGuneLabel;
-	// private Label hasDataLabel;
-	// private Label bizZenbLabel;
-	// private Label bizModeloLabel;
-	// private Label bizKoloreLabel;
 	private ExtElement element;
 	private boolean mapRendered;
 	private Panel alokairuPanel;
 	private Panel guneAzpipanel;
+	private Marker azkenMarka;
 
 	public Hasiera(Gunea owner) {
 		super(owner);
@@ -83,7 +76,7 @@ public class Hasiera extends BarnePanela {
 		mapPanel.setFrame(true);
 		mapPanel.addLargeControls();
 		mapPanel.setWidth(300);
-		mapPanel.setHeight(200);
+		mapPanel.setHeight(250);
 
 		mapRendered = false;
 
@@ -115,11 +108,13 @@ public class Hasiera extends BarnePanela {
 
 			LatLonPoint latLonPoint = new LatLonPoint(jabea.getGuneLat(), jabea
 					.getGuneLon());
-			Marker m = new Marker(latLonPoint);
+			if (azkenMarka != null)
+				mapPanel.removeMarker(azkenMarka);
+			azkenMarka = new Marker(latLonPoint);
 			mapPanel.setCenterAndZoom(latLonPoint, 17);
-			m.setInfoBubble("<h1>" + jabea.getGuneIzena()
-					+ "<h1><br><b>Helbidea:</b> " + jabea.getGuneHelbidea());
-			mapPanel.addMarker(m);
+			azkenMarka.setInfoBubble("<h1>" + jabea.getGuneIzena()
+					+ "</h1><br><b>Helbidea:</b> " + jabea.getGuneHelbidea());
+			mapPanel.addMarker(azkenMarka);
 
 			if (jabea.isErabIdentif()) {
 				GuneaService.Util.getInstance().getAzkenAlokairuInfo(
@@ -182,9 +177,8 @@ public class Hasiera extends BarnePanela {
 								element.unmask();
 							}
 						});
-			} else{
-				alokairuPanel
-				.setHtml("");
+			} else {
+				alokairuPanel.setHtml("");
 				element.unmask();
 			}
 		} else
